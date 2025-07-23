@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
@@ -29,8 +29,8 @@ class AuthController extends Controller
         return $this->authService->login($request->validated());
     }
 
-    function logout(): void
+    function logout(Request $request): void
     {
-        $this->authService->logout();
+        $this->authService->logout($request);
     }
 }

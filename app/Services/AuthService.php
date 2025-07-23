@@ -7,6 +7,8 @@ use App\Http\Resources\UserResource;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Contracts\AuthServiceInterface;
 use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthService implements AuthServiceInterface
@@ -34,15 +36,18 @@ class AuthService implements AuthServiceInterface
         return new UserResource($user);
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function login(array $credentials): AuthResource
     {
         // TODO: Implement login() method.
-        if (!Auth::attempt($credentials)) {
+        $user = $this->userRepository->findByEmail($credentials['email']);
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.']
             ]);
         }
-        $user = $this->userRepository->findByEmail($credentials['email']);
         $token = $user->createToken('auth_token')->plainTextToken;
         return new AuthResource([
             'user' => new UserResource($user),
@@ -50,11 +55,9 @@ class AuthService implements AuthServiceInterface
         ]);
     }
 
-    public function logout(): void
+    public function logout(Request $request): void
     {
         // TODO: Implement logout() method.
-        $user = Auth::user();
-        $user?->tokens()->delete();
-        Auth::logout();
+        $request->user()->currentAccessToken()->delete();
     }
 }
