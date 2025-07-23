@@ -2,26 +2,11 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Validator;
 
-class LoginRequest extends FormRequest
+class LoginRequest extends BaseApiRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Determine if the request expects a JSON response.
-     */
-    public function expectsJson(): bool
-    {
-        return true;
-    }
 
 
     /**
