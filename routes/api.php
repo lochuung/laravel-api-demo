@@ -8,17 +8,18 @@ use Illuminate\Support\Facades\Route;
 Route::prefix("v1")->group(function () {
     Route::prefix("auth")->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
-        Route::post('/login', function (LoginRequest $request) {
-            dd($request);
-        });
+        Route::post('/login', [AuthController::class, 'login']);
         Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+        Route::middleware('auth:sanctum')->get('/me', [AuthController::class, 'me']);
     });
 
-    Route::get('/users', function () {
-        return response()->json(['message' => 'List of users']);
-    })->middleware('auth:sanctum');
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/users', function () {
+            return response()->json(['message' => 'List of users']);
+        });
 
-    Route::post('/users', function (Request $request) {
-        return response()->json(['message' => 'User created', 'data' => $request->all()]);
-    })->middleware('auth:sanctum');
+        Route::post('/users', function (Request $request) {
+            return response()->json(['message' => 'User created', 'data' => $request->all()]);
+        });
+    });
 });
