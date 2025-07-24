@@ -33,4 +33,10 @@ class AuthController extends Controller
     {
         $this->authService->logout($request);
     }
+
+    function me(Request $request): UserResource
+    {
+        $user = $request->user();
+        return new UserResource($user);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Traits\FormatsApiResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator as ValidatorContract;
@@ -34,7 +35,7 @@ abstract class BaseApiRequest extends FormRequest
                 'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors(),
-                'error_code' => 'VALIDATION_FAILED'
+                'error_code' => 'VALIDATION_ERROR'
             ], 422)
         );
     }

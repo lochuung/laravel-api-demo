@@ -9,11 +9,11 @@ Route::prefix("v1")->group(function () {
     Route::prefix("auth")->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
         Route::post('/login', [AuthController::class, 'login']);
-        Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
-        Route::middleware('auth:sanctum')->get('/me', [AuthController::class, 'me']);
+        Route::middleware('auth:api')->post('/logout', [AuthController::class, 'logout']);
+        Route::middleware('auth:api')->get('/me', [AuthController::class, 'me']);
     });
 
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:api')->group(function () {
         Route::get('/users', function () {
             return response()->json(['message' => 'List of users']);
         });

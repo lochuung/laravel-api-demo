@@ -48,9 +48,10 @@ class AuthService implements AuthServiceInterface
                 'email' => ['The provided credentials are incorrect.']
             ]);
         }
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth_token')->accessToken;
+
         return new AuthResource([
-            'user' => new UserResource($user),
+            'user' => $user,
             'token' => $token,
         ]);
     }
