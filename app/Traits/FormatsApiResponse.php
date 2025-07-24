@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Throwable;
 
 trait FormatsApiResponse
@@ -14,6 +15,19 @@ trait FormatsApiResponse
         array  $data = [],
         string $message = 'Success',
         int    $status = 200
+    ): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => $data,
+        ], $status);
+    }
+
+    protected function apiSuccessSingleResponse(
+        JsonResource $data,
+        string       $message = 'Success',
+        int          $status = 200
     ): JsonResponse
     {
         return response()->json([

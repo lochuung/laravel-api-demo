@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\UserResource;
 use App\Services\Contracts\AuthServiceInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
     protected AuthServiceInterface $authService;
 
@@ -19,14 +21,16 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-    function register(RegisterRequest $request): UserResource
+    function register(RegisterRequest $request): \Illuminate\Http\JsonResponse
     {
-        return $this->authService->register($request->validated());
+        return $this->apiSuccessSingleResponse($this->authService->register($request->validated()));
     }
 
-    function login(LoginRequest $request): AuthResource
+    function login(LoginRequest $request): \Illuminate\Http\JsonResponse
     {
-        return $this->authService->login($request->validated());
+        return $this->apiSuccessSingleResponse(
+            $this->authService->login($request->validated())
+        );
     }
 
     function logout(Request $request): void
@@ -34,9 +38,11 @@ class AuthController extends Controller
         $this->authService->logout($request);
     }
 
-    function me(Request $request): UserResource
+    function me(Request $request): JsonResponse
     {
         $user = $request->user();
-        return new UserResource($user);
+        return $this->apiSuccessSingleResponse(
+            new UserResource($user)
+        );
     }
 }
