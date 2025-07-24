@@ -2,9 +2,9 @@
 
 namespace App\Traits;
 
-use Throwable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 trait FormatsApiResponse
 {

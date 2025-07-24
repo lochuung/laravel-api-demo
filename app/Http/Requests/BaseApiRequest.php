@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Traits\FormatsApiResponse;
+use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 
 abstract class BaseApiRequest extends FormRequest
 {

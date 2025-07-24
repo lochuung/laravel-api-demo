@@ -2,9 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator as ValidatorContract;
-use Illuminate\Foundation\Http\FormRequest;
-
 class LoginRequest extends BaseApiRequest
 {
 
