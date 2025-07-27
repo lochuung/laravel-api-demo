@@ -8,6 +8,7 @@ Route::prefix("v1")->group(function () {
     Route::prefix("auth")->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
         Route::post('/login', [AuthController::class, 'login']);
+        Route::post('/refresh', [AuthController::class, 'refresh']);
         Route::middleware('auth:api')->post('/logout', [AuthController::class, 'logout']);
         Route::middleware('auth:api')->get('/me', [AuthController::class, 'me']);
     });

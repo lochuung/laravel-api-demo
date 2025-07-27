@@ -13,4 +13,6 @@ interface AuthServiceInterface
     public function login(array $credentials): AuthResource;
 
     public function logout(Request $request): void;
+
+    public function refresh(array $data);
 }

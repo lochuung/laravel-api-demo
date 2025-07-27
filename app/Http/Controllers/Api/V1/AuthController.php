@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Resources\AuthResource;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RefreshTokenRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Services\Contracts\AuthServiceInterface;
 use Illuminate\Http\JsonResponse;
@@ -36,6 +35,13 @@ class AuthController extends BaseController
     function logout(Request $request): void
     {
         $this->authService->logout($request);
+    }
+
+    function refresh(RefreshTokenRequest $request): JsonResponse
+    {
+        return $this->apiSuccessSingleResponse(
+            $this->authService->refresh($request->validated())
+        );
     }
 
     function me(Request $request): JsonResponse

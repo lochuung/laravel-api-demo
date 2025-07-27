@@ -16,7 +16,10 @@ class AuthResource extends JsonResource
     {
         return [
             'user' => new UserResource($this->resource['user']),
-            'token' => $this->resource['token'],
+            'access_token' => $this->resource['access_token'],
+            'refresh_token' => $this->resource['refresh_token'],
+            'expires_in' => $this->resource['expires_in'] ?? null,
+            'token_type' => $this->resource['token_type'] ?? 'Bearer',
             'message' => 'Login successful.',
             'status' => 'success',
             'code' => 200

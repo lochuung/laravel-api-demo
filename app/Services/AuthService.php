@@ -3,12 +3,20 @@
 namespace App\Services;
 
 use App\Http\Resources\AuthResource;
+use App\Http\Resources\RefreshTokenResource;
 use App\Http\Resources\UserResource;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Contracts\AuthServiceInterface;
+use App\Utilities\Psr7Util;
+use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Laravel\Passport\Http\Controllers\AccessTokenController;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 
 class AuthService implements AuthServiceInterface
 {
@@ -47,11 +55,34 @@ class AuthService implements AuthServiceInterface
                 'email' => ['The provided credentials are incorrect.']
             ]);
         }
-        $token = $user->createToken('auth_token')->accessToken;
+
+        $params = [
+            ...config('passport-params'),
+            'grant_type' => 'password',
+            'username' => $credentials['email'],
+            'password' => $credentials['password'],
+        ];
+
+        $requestPs7 = Psr7Util::createPsr7Request(
+            Request::create('/oauth/token', 'POST', $params)
+        );
+
+        $responsePsr7 = Psr7Util::createPsr7Response();
+        $response = app(AccessTokenController::class)->issueToken(
+            $requestPs7,
+            $responsePsr7
+        );
+
+        if ($response->getStatusCode() !== 200) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.']
+            ]);
+        }
+        $data = json_decode((string)$response->getContent(), true);
 
         return new AuthResource([
             'user' => $user,
-            'token' => $token,
+            ...$data
         ]);
     }
 
@@ -59,5 +90,36 @@ class AuthService implements AuthServiceInterface
     {
         // TODO: Implement logout() method.
         $request->user()->currentAccessToken()->delete();
+    }
+
+    public function refresh(array $data): RefreshTokenResource
+    {
+        // TODO: Implement refresh() method.
+        $refreshToken = $data['refresh_token'] ?? null;
+        if (!$refreshToken) {
+            throw ValidationException::withMessages([
+                'refresh_token' => ['The refresh token is required.']
+            ]);
+        }
+        $params = [
+            ...config('passport-params'),
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $refreshToken,
+        ];
+        $requestPs7 = Psr7Util::createPsr7Request(
+            Request::create('/oauth/token', 'POST', $params)
+        );
+        $responsePsr7 = Psr7Util::createPsr7Response();
+        $response = app(AccessTokenController::class)->issueToken(
+            $requestPs7,
+            $responsePsr7
+        );
+        if ($response->getStatusCode() !== 200) {
+            throw ValidationException::withMessages([
+                'refresh_token' => ['The refresh token is invalid or expired.']
+            ]);
+        }
+        $data = json_decode((string)$response->getContent(), true);
+        return new RefreshTokenResource($data);
     }
 }

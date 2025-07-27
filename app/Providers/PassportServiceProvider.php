@@ -25,5 +25,8 @@ class PassportServiceProvider extends ServiceProvider
         Passport::refreshTokensExpireIn(CarbonInterval::days(30));
         Passport::personalAccessTokensExpireIn(CarbonInterval::months(6));
         Passport::loadKeysFrom(storage_path('oauth'));
+
+        // Enable password grant type
+        Passport::enablePasswordGrant();
     }
 }
