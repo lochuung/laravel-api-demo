@@ -1,21 +1,39 @@
 @extends('layouts.auth')
 
-@section('title', 'Register')
+@section('title', 'Reset Password')
 
 @push('scripts')
     <script>
         $(function () {
+            const wrappedHandleResetPassword = withButtonControl(handleResetPassword, $('#submit'));
 
-            const wrappedHandleRegister = withButtonControl(handleRegister, $('#submit'));
+            // Get token and email from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const email = urlParams.get('email');
+
+            if (email) {
+                $('#email').val(email);
+            }
+
+            if (!token) {
+                showError({message: 'Invalid reset token. Please request a new password reset.'});
+                $('#submit').prop('disabled', true);
+            }
 
             $('form').on('submit', function (e) {
                 e.preventDefault();
-                wrappedHandleRegister({
-                    name: $('#name').val().trim(),
+                if (!token) {
+                    showError({message: 'Invalid reset token. Please request a new password reset.'});
+                    return;
+                }
+                
+                wrappedHandleResetPassword({
+                    token: token,
                     email: $('#email').val().trim(),
                     password: $('#password').val(),
                     password_confirmation: $('#password_confirmation').val()
-                })
+                });
             });
         });
     </script>
@@ -24,38 +42,31 @@
 @section('card-content')
     <div class="text-center mb-4 fade-in">
         <div class="icon-wrapper">
-            <i class="fas fa-user-plus fa-4x text-success mb-3"
-               style="background: linear-gradient(135deg, #10b981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            <i class="fas fa-lock fa-4x text-primary mb-3"
+               style="background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
         </div>
-        <h2 class="fw-bold mb-2" style="color: var(--text-dark);">Create Account</h2>
-        <p class="text-muted mb-0">Join our community today</p>
+        <h2 class="fw-bold mb-2" style="color: var(--text-dark);">Reset Password</h2>
+        <p class="text-muted mb-0">Choose a new password for your account</p>
+
         <div id="errors" class="mt-3"></div>
     </div>
 
     <form class="fade-in" style="animation-delay: 0.2s;">
         <div class="mb-3">
-            <label for="name" class="form-label">
-                <i class="fas fa-user me-2"></i>Full Name
-            </label>
-            <input type="text" class="form-control" id="name" name="name"
-                   placeholder="Enter your full name" required>
-        </div>
-
-        <div class="mb-3">
             <label for="email" class="form-label">
                 <i class="fas fa-envelope me-2"></i>Email Address
             </label>
             <input type="email" class="form-control" id="email" name="email"
-                   placeholder="Enter your email" required>
+                   placeholder="Enter your email" required readonly>
         </div>
 
         <div class="mb-3">
             <label for="password" class="form-label">
-                <i class="fas fa-lock me-2"></i>Password
+                <i class="fas fa-lock me-2"></i>New Password
             </label>
             <div class="position-relative">
                 <input type="password" class="form-control" id="password" name="password"
-                       placeholder="Create a password" required onkeyup="checkPasswordStrength()">
+                       placeholder="Enter new password" required onkeyup="checkPasswordStrength()">
                 <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y"
                         style="border: none; background: none; color: var(--text-muted);"
                         onclick="togglePassword('password')">
@@ -70,13 +81,13 @@
             </div>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-4">
             <label for="password_confirmation" class="form-label">
-                <i class="fas fa-lock me-2"></i>Confirm Password
+                <i class="fas fa-lock me-2"></i>Confirm New Password
             </label>
             <div class="position-relative">
                 <input type="password" class="form-control" id="password_confirmation"
-                       name="password_confirmation" placeholder="Confirm your password" required
+                       name="password_confirmation" placeholder="Confirm new password" required
                        onkeyup="checkPasswordMatch()">
                 <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y"
                         style="border: none; background: none; color: var(--text-muted);"
@@ -89,37 +100,19 @@
             </div>
         </div>
 
-        <div class="mb-4">
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="terms" required>
-                <label class="form-check-label text-muted" for="terms">
-                    I agree to the <a href="#" class="text-decoration-none fw-semibold"
-                                      style="color: var(--primary-color);">Terms & Conditions</a> and
-                    <a href="#" class="text-decoration-none fw-semibold"
-                       style="color: var(--primary-color);">Privacy Policy</a>
-                </label>
-            </div>
-        </div>
-
         <div class="d-grid mb-4">
-            <button type="submit" class="btn btn-success btn-lg" id="submit">
-                <i class="fas fa-user-plus me-2"></i>Create Account
+            <button type="submit" class="btn btn-primary btn-lg" id="submit">
+                <i class="fas fa-key me-2"></i>Reset Password
             </button>
         </div>
     </form>
 
     <div class="text-center fade-in" style="animation-delay: 0.4s;">
-        <div class="d-flex align-items-center mb-3">
-            <hr class="flex-grow-1">
-            <span class="px-3 text-muted small">or</span>
-            <hr class="flex-grow-1">
-        </div>
-
         <p class="text-muted mb-0">
-            Already have an account?
+            Remember your password?
             <a href="{{ route('login') }}" class="text-decoration-none fw-semibold"
                style="color: var(--primary-color);">
-                Sign in here
+                Back to Login
             </a>
         </p>
     </div>

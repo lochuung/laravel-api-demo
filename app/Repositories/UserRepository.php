@@ -69,4 +69,34 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $this->exists(['email' => $email]);
     }
 
+    /**
+     * Update email verification status
+     */
+    public function updateEmailVerificationStatus(User $user, bool $verified): User
+    {
+        $user->update([
+            'email_verified' => $verified,
+            'email_verified_at' => $verified ? now() : null,
+            'email_verification_token' => null,
+            'email_verification_token_expires_at' => null,
+        ]);
+
+        return $user->fresh();
+    }
+
+    /**
+     * Generate email verification token
+     */
+    public function generateEmailVerificationToken(User $user): User
+    {
+        $token = \Str::random(64);
+
+        $user->update([
+            'email_verification_token' => $token,
+            'email_verification_token_expires_at' => now()->addHours(24),
+        ]);
+
+        return $user->fresh();
+    }
+
 }

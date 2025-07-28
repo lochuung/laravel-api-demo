@@ -15,4 +15,10 @@ interface UserRepositoryInterface extends BaseRepositoryInterface
     public function getActiveUsers(): \Illuminate\Database\Eloquent\Collection;
 
     public function searchByName(string $name): \Illuminate\Database\Eloquent\Collection;
+
+    public function updateEmailVerificationStatus(User $user, bool $verified): User;
+
+    public function generateEmailVerificationToken(User $user): User;
+
+    public function emailExists(string $email): bool;
 }
