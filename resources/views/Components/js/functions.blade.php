@@ -13,6 +13,15 @@
         }
     }
 
+    function waitForUser(fn) {
+        const waitForUser = setInterval(function () {
+            if (window.user && window.user.name) {
+                fn(window.user);
+                clearInterval(waitForUser); // dừng lại sau khi đã có user
+            }
+        }, 100); // kiểm tra mỗi 100ms
+    }
+
     function showError({message = '', errors = []}) {
         const errorsDiv = $('#errors');
         if (!errorsDiv) {

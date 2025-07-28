@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\DashboardController;
+use App\Http\Controllers\Api\V1\OrderController;
+use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,13 +17,15 @@ Route::prefix("v1")->group(function () {
         Route::middleware('auth:api')->get('/me', [AuthController::class, 'me']);
     });
 
-    Route::middleware('auth:api')->group(function () {
-        Route::get('/users', function () {
-            return response()->json(['message' => 'List of users']);
-        });
 
-        Route::post('/users', function (Request $request) {
-            return response()->json(['message' => 'User created', 'data' => $request->all()]);
-        });
+    Route::middleware('auth:api')->group(function () {
+
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+        Route::apiResource('users', UserController::class);
+
+        Route::apiResource('products', ProductController::class);
+
+        Route::apiResource('orders', OrderController::class);
     });
 });

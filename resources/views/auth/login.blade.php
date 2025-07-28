@@ -1,9 +1,7 @@
 @extends('layouts.auth')
 @section('title', 'Login')
 
-@section('scripts')
-    <x-js.auth-functions/>
-
+@push('scripts')
     <script>
         $(function () {
 
@@ -28,7 +26,7 @@
             });
         });
     </script>
-@endsection
+@endpush
 
 @section('card-content')
     <div class="text-center mb-4 fade-in">

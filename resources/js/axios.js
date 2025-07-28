@@ -29,7 +29,7 @@ api.interceptors.response.use(
                     refresh_token: localStorage.getItem('refresh_token') || ''
                 }, {withCredentials: true});
 
-                accessToken = res.data.access_token;
+                localStorage.setItem('access_token', res.data.access_token);
 
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
                 return api(originalRequest); // Retry original request
