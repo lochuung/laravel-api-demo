@@ -2,78 +2,24 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Redirect root to login
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+// Auth Routes
+Route::view('/login', 'auth.login')->name('login');
+Route::view('/register', 'auth.register')->name('register');
 
-// Authentication Routes
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+// Dashboard
+Route::view('/', 'dashboard')->name('home');
+Route::view('/dashboard', 'dashboard')->name('dashboard');
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+$viewResource = function (string $prefix, string $viewFolder) {
+    Route::prefix($prefix)->name("$prefix.")->group(function () use ($viewFolder) {
+        Route::view('/', "$viewFolder.index")->name('index');
+        Route::view('/create', "$viewFolder.create")->name('create');
+        Route::get('/{id}', fn($id) => view("$viewFolder.show", compact('id')))->name('show');
+        Route::get('/{id}/edit', fn($id) => view("$viewFolder.edit", compact('id')))->name('edit');
+    });
+};
 
-// Dashboard Route
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
-
-// Users CRUD Routes
-Route::prefix('users')->name('users.')->group(function () {
-    Route::get('/', function () {
-        return view('users.index');
-    })->name('index');
-    
-    Route::get('/create', function () {
-        return view('users.create');
-    })->name('create');
-    
-    Route::get('/{id}', function ($id) {
-        return view('users.show');
-    })->name('show');
-    
-    Route::get('/{id}/edit', function ($id) {
-        return view('users.edit');
-    })->name('edit');
-});
-
-// Products CRUD Routes
-Route::prefix('products')->name('products.')->group(function () {
-    Route::get('/', function () {
-        return view('products.index');
-    })->name('index');
-    
-    Route::get('/create', function () {
-        return view('products.create');
-    })->name('create');
-    
-    Route::get('/{id}', function ($id) {
-        return view('products.show');
-    })->name('show');
-    
-    Route::get('/{id}/edit', function ($id) {
-        return view('products.edit');
-    })->name('edit');
-});
-
-// Orders CRUD Routes
-Route::prefix('orders')->name('orders.')->group(function () {
-    Route::get('/', function () {
-        return view('orders.index');
-    })->name('index');
-    
-    Route::get('/create', function () {
-        return view('orders.create');
-    })->name('create');
-    
-    Route::get('/{id}', function ($id) {
-        return view('orders.show');
-    })->name('show');
-    
-    Route::get('/{id}/edit', function ($id) {
-        return view('orders.edit');
-    })->name('edit');
-});
+// Resource Routes (no middleware)
+$viewResource('users', 'users');
+$viewResource('products', 'products');
+$viewResource('orders', 'orders');

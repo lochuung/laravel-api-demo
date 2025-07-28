@@ -20,12 +20,12 @@ class AuthController extends BaseController
         $this->authService = $authService;
     }
 
-    function register(RegisterRequest $request): \Illuminate\Http\JsonResponse
+    function register(RegisterRequest $request): JsonResponse
     {
         return $this->apiSuccessSingleResponse($this->authService->register($request->validated()));
     }
 
-    function login(LoginRequest $request): \Illuminate\Http\JsonResponse
+    function login(LoginRequest $request): JsonResponse
     {
         return $this->apiSuccessSingleResponse(
             $this->authService->login($request->validated())
