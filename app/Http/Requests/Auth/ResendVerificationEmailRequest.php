@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
-class LoginRequest extends BaseApiRequest
+use App\Http\Requests\BaseApiRequest;
+
+class ResendVerificationEmailRequest extends BaseApiRequest
 {
-
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -14,8 +14,7 @@ class LoginRequest extends BaseApiRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:8',
+            'email' => 'required|string|email|exists:users,email',
         ];
     }
 
@@ -29,8 +28,7 @@ class LoginRequest extends BaseApiRequest
         return [
             'email.required' => 'The email field is required.',
             'email.email' => 'The email must be a valid email address.',
-            'password.required' => 'The password field is required.',
-            'password.min' => 'The password must be at least 8 characters.',
+            'email.exists' => 'We can\'t find a user with that email address.',
         ];
     }
 }

@@ -1,81 +1,109 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Laravel Demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-        .login-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-4">
-                <div class="login-card p-4">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-cube fa-3x text-primary mb-3"></i>
-                        <h2 class="fw-bold">Welcome Back</h2>
-                        <p class="text-muted">Sign in to your account</p>
-                    </div>
+@extends('layouts.auth')
+@section('title', 'Login')
 
-                    <form>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">
-                                <i class="fas fa-envelope"></i> Email Address
-                            </label>
-                            <input type="email" class="form-control" id="email" name="email" 
-                                   placeholder="Enter your email" required>
-                        </div>
+@push('scripts')
+    <script>
+        $(function () {
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label">
-                                <i class="fas fa-lock"></i> Password
-                            </label>
-                            <input type="password" class="form-control" id="password" name="password" 
-                                   placeholder="Enter your password" required>
-                        </div>
+            const wrappedHandleLogin = withButtonControl(handleLogin, $('#submit'));
 
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="remember">
-                            <label class="form-check-label" for="remember">
-                                Remember me
-                            </label>
-                        </div>
+            $('form').on('submit', function (e) {
+                e.preventDefault();
+                wrappedHandleLogin({
+                    email: $('#email').val(),
+                    password: $('#password').val()
+                });
+            });
+        });
+    </script>
+@endpush
 
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-sign-in-alt"></i> Sign In
-                            </button>
-                        </div>
-                    </form>
-
-                    <div class="text-center mt-4">
-                        <p class="text-muted">
-                            Don't have an account? 
-                            <a href="{{ route('register') }}" class="text-decoration-none">Register here</a>
-                        </p>
-                        <a href="#" class="text-muted text-decoration-none">
-                            <i class="fas fa-key"></i> Forgot your password?
-                        </a>
-                    </div>
-                </div>
-            </div>
+@section('card-content')
+    <div class="text-center mb-4 fade-in">
+        <div class="icon-wrapper">
+            <i class="fas fa-cube fa-4x text-primary mb-3"
+               style="background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
         </div>
+        <h2 class="fw-bold mb-2" style="color: var(--text-dark);">Welcome Back</h2>
+        <p class="text-muted mb-0">Sign in to continue to your account</p>
+
+        <div id="errors"></div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    <form class="fade-in" style="animation-delay: 0.2s;">
+        <div class="mb-4">
+            <label for="email" class="form-label">
+                <i class="fas fa-envelope me-2"></i>Email Address
+            </label>
+            <input type="email" class="form-control form-control-lg" id="email" name="email"
+                   placeholder="Enter your email" required>
+        </div>
+
+        <div class="mb-4">
+            <label for="password" class="form-label">
+                <i class="fas fa-lock me-2"></i>Password
+            </label>
+            <div class="position-relative">
+                <input type="password" class="form-control form-control-lg" id="password" name="password"
+                       placeholder="Enter your password" required>
+                <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y"
+                        style="border: none; background: none; color: var(--text-muted);"
+                        onclick="togglePassword('password')">
+                    <i class="fas fa-eye" id="toggleIcon"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="remember">
+                <label class="form-check-label text-muted" for="remember">
+                    Remember me
+                </label>
+            </div>
+            <a href="{{ route('password.request') }}" class="text-decoration-none"
+               style="color: var(--primary-color); font-size: 14px;">
+                Forgot password?
+            </a>
+        </div>
+
+        <div class="d-grid mb-4">
+            <button type="submit" class="btn btn-primary btn-lg" id="submit">
+                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+            </button>
+        </div>
+    </form>
+
+    <div class="text-center fade-in" style="animation-delay: 0.4s;">
+        <div class="d-flex align-items-center mb-3">
+            <hr class="flex-grow-1">
+            <span class="px-3 text-muted small">or</span>
+            <hr class="flex-grow-1">
+        </div>
+
+        <p class="text-muted mb-0">
+            Don't have an account?
+            <a href="{{ route('register') }}" class="text-decoration-none fw-semibold"
+               style="color: var(--primary-color);">
+                Create one here
+            </a>
+        </p>
+    </div>
+
+    <script>
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById('toggleIcon');
+
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+@endsection
