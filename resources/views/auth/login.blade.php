@@ -14,16 +14,6 @@
                     password: $('#password').val()
                 });
             });
-
-            $('#email, #password').on('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    wrappedHandleLogin({
-                        email: $('#email').val(),
-                        password: $('#password').val()
-                    });
-                }
-            });
         });
     </script>
 @endpush
@@ -71,7 +61,7 @@
                     Remember me
                 </label>
             </div>
-            <a href="#" class="text-decoration-none"
+            <a href="{{ route('password.request') }}" class="text-decoration-none"
                style="color: var(--primary-color); font-size: 14px;">
                 Forgot password?
             </a>

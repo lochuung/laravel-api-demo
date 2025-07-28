@@ -13,6 +13,10 @@ Route::prefix("v1")->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
         Route::post('/login', [AuthController::class, 'login']);
         Route::post('/refresh', [AuthController::class, 'refresh']);
+        Route::post('/verify-email', [AuthController::class, 'verifyEmail']);
+        Route::post('/resend-verification-email', [AuthController::class, 'resendVerificationEmail']);
+        Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+        Route::post('/reset-password', [AuthController::class, 'resetPassword']);
         Route::middleware('auth:api')->post('/logout', [AuthController::class, 'logout']);
         Route::middleware('auth:api')->get('/me', [AuthController::class, 'me']);
     });

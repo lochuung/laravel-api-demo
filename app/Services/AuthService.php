@@ -5,18 +5,20 @@ namespace App\Services;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\RefreshTokenResource;
 use App\Http\Resources\UserResource;
+use App\Mail\ResetPasswordMail;
+use App\Notifications\ResetPasswordNotification;
+use App\Notifications\VerifyEmailNotification;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Contracts\AuthServiceInterface;
 use App\Utilities\Psr7Util;
-use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
-use Nyholm\Psr7\Factory\Psr17Factory;
-use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 
 class AuthService implements AuthServiceInterface
 {
@@ -40,7 +42,12 @@ class AuthService implements AuthServiceInterface
             ]);
         }
         $user = $this->userRepository->createWithHashedPassword($data);
-        return new UserResource($user);
+
+        // Generate email verification token and send email
+        $userWithToken = $this->userRepository->generateEmailVerificationToken($user);
+        $userWithToken->notify(new VerifyEmailNotification($userWithToken->email_verification_token, $userWithToken->email));
+
+        return new UserResource($userWithToken);
     }
 
     /**
@@ -53,6 +60,18 @@ class AuthService implements AuthServiceInterface
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.']
+            ]);
+        }
+
+        if (!$user->is_active) {
+            throw ValidationException::withMessages([
+                'email' => ['Your account is inactive. Please contact support.']
+            ]);
+        }
+
+        if (!$user->email_verified) {
+            throw ValidationException::withMessages([
+                'email' => ['Please verify your email address before logging in.']
             ]);
         }
 
@@ -92,6 +111,9 @@ class AuthService implements AuthServiceInterface
         $request->user()->currentAccessToken()->delete();
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function refresh(array $data): RefreshTokenResource
     {
         // TODO: Implement refresh() method.
@@ -121,5 +143,104 @@ class AuthService implements AuthServiceInterface
         }
         $data = json_decode((string)$response->getContent(), true);
         return new RefreshTokenResource($data);
+    }
+
+
+    /**
+     * @throws ValidationException
+     */
+    public function verifyEmail(array $data): UserResource
+    {
+        $user = $this->userRepository->findByEmailVerificationToken($data['token']);
+
+        if (!$user || $user->email !== $data['email']) {
+            throw ValidationException::withMessages([
+                'token' => ['The verification token is invalid.']
+            ]);
+        }
+
+        if ($user->email_verification_token_expires_at < now()) {
+            throw ValidationException::withMessages([
+                'token' => ['The verification token has expired.']
+            ]);
+        }
+
+        if ($user->email_verified) {
+            throw ValidationException::withMessages([
+                'email' => ['Email is already verified.']
+            ]);
+        }
+
+        $verifiedUser = $this->userRepository->updateEmailVerificationStatus($user, true);
+        return new UserResource($verifiedUser);
+    }
+
+
+    /**
+     * @throws ValidationException
+     */
+    public function resendVerificationEmail(array $data): bool
+    {
+        $user = $this->userRepository->findByEmail($data['email']);
+
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'email' => ['User not found.']
+            ]);
+        }
+
+        if ($user->email_verified) {
+            throw ValidationException::withMessages([
+                'email' => ['Email is already verified.']
+            ]);
+        }
+
+        $userWithToken = $this->userRepository->generateEmailVerificationToken($user);
+        $userWithToken->notify(new VerifyEmailNotification($userWithToken->email_verification_token, $userWithToken->email));
+
+        return true;
+    }
+
+
+    /**
+     * @throws ValidationException
+     */
+    public function forgotPassword(array $data): bool
+    {
+        $user = $this->userRepository->findByEmail($data['email']);
+
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'email' => ['We can\'t find a user with that email address.']
+            ]);
+        }
+
+        $token = Password::broker()->createToken($user);
+        $user->notify(new ResetPasswordNotification($token, $user->email));
+        return true;
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function resetPassword(array $data): UserResource
+    {
+        $status = Password::reset(
+            $data,
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->save();
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            $user = $this->userRepository->findByEmail($data['email']);
+            return new UserResource($user);
+        }
+
+        throw ValidationException::withMessages([
+            'email' => [__($status)]
+        ]);
     }
 }

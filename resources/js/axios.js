@@ -25,14 +25,22 @@ api.interceptors.response.use(
 
             try {
                 // Call refresh endpoint to get a new access token
-                const res = await axios.post('/api/refresh', {
+                const res = await axios.post('/api/v1/auth/refresh', {
                     refresh_token: localStorage.getItem('refresh_token') || ''
                 }, {withCredentials: true});
 
-                localStorage.setItem('access_token', res.data.access_token);
+                const newAccessToken = res.data?.data?.access_token;
+                if (newAccessToken) {
+                    localStorage.setItem('access_token', newAccessToken);
+                    if (res.data?.data?.refresh_token) {
+                        localStorage.setItem('refresh_token', res.data.data.refresh_token);
+                    }
 
-                originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-                return api(originalRequest); // Retry original request
+                    originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                    return api(originalRequest); // Retry original request
+                } else {
+                    throw new Error('No access token received');
+                }
             } catch (refreshError) {
                 console.error('Refresh failed:', refreshError);
                 window.location.href = '/login';

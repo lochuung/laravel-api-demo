@@ -12,6 +12,16 @@
                     $(this).addClass('active');
                 }
             });
+
+            $('#logout').on('click', function (e) {
+                e.preventDefault();
+                handleLogout().then(() => {
+                    window.location.href = "{{ route('login') }}";
+                }).catch(error => {
+                    console.error('Logout failed:', error);
+                    alert('Logout failed. Please try again.');
+                });
+            });
         });
     </script>
 @endpush
@@ -60,7 +70,7 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#" onclick="handleLogout()"><i
+                        <li><a class="dropdown-item" id="logout" href="#"><i
                                     class="fas fa-sign-out-alt"></i> Logout</a></li>
                     </ul>
                 </li>

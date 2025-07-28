@@ -24,32 +24,55 @@
 
     function showError({message = '', errors = []}) {
         const errorsDiv = $('#errors');
-        if (!errorsDiv) {
+        if (!errorsDiv.length) {
             console.error('Error: #errors element not found.');
             return;
         }
         // Clear any existing messages and append the new one
         errorsDiv.empty();
         if (message) {
-            errorsDiv.append(`<div class="alert alert-danger">${message}</div>`);
+            errorsDiv.append(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`);
         }
         for (const key in errors) {
             if (errors.hasOwnProperty(key)) {
                 const errorMessages = errors[key];
                 if (Array.isArray(errorMessages)) {
                     errorMessages.forEach(msg => {
-                        errorsDiv.append(`<div class="alert alert-danger">${msg}</div>`);
+                        errorsDiv.append(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            ${msg}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>`);
                     });
                 } else {
-                    errorsDiv.append(`<div class="alert alert-danger">${errorMessages}</div>`);
+                    errorsDiv.append(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        ${errorMessages}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`);
                 }
             }
         }
     }
 
+    function showSuccess(message) {
+        const errorsDiv = $('#errors');
+        if (!errorsDiv.length) {
+            console.error('Error: #errors element not found.');
+            return;
+        }
+        // Clear any existing messages and append the new one
+        errorsDiv.empty();
+        errorsDiv.append(`<div class="alert alert-success alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`);
+    }
+
     function clearErrors() {
         const errorsDiv = $('#errors');
-        if (errorsDiv) {
+        if (errorsDiv.length) {
             errorsDiv.empty();
         } else {
             console.error('Error: #errors element not found.');

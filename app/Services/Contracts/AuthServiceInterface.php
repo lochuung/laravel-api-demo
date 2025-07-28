@@ -15,4 +15,12 @@ interface AuthServiceInterface
     public function logout(Request $request): void;
 
     public function refresh(array $data);
+
+    public function verifyEmail(array $data): UserResource;
+
+    public function resendVerificationEmail(array $data): bool;
+
+    public function forgotPassword(array $data): bool;
+
+    public function resetPassword(array $data): UserResource;
 }
