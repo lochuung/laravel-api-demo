@@ -42,8 +42,7 @@ class UserPolicy
 
         if (
             $user->isModerator() &&
-            $target->isUser() &&
-            $target->id !== $user->id
+            $target->isUser()
         ) {
             return true;
         }
@@ -56,6 +55,9 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
+        if ($user->id === $model->id) {
+            return false;
+        }
         return $this->update($user, $model);
     }
 

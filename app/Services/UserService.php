@@ -73,24 +73,6 @@ class UserService implements UserServiceInterface
      * @throws AuthorizationException
      * @throws Exception
      */
-    public function deleteById(int $id): void
-    {
-        // TODO: Implement deleteById() method.
-        $user = $this->userRepository->find($id);
-        if (!Gate::authorize('delete', $user)) {
-            throw new AuthorizationException("You do not have permission to delete this user", 403);
-        }
-
-        if (!$user) {
-            throw new Exception("User not found", 404);
-        }
-        $this->userRepository->delete($id);
-    }
-
-    /**
-     * @throws AuthorizationException
-     * @throws Exception
-     */
     public function createUser(array $data): UserResource
     {
         // TODO: Implement createUser() method.
@@ -120,5 +102,23 @@ class UserService implements UserServiceInterface
         $user = $this->userRepository->update($id, $data);
 
         return new UserResource($user);
+    }
+
+    /**
+     * @throws AuthorizationException
+     * @throws Exception
+     */
+    public function deleteById(int $id): void
+    {
+        // TODO: Implement deleteById() method.
+        $user = $this->userRepository->find($id);
+        if (!Gate::authorize('delete', $user)) {
+            throw new AuthorizationException("You do not have permission to delete this user", 403);
+        }
+
+        if (!$user) {
+            throw new Exception("User not found", 404);
+        }
+        $this->userRepository->delete($id);
     }
 }

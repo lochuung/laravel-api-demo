@@ -12,6 +12,7 @@ const getDashboardData = async () => {
             console.error('Failed to fetch dashboard data:', response.statusText);
         }
     } catch (error) {
+        showErrorMessage(error.response?.data?.message || 'An error occurred while fetching dashboard data.');
         console.error('Error fetching dashboard data:', error);
     }
 };

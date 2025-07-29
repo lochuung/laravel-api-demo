@@ -7,7 +7,7 @@ async function handleLogin({email, password}) {
             localStorage.setItem('access_token', access_token);
             localStorage.setItem('refresh_token', refresh_token);
 
-            showSuccess('Login successful!');
+            showSuccessMessage('Login successful!');
             setTimeout(() => {
                 window.location.href = '/dashboard';
             }, 500);
@@ -28,7 +28,7 @@ async function handleRegister({name, email, password, password_confirmation}) {
     try {
         const response = await api.post('/auth/register', {name, email, password, password_confirmation});
         if (response.data?.success) {
-            showSuccess('Registration successful! Please check your email to verify your account.');
+            showSuccessMessage('Registration successful! Please check your email to verify your account.');
             setTimeout(() => {
                 window.location.href = '/login';
             }, 500);
@@ -79,7 +79,7 @@ async function handleForgotPassword({email}) {
     try {
         const response = await api.post('/auth/forgot-password', {email});
         if (response.data?.success) {
-            showSuccess('Password reset email sent successfully. Please check your email.');
+            showSuccessMessage('Password reset email sent successfully. Please check your email.');
         } else {
             showError({message: response.data?.message || 'Failed to send reset email. Please try again.'});
         }
@@ -99,7 +99,7 @@ async function handleResetPassword({token, email, password, password_confirmatio
             token, email, password, password_confirmation
         });
         if (response.data?.success) {
-            showSuccess('Password reset successful! You can now login with your new password.');
+            showSuccessMessage('Password reset successful! You can now login with your new password.');
             setTimeout(() => {
                 window.location.href = '/login';
             }, 500);
@@ -120,7 +120,7 @@ async function handleVerifyEmail({token, email}) {
     try {
         const response = await api.post('/auth/verify-email', {token, email});
         if (response.data?.success) {
-            showSuccess('Email verified successfully! You can now login.');
+            showSuccessMessage('Email verified successfully! You can now login.');
             setTimeout(() => {
                 window.location.href = '/login';
             }, 500);
@@ -141,7 +141,7 @@ async function handleResendVerificationEmail({email}) {
     try {
         const response = await api.post('/auth/resend-verification-email', {email});
         if (response.data?.success) {
-            showSuccess('Verification email sent successfully. Please check your email.');
+            showSuccessMessage('Verification email sent successfully. Please check your email.');
         } else {
             showError({message: response.data?.message || 'Failed to send verification email. Please try again.'});
         }

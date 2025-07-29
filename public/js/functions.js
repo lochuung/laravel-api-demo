@@ -1,6 +1,5 @@
 function withButtonControl(fn, buttonSelector) {
     return async function (...args) {
-        clearErrors();
         const $button = $(buttonSelector);
         $button.prop('disabled', true);
         try {
@@ -39,59 +38,62 @@ const updateUserCount = (total) => {
     $('.card-title').text(`All Users (${total.toLocaleString()})`);
 };
 
-function showError({message = '', errors = []}) {
-    const errorsDiv = $('#errors');
-    if (!errorsDiv.length) {
-        console.error('Error: #errors element not found.');
-        return;
-    }
-    // Clear any existing messages and append the new one
-    errorsDiv.empty();
+function showError({ message = '', errors = [] }) {
+    // Hiển thị message chính nếu có
     if (message) {
-        errorsDiv.append(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>`);
+        showErrorMessage(message);
     }
+
+    // Hiển thị các lỗi cụ thể từ mảng errors (nếu có)
     for (const key in errors) {
-        if (errors.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(errors, key)) {
             const errorMessages = errors[key];
+
             if (Array.isArray(errorMessages)) {
                 errorMessages.forEach(msg => {
-                    errorsDiv.append(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            ${msg}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>`);
+                    showErrorMessage(msg);
                 });
-            } else {
-                errorsDiv.append(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        ${errorMessages}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>`);
+            } else if (typeof errorMessages === 'string') {
+                showErrorMessage(errorMessages);
             }
         }
     }
 }
 
-function showSuccess(message) {
-    const errorsDiv = $('#errors');
-    if (!errorsDiv.length) {
-        console.error('Error: #errors element not found.');
-        return;
-    }
-    // Clear any existing messages and append the new one
-    errorsDiv.empty();
-    errorsDiv.append(`<div class="alert alert-success alert-dismissible fade show" role="alert">
+
+function showSuccessMessage(message) {
+    // Tạo toast notification với Bootstrap 5
+    const toast = $(`
+        <div class="alert alert-success alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+            <i class="fas fa-check-circle me-2"></i>
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>`);
+        </div>
+    `);
+    
+    $('body').append(toast);
+    
+    // Tự động ẩn sau 3 giây
+    setTimeout(() => {
+        toast.fadeOut(() => toast.remove());
+    }, 3000);
 }
 
-function clearErrors() {
-    const errorsDiv = $('#errors');
-    if (errorsDiv.length) {
-        errorsDiv.empty();
-    } else {
-        console.error('Error: #errors element not found.');
-    }
+function showErrorMessage(message) {
+    const toast = $(`
+        <div class="alert alert-danger alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `);
+    
+    $('body').append(toast);
+    
+    // Tự động ẩn sau 5 giây
+    setTimeout(() => {
+        toast.fadeOut(() => toast.remove());
+    }, 5000);
 }
