@@ -139,4 +139,14 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             'roles' => $this->newQuery()->distinct()->pluck('role')->filter()->values(),
         ];
     }
+
+    public function findByIdWithOrders(int $id): User
+    {
+        // TODO: Implement findByIdWithOrders() method.
+        return $this->newQuery()
+            ->withCount('orders as orders_count')
+            ->withSum(['orders as total_spent'], 'total_amount')
+            ->with('orders')
+            ->find($id);
+    }
 }

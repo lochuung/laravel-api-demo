@@ -27,4 +27,6 @@ interface UserRepositoryInterface extends BaseRepositoryInterface
     public function searchAndFilter(array $filters = [], int $perPage = 10): \Illuminate\Pagination\LengthAwarePaginator;
 
     public function getFilterOptions(): array;
+
+    public function findByIdWithOrders(int $id): User;
 }

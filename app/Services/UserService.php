@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Resources\Users\UserCollection;
+use App\Http\Resources\Users\UserResource;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Contracts\UserServiceInterface;
 
@@ -31,5 +32,18 @@ class UserService implements UserServiceInterface
     public function getFilterOptions(): array
     {
         return $this->userRepository->getFilterOptions();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    function getUserById(int $id): UserResource
+    {
+        // TODO: Implement getUserById() method.
+        $user = $this->userRepository->findByIdWithOrders($id);
+        if (!$user) {
+            throw new \Exception("User not found", 404);
+        }
+        return new UserResource($user);
     }
 }

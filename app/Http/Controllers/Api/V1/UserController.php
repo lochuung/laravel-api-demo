@@ -6,9 +6,12 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\UserIndexRequest;
 use App\Http\Resources\Users\UserCollection;
+use App\Models\User;
 use App\Services\Contracts\UserServiceInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends BaseController
 {
@@ -49,18 +52,24 @@ class UserController extends BaseController
 
     /**
      * Store a newly created resource in storage.
+     * @throws AuthorizationException
      */
     public function store(Request $request)
     {
         //
+        if (Gate::denies('create', User::class)) {
+            throw new AuthorizationException('You do not have permission to create users.');
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(int $id): JsonResponse
     {
-        //
+        return $this->apiSuccessSingleResponse(
+            $this->userService->getUserById($id)
+        );
     }
 
     /**
