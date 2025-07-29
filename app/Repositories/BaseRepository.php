@@ -5,6 +5,7 @@ namespace App\Repositories;
 namespace App\Repositories;
 
 use App\Repositories\Contracts\BaseRepositoryInterface;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -33,15 +34,19 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->model->create($data);
     }
 
-    public function update(int $id, array $data): bool
+    /**
+     * @throws Exception
+     */
+    public function update(int $id, array $data): Model
     {
         $record = $this->find($id);
 
         if (!$record) {
-            return false;
+            throw new Exception("Record with ID {$id} not found.");
         }
-
-        return $record->update($data);
+        $record->fill($data);
+        $record->save();
+        return $record;
     }
 
     public function delete(int $id): bool

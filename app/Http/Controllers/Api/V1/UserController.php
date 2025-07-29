@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\UserIndexRequest;
+use App\Http\Requests\Users\UserRequest;
 use App\Http\Resources\Users\UserCollection;
 use App\Models\User;
 use App\Services\Contracts\UserServiceInterface;
@@ -28,6 +29,7 @@ class UserController extends BaseController
 
     /**
      * Display a listing of the resource.
+     * @throws AuthorizationException
      */
     public function index(UserIndexRequest $request): JsonResponse
     {
@@ -39,6 +41,7 @@ class UserController extends BaseController
 
     /**
      * Get filter options for users
+     * @throws AuthorizationException
      */
     public function filterOptions(): JsonResponse
     {
@@ -54,16 +57,16 @@ class UserController extends BaseController
      * Store a newly created resource in storage.
      * @throws AuthorizationException
      */
-    public function store(Request $request)
+    public function store(UserRequest $request): JsonResponse
     {
-        //
-        if (Gate::denies('create', User::class)) {
-            throw new AuthorizationException('You do not have permission to create users.');
-        }
+        return $this->apiSuccessSingleResponse(
+            $this->userService->createUser($request->validated())
+        );
     }
 
     /**
      * Display the specified resource.
+     * @throws AuthorizationException
      */
     public function show(int $id): JsonResponse
     {
@@ -75,16 +78,18 @@ class UserController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UserRequest $request, int $id): JsonResponse
     {
-        //
+        $user = $this->userService->updateUser($id, $request->validated());
+        return $this->apiSuccessSingleResponse($user);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        //
+        $this->userService->deleteById($id);
+        return $this->apiSuccessSingleResponse();
     }
 }
