@@ -21,4 +21,6 @@ interface UserRepositoryInterface extends BaseRepositoryInterface
     public function generateEmailVerificationToken(User $user): User;
 
     public function emailExists(string $email): bool;
+
+    public function getLatestUsers(int $limit = 5): \Illuminate\Database\Eloquent\Collection;
 }

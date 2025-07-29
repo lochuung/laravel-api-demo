@@ -9,7 +9,7 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset("css/dashboard.css") }}">
-    <x-js.auth-functions/>
+    <script src="{{ asset('/js/auth.js')  }}"></script>
 </head>
 <body>
 <x-layouts.navbar/>
@@ -34,7 +34,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-<x-js.functions/>
+<script src="{{ asset('/js/functions.js')  }}"></script>
 @stack('scripts')
 </body>
 </html>

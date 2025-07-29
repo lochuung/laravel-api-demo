@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Dashboard;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class RecentUserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,10 +18,8 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'email_verified_at' => $this->email_verified_at,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'orders_count' => $this->orders_count ?? 0,
+            'profile_picture' => $this->profile_picture ? asset($this->profile_picture) : null,
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }
 }

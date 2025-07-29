@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\OrderRepositoryInterface;
+use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Repositories\OrderRepository;
+use App\Repositories\ProductRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -14,6 +18,8 @@ class RepositoryServiceProvider extends ServiceProvider
 
     private const REPOSITORIES = [
         UserRepositoryInterface::class => UserRepository::class,
+        OrderRepositoryInterface::class => OrderRepository::class,
+        ProductRepositoryInterface::class => ProductRepository::class,
     ];
 
     public function register(): void

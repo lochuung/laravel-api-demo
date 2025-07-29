@@ -53,7 +53,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     /**
      * Get users ordered by creation date
      */
-    public function getRecentUsers(int $limit = 10): Collection
+    public function getRecentUsers(int $limit = 5): Collection
     {
         return $this->newQuery()
             ->orderBy('created_at', 'desc')
@@ -99,4 +99,12 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $user->fresh();
     }
 
+    public function getLatestUsers(int $limit = 5): \Illuminate\Database\Eloquent\Collection
+    {
+        // TODO: Implement getLatestUsers() method.
+        return $this->newQuery()
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
 }

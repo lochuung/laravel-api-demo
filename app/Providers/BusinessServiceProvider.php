@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\AuthService;
 use App\Services\Contracts\AuthServiceInterface;
+use App\Services\Contracts\DashboardServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 class BusinessServiceProvider extends ServiceProvider
@@ -13,7 +14,8 @@ class BusinessServiceProvider extends ServiceProvider
      */
 
     private const SERVICES = [
-        AuthServiceInterface::class => AuthService::class
+        AuthServiceInterface::class => AuthService::class,
+        DashboardServiceInterface::class => \App\Services\DashboardService::class,
     ];
 
     public function register(): void

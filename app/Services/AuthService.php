@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Http\Resources\AuthResource;
-use App\Http\Resources\RefreshTokenResource;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\Auth\AuthResource;
+use App\Http\Resources\Auth\RefreshTokenResource;
+use App\Http\Resources\Auth\UserResource;
 use App\Mail\ResetPasswordMail;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
@@ -13,10 +13,7 @@ use App\Services\Contracts\AuthServiceInterface;
 use App\Utilities\Psr7Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
 
