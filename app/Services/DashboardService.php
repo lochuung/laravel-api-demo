@@ -8,46 +8,58 @@ use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\ProductRepository;
 use App\Services\Contracts\DashboardServiceInterface;
+use Illuminate\Support\Facades\DB;
 
 class DashboardService implements DashboardServiceInterface
 {
     private UserRepositoryInterface $userRepository;
     private OrderRepositoryInterface $orderRepository;
-    private ProductRepositoryInterface $productRepository;
 
     /**
      * @param UserRepositoryInterface $userRepository
      * @param OrderRepositoryInterface $orderRepository
-     * @param ProductRepositoryInterface $productRepository
      */
-    public function __construct(UserRepositoryInterface $userRepository, OrderRepositoryInterface $orderRepository, ProductRepositoryInterface $productRepository)
+    public function __construct(UserRepositoryInterface $userRepository, OrderRepositoryInterface $orderRepository)
     {
         $this->userRepository = $userRepository;
         $this->orderRepository = $orderRepository;
-        $this->productRepository = $productRepository;
     }
 
 
     public function getDashboardData(): DashboardResource
     {
         // TODO: Implement getDashboardData() method.
-        $totalUsers = $this->userRepository->count();
-        $totalProducts = $this->productRepository->count();
-        $totalOrders = $this->orderRepository->count();
-        $monthlyRevenue = $this->orderRepository->getMonthlyRevenue();
+        $totals = $this->getTotals();
 
         $recentOrders = $this->orderRepository->getRecentOrders(5);
         $recentUsers = $this->userRepository->getRecentUsers(5);
 
         return new DashboardResource(
             (object)[
-                'total_users' => $totalUsers,
-                'total_products' => $totalProducts,
-                'total_orders' => $totalOrders,
-                'monthly_revenue' => $monthlyRevenue,
+                ...$totals,
                 'recent_orders' => $recentOrders,
                 'recent_users' => $recentUsers,
             ]
         );
+    }
+
+    private function getTotals(): array
+    {
+        $totals = DB::table('users')
+            ->selectRaw('
+        (SELECT COUNT(*) FROM users) as total_users,
+        (SELECT COUNT(*) FROM products) as total_products,
+        (SELECT COUNT(*) FROM orders) as total_orders,
+        (SELECT COALESCE(SUM(total_amount), 0)
+            FROM orders
+            WHERE MONTH(created_at) = ? AND YEAR(created_at) = ?
+        ) as monthly_revenue', [now()->month, now()->year])
+            ->first();
+        return [
+            'total_users' => $totals->total_users,
+            'total_products' => $totals->total_products,
+            'total_orders' => $totals->total_orders,
+            'monthly_revenue' => $totals->monthly_revenue,
+        ];
     }
 }
