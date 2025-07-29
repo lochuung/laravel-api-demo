@@ -10,7 +10,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResendVerificationEmailRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\VerifyEmailRequest;
-use App\Http\Resources\Auth\UserResource;
+use App\Http\Resources\Users\UserResource;
 use App\Services\Contracts\AuthServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

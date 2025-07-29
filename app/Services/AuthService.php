@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Http\Resources\Auth\AuthResource;
 use App\Http\Resources\Auth\RefreshTokenResource;
-use App\Http\Resources\Auth\UserResource;
+use App\Http\Resources\Users\UserResource;
 use App\Mail\ResetPasswordMail;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;

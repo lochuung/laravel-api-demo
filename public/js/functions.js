@@ -27,6 +27,18 @@ const formatCurrency = (value) => {
     }).format(value);
 };
 
+const debounce = (func, delay) => {
+    let timeoutId;
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+    };
+};
+
+const updateUserCount = (total) => {
+    $('.card-title').text(`All Users (${total.toLocaleString()})`);
+};
+
 function showError({message = '', errors = []}) {
     const errorsDiv = $('#errors');
     if (!errorsDiv.length) {

@@ -23,4 +23,8 @@ interface UserRepositoryInterface extends BaseRepositoryInterface
     public function emailExists(string $email): bool;
 
     public function getLatestUsers(int $limit = 5): \Illuminate\Database\Eloquent\Collection;
+
+    public function searchAndFilter(array $filters = [], int $perPage = 10): \Illuminate\Pagination\LengthAwarePaginator;
+
+    public function getFilterOptions(): array;
 }

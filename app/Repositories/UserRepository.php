@@ -107,4 +107,36 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             ->limit($limit)
             ->get();
     }
+
+    public function searchAndFilter(array $filters = [], int $perPage = 10): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        // TODO: Implement searchAndFilter() method.
+        $query = $this->newQuery();
+
+        if (!empty($filters['search'])) {
+            $query->where(function ($query) use ($filters) {
+                $query->where('name', 'LIKE', "%{$filters['search']}%")
+                    ->orWhere('email', 'LIKE', "%{$filters['search']}%");
+            });
+        }
+
+        // Filter by role
+        if (!empty($filters['role'])) {
+            $query->where('role', $filters['role']);
+        }
+
+        // Sorting
+        $sortBy = $filters['sort_by'] ?? 'created_at';
+        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $query->orderBy($sortBy, $sortOrder);
+
+        return $query->paginate($perPage);
+    }
+
+    public function getFilterOptions(): array
+    {
+        return [
+            'roles' => $this->newQuery()->distinct()->pluck('role')->filter()->values(),
+        ];
+    }
 }

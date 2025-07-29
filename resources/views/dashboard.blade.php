@@ -14,7 +14,7 @@
                 <h1 class="h3 mb-0">
                     <i class="fas fa-tachometer-alt"></i> Dashboard
                 </h1>
-                <small class="text-muted">Welcome back, <span class="user-name">User</span>!</small>
+                <small class="text-muted">Welcome back, <span class="user-name"></span>!</small>
             </div>
         </div>
     </div>
