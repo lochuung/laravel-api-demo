@@ -26,7 +26,13 @@ Route::prefix("v1")->group(function () {
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
+        Route::post('upload/image', [\App\Http\Controllers\Api\V1\UploadController::class, 'uploadImage'])
+            ->name('upload.image');
+
         Route::apiResource('users', UserController::class);
+
+        Route::get('users/{id}/orders', [UserController::class, 'showWithOrders'])
+            ->name('users.showWithOrders');
 
         Route::apiResource('products', ProductController::class);
 

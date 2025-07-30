@@ -39,8 +39,8 @@
         });
     });
 </script>
-<x-js.functions/>
-<x-js.auth-functions/>
+<script src="{{ asset('js/functions.js') }}"></script>
+<script src="{{ asset('js/auth.js') }}"></script>
 @stack('scripts')
 </body>
 </html>

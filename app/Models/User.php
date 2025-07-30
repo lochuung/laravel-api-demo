@@ -41,6 +41,10 @@ class User extends Authenticatable implements MustVerifyEmail
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
+    public const ROLE_ADMIN = 'Admin';
+    public const ROLE_MODERATOR = 'Moderator';
+    public const ROLE_USER = 'User';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -90,5 +94,20 @@ class User extends Authenticatable implements MustVerifyEmail
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isModerator(): bool
+    {
+        return $this->role === self::ROLE_MODERATOR;
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === self::ROLE_USER;
     }
 }

@@ -53,7 +53,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     /**
      * Get users ordered by creation date
      */
-    public function getRecentUsers(int $limit = 10): Collection
+    public function getRecentUsers(int $limit = 5): Collection
     {
         return $this->newQuery()
             ->orderBy('created_at', 'desc')
@@ -99,4 +99,54 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $user->fresh();
     }
 
+    public function getLatestUsers(int $limit = 5): \Illuminate\Database\Eloquent\Collection
+    {
+        // TODO: Implement getLatestUsers() method.
+        return $this->newQuery()
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function searchAndFilter(array $filters = [], int $perPage = 10): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        // TODO: Implement searchAndFilter() method.
+        $query = $this->newQuery();
+
+        if (!empty($filters['search'])) {
+            $query->where(function ($query) use ($filters) {
+                $query->where('name', 'LIKE', "%{$filters['search']}%")
+                    ->orWhere('email', 'LIKE', "%{$filters['search']}%");
+            });
+        }
+
+        // Filter by role
+        if (!empty($filters['role'])) {
+            $query->where('role', $filters['role']);
+        }
+
+        // Sorting
+        $sortBy = $filters['sort_by'] ?? 'created_at';
+        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $query->orderBy($sortBy, $sortOrder);
+
+        return $query->paginate($perPage);
+    }
+
+    public function getFilterOptions(): array
+    {
+        return [
+            'roles' => $this->newQuery()->distinct()->pluck('role')->filter()->values(),
+        ];
+    }
+
+    public function findByIdWithOrders(int $id): User
+    {
+        // TODO: Implement findByIdWithOrders() method.
+        return $this->newQuery()
+            ->withCount('orders as orders_count')
+            ->withSum(['orders as total_spent'], 'total_amount')
+            ->with('orders')
+            ->find($id);
+    }
 }

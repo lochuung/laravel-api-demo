@@ -10,7 +10,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResendVerificationEmailRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\VerifyEmailRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\Users\UserResource;
 use App\Services\Contracts\AuthServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -66,7 +66,7 @@ class AuthController extends BaseController
     function resendVerificationEmail(ResendVerificationEmailRequest $request): JsonResponse
     {
         $this->authService->resendVerificationEmail($request->validated());
-        
+
         return $this->apiSuccessResponse(
             message: 'Verification email sent successfully.'
         );
@@ -75,7 +75,7 @@ class AuthController extends BaseController
     function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
         $this->authService->forgotPassword($request->validated());
-        
+
         return $this->apiSuccessResponse(
             message: 'Password reset email sent successfully.'
         );

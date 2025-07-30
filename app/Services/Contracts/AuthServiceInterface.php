@@ -2,8 +2,8 @@
 
 namespace App\Services\Contracts;
 
-use App\Http\Resources\AuthResource;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\Auth\AuthResource;
+use App\Http\Resources\Users\UserResource;
 use Illuminate\Http\Request;
 
 interface AuthServiceInterface
