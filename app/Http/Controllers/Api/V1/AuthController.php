@@ -48,7 +48,7 @@ class AuthController extends BaseController
         );
     }
 
-    function me(Request $request): JsonResponse
+    function getMyProfile(Request $request): JsonResponse
     {
         $user = $request->user();
         return $this->apiSuccessSingleResponse(
