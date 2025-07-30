@@ -62,7 +62,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                        aria-expanded="false">
-                        <i class="fas fa-user-circle"></i> <span class="user-name">User</span>
+                        <i class="fas fa-user-circle"></i> <span class="user-name"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> Profile</a></li>

@@ -25,7 +25,7 @@ trait FormatsApiResponse
     }
 
     protected function apiSuccessSingleResponse(
-        JsonResource $data,
+        JsonResource $data = null,
         string       $message = 'Success',
         int          $status = 200
     ): JsonResponse

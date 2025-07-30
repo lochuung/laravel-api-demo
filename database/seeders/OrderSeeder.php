@@ -15,9 +15,6 @@ class OrderSeeder extends Seeder
      */
     public function run(): void
     {
-        // each user should have 5 orders
-        // each order should have 3 products
-
         User::all()->each(function ($user) {
             $user->orders()->createMany(
                 Order::factory()->count(5)->make()->toArray()
