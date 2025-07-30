@@ -24,7 +24,6 @@ api.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                // Call refresh endpoint to get a new access token
                 const res = await axios.post('/api/v1/auth/refresh', {
                     refresh_token: localStorage.getItem('refresh_token') || ''
                 }, {withCredentials: true});

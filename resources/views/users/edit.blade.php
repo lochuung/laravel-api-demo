@@ -5,7 +5,6 @@
 @push('scripts')
     <script type="module" src="{{ asset('/js/views/users/edit.js')  }}"></script>
 @endpush
-F
 @section('content')
     <div class="row">
         <div class="col-12">
