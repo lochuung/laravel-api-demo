@@ -1,6 +1,6 @@
-import { renderUsers } from '../../utils/users/users-ui.js';
-import { renderPagination } from '../../utils/pagination-utils.js';
-import { getUsers as fetchUsers, deleteUser as deleteUserApi } from '../../api/users.api.js';
+import {renderUsers} from '../../utils/users/users-ui.js';
+import {renderPagination} from '../../utils/pagination-utils.js';
+import {deleteUser as deleteUserApi, getUsers as fetchUsers} from '../../api/users.api.js';
 
 const PER_PAGE = 8;
 let currentFilters = {

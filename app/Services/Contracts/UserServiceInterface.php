@@ -4,7 +4,6 @@ namespace App\Services\Contracts;
 
 use App\Http\Resources\Users\UserCollection;
 use App\Http\Resources\Users\UserResource;
-use phpseclib3\File\ASN1\Maps\Pentanomial;
 
 interface UserServiceInterface
 {

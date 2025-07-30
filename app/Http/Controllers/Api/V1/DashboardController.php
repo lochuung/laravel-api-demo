@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Services\Contracts\DashboardServiceInterface;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -24,8 +24,9 @@ class DashboardController extends BaseController
 
     /**
      * Display a listing of the resource.
+     * @throws AuthorizationException
      */
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(): JsonResponse
     {
         if (Gate::denies('is-moderator')) {
             throw new AuthorizationException('You do not have permission to access this resource.');

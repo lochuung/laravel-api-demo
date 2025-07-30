@@ -52,7 +52,7 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @throws AuthorizationException
+     * @throws AuthorizationException|BadRequestException
      */
     function getUserById(int $id): UserResource
     {

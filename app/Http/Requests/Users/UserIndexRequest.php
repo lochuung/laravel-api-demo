@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Users;
 
 use App\Http\Requests\BaseApiRequest;
-use Illuminate\Foundation\Http\FormRequest;
 
 class UserIndexRequest extends BaseApiRequest
 {

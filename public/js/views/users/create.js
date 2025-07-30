@@ -1,5 +1,5 @@
-import { createUser } from '../../api/users.api.js';
-import { uploadImage } from '../../api/upload.api.js';
+import {createUser} from '../../api/users.api.js';
+import {uploadImage} from '../../api/upload.api.js';
 
 $(document).ready(function () {
     setupCreateUser();
@@ -21,7 +21,7 @@ function setupImagePreview() {
                 if (!$('#avatar-preview').length) {
                     $('#avatar').parent().append(`
                         <div id="preview-container" class="mt-3">
-                            <img id="avatar-preview" src="#" alt="Image Preview" 
+                            <img id="avatar-preview" src="#" alt="Image Preview"
                                  style="max-width: 200px; max-height: 200px;" class="rounded"/>
                         </div>
                     `);
@@ -40,7 +40,7 @@ function setupFormValidation() {
     $('#password_confirmation').on('input', function () {
         const password = $('#password').val();
         const confirmation = $(this).val();
-        
+
         if (confirmation && password !== confirmation) {
             $(this).addClass('is-invalid');
             if (!$(this).next('.invalid-feedback').length) {
