@@ -31,6 +31,9 @@ Route::prefix("v1")->group(function () {
 
         Route::apiResource('users', UserController::class);
 
+        Route::get('users/{id}/orders', [UserController::class, 'showWithOrders'])
+            ->name('users.showWithOrders');
+
         Route::apiResource('products', ProductController::class);
 
         Route::apiResource('orders', OrderController::class);

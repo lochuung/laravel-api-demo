@@ -26,6 +26,22 @@ const formatCurrency = (value) => {
     }).format(value);
 };
 
+/**
+ * Extract user ID from current URL
+ * Supports formats like: /users/123, /users/123/show, etc.
+ */
+function getIdFromUrl(resource = 'users') {
+    const path = window.location.pathname;
+    const regex = new RegExp(`/${resource}/(\\d+)`);
+
+    const match = path.match(regex);
+    if (match && match[1]) {
+        return parseInt(match[1], 10);
+    } else {
+        return -1;
+    }
+}
+
 const debounce = (func, delay) => {
     let timeoutId;
     return function (...args) {

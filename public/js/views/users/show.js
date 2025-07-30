@@ -1,63 +1,42 @@
-// JavaScript for User Show page
-// Handles loading and displaying user details from API
+import {
+    getUserWithOrders,
+    deleteUser as deleteUserApi
+} from '../../api/users.api.js';
 
 let currentUserId = null;
-
 let user = null;
 let orders = [];
 
 $(document).ready(async function () {
-    // Get user ID from URL
-    currentUserId = getCurrentUserIdFromUrl();
+    currentUserId = getIdFromUrl('users');
 
     if (currentUserId) {
         await loadUserDetails(currentUserId);
-
-        // Setup event listeners
         setupEventListeners();
     } else {
         showErrorMessage('User ID not found in URL');
     }
 });
 
-/**
- * Setup event listeners for buttons
- */
 function setupEventListeners() {
-    // Suspend user button
-    $('#suspend-user-btn').on('click', async function () {
-        await suspendUser(currentUserId);
+    $('#suspend-user-btn').on('click', async () => {
+        await handleToggleUserStatus(currentUserId);
     });
 
-    // Delete user button
-    $('#delete-user-btn').on('click', async function () {
-        await deleteUser(currentUserId);
+    $('#delete-user-btn').on('click', async () => {
+        await handleDeleteUser(currentUserId);
     });
 
-    // Send message button (placeholder)
-    $('#send-message-btn').on('click', function () {
+    $('#send-message-btn').on('click', () => {
         showSuccessMessage('Message functionality not implemented yet');
     });
 }
 
-/**
- * Extract user ID from current URL
- * Supports formats like: /users/123, /users/123/show, etc.
- */
-function getCurrentUserIdFromUrl() {
-    const path = window.location.pathname;
-    const matches = path.match(/\/users\/(\d+)/);
-    return matches ? parseInt(matches[1]) : null;
-}
-
-/**
- * Load user details from API and populate the UI
- */
 async function loadUserDetails(userId) {
     try {
         showLoadingState();
 
-        const response = await api.get(`/users/${userId}`);
+        const response = await getUserWithOrders(userId);
         user = response.data.data;
         orders = user?.orders || [];
 
@@ -66,23 +45,54 @@ async function loadUserDetails(userId) {
         renderUserStats(user);
         renderOrders(orders);
 
-        hideLoadingState();
-
     } catch (error) {
         console.error('Failed to load user details:', error);
-        hideLoadingState();
+        const msg = error.response?.data?.message || 'Failed to load user';
+        showErrorMessage(msg);
 
-        const errorMessage = error.response?.data?.message || 'Không thể tải thông tin người dùng';
-        showErrorMessage(errorMessage);
-
-        // If user not found, redirect back to users list
         if (error.response?.status === 404) {
-            setTimeout(() => {
-                window.location.href = '/users';
-            }, 3000);
+            setTimeout(() => window.location.href = '/users', 3000);
         }
+    } finally {
+        hideLoadingState();
     }
 }
+
+async function handleToggleUserStatus(userId) {
+    const isCurrentlyActive = $('.badge').hasClass('bg-success');
+    const actionText = isCurrentlyActive ? 'suspend' : 'activate';
+
+    if (!confirm(`Are you sure you want to ${actionText} this user?`)) return;
+
+    const $btn = $('#suspend-user-btn');
+    const originalHtml = $btn.html();
+
+    try {
+        $btn.prop('disabled', true).html(`<i class="fas fa-spinner fa-spin me-1"></i>${actionText}ing...`);
+        throw new Error('This functionality is not implemented yet'); // Placeholder for actual API call
+        showSuccessMessage(`User ${actionText}d successfully`);
+        await loadUserDetails(userId);
+    } catch (error) {
+        console.error(`Failed to ${actionText} user:`, error);
+        showErrorMessage(error.response?.data?.message || `Failed to ${actionText} user`);
+    } finally {
+        $btn.prop('disabled', false).html(originalHtml);
+    }
+}
+
+async function handleDeleteUser(userId) {
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone!')) return;
+
+    try {
+        await deleteUserApi(userId);
+        showSuccessMessage('User deleted successfully');
+        setTimeout(() => window.location.href = '/users', 2000);
+    } catch (error) {
+        console.error('Failed to delete user:', error);
+        showErrorMessage(error.response?.data?.message || 'Failed to delete user');
+    }
+}
+
 
 /**
  * Render user profile section (avatar, name, role, status)
@@ -121,7 +131,7 @@ function renderUserInfo(user) {
     infoTab.find('.col-sm-9').eq(0).text(user.name);
 
     // Update email with verification status
-    const emailHtml = user.email + ' ' + (user.email_verified_at
+    const emailHtml = user.email + ' ' + (user.email_verified
         ? '<span class="badge bg-success ms-2"><i class="fas fa-check"></i> Verified</span>'
         : '<span class="badge bg-warning ms-2"><i class="fas fa-clock"></i> Pending</span>');
     infoTab.find('.col-sm-9').eq(1).html(emailHtml);
@@ -221,67 +231,4 @@ function getRoleDisplayName(role) {
     };
 
     return roleMap[role] || role.charAt(0).toUpperCase() + role.slice(1);
-}
-
-/**
- * Handle suspend user action
- */
-async function suspendUser(userId) {
-    const currentStatus = $('.badge').hasClass('bg-success');
-    const action = currentStatus ? 'suspend' : 'activate';
-    const actionText = currentStatus ? 'suspend' : 'activate';
-
-    if (!confirm(`Are you sure you want to ${actionText} this user?`)) {
-        return;
-    }
-
-    const $btn = $('#suspend-user-btn');
-    const originalHtml = $btn.html();
-
-    try {
-        // Show loading state
-        $btn.prop('disabled', true)
-            .html(`<i class="fas fa-spinner fa-spin me-1"></i>${actionText === 'suspend' ? 'Suspending' : 'Activating'}...`);
-
-        // Call API (you may need to adjust this endpoint based on your backend)
-        await api.patch(`/users/${userId}/toggle-status`);
-
-        showSuccessMessage(`User ${actionText}d successfully`);
-
-        // Reload user details to update UI
-        await loadUserDetails(userId);
-
-    } catch (error) {
-        console.error(`Failed to ${actionText} user:`, error);
-
-        // Restore button state
-        $btn.prop('disabled', false).html(originalHtml);
-
-        const errorMessage = error.response?.data?.message || `Failed to ${actionText} user`;
-        showErrorMessage(errorMessage);
-    }
-}
-
-/**
- * Handle delete user action (if needed)
- */
-async function deleteUser(userId) {
-    if (!confirm('Are you sure you want to delete this user? This action cannot be undone!')) {
-        return;
-    }
-
-    try {
-        await api.delete(`/users/${userId}`);
-        showSuccessMessage('User deleted successfully');
-
-        // Redirect to users list after successful deletion
-        setTimeout(() => {
-            window.location.href = '/users';
-        }, 2000);
-
-    } catch (error) {
-        console.error('Failed to delete user:', error);
-        const errorMessage = error.response?.data?.message || 'Failed to delete user';
-        showErrorMessage(errorMessage);
-    }
 }

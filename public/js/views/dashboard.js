@@ -1,4 +1,4 @@
-import {renderOrders, renderStats, renderUsers} from "./utils/dashboard-utils.js";
+import {renderOrders, renderStats, renderUsers} from "../utils/dashboard-utils.js";
 
 const getDashboardData = async () => {
     try {

@@ -52,9 +52,26 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @throws Exception
+     * @throws AuthorizationException
      */
     function getUserById(int $id): UserResource
+    {
+        // TODO: Implement getUserById() method.
+        $user = $this->userRepository->find($id);
+        if (Gate::denies('view', $user)) {
+            throw new AuthorizationException('You do not have permission to view this user.');
+        }
+        if (!$user) {
+            throw new BadRequestException("User not found", 404);
+        }
+
+        return new UserResource($user);
+    }
+
+    /**
+     * @throws Exception
+     */
+    function getUserWithOrdersById(int $id): UserResource
     {
         // TODO: Implement getUserById() method.
 
@@ -63,7 +80,7 @@ class UserService implements UserServiceInterface
             throw new AuthorizationException('You do not have permission to view this user.');
         }
         if (!$user) {
-            throw new Exception("User not found", 404);
+            throw new BadRequestException("User not found", 404);
         }
         return new UserResource($user);
     }
@@ -116,7 +133,7 @@ class UserService implements UserServiceInterface
         }
 
         if (!$user) {
-            throw new Exception("User not found", 404);
+            throw new BadRequestException("User not found", 404);
         }
         $this->userRepository->delete($id);
     }

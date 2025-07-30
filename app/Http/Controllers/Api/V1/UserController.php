@@ -40,20 +40,6 @@ class UserController extends BaseController
     }
 
     /**
-     * Get filter options for users
-     * @throws AuthorizationException
-     */
-    public function filterOptions(): JsonResponse
-    {
-        $options = $this->userService->getFilterOptions();
-
-        return response()->json([
-            'data' => $options,
-            'message' => 'Filter options retrieved successfully.',
-        ]);
-    }
-
-    /**
      * Store a newly created resource in storage.
      * @throws AuthorizationException
      */
@@ -73,6 +59,12 @@ class UserController extends BaseController
         return $this->apiSuccessSingleResponse(
             $this->userService->getUserById($id)
         );
+    }
+
+    public function showWithOrders(int $id): JsonResponse
+    {
+        $user = $this->userService->getUserWithOrdersById($id);
+        return $this->apiSuccessSingleResponse($user);
     }
 
     /**

@@ -22,7 +22,7 @@ class UserResource extends JsonResource
             'role' => $this->role,
             'profile_picture' => asset($this->profile_picture ?? 'images/default_profile.png'),
             'is_active' => $this->is_active,
-            'email_verified_at' => $this->email_verified_at,
+            'email_verified' => $this->email_verified ?? false,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'last_login_at' => $this->last_login_at ?? null,

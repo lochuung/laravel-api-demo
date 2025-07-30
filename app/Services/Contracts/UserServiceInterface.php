@@ -12,6 +12,8 @@ interface UserServiceInterface
 
     function getUserById(int $id): UserResource;
 
+    function getUserWithOrdersById(int $id): UserResource;
+
     public function getFilterOptions(): array;
 
     public function deleteById(int $id): void;
