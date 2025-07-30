@@ -3,7 +3,7 @@
 @section('title', 'User Details')
 
 @push('scripts')
-    <script type="module" src="{{ asset('js/users/show.js') }}"></script>
+    <script type="module" src="{{ asset('js/views/users/show.js') }}"></script>
 @endpush
 
 @section('content')
@@ -33,7 +33,8 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body text-center">
-                    <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Loading..." width="150">
+                    <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Loading..." height="150"
+                         width="150">
                     <h4 class="card-title">Loading...</h4>
                     <p class="text-muted">Loading...</p>
                     <div class="d-flex justify-content-center mb-3">

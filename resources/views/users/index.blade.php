@@ -3,7 +3,7 @@
 @section('title', 'Users Management')
 
 @push('scripts')
-    <script type="module" src="{{ asset('js/users/index.js')  }}"></script>
+    <script type="module" src="{{ asset('js/views/users/index.js')  }}"></script>
 @endpush
 
 @section('content')

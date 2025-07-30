@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @push('scripts')
-    <script type="module" src="{{ asset('js/dashboard.js')  }}"></script>
+    <script type="module" src="{{ asset('js/views/dashboard.js')  }}"></script>
 @endpush
 
 

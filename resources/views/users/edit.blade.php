@@ -3,9 +3,9 @@
 @section('title', 'Edit User')
 
 @push('scripts')
-    <script type="module" src="{{ asset('/js/users/edit.js')  }}"></script>
+    <script type="module" src="{{ asset('/js/views/users/edit.js')  }}"></script>
 @endpush
-
+F
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -38,7 +38,7 @@
                         <!-- Current Avatar -->
                         <div class="text-center mb-4">
                             <img src="" class="rounded-circle mb-2" alt="Current Avatar"
-                                 width="100" id="profile_picture">
+                                 width="100" height="100" id="profile_picture">
                             <h6>Current Profile Picture</h6>
                         </div>
 
@@ -92,6 +92,12 @@
                             <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
                             <small class="form-text text-muted">Leave blank to keep current picture. Maximum file size:
                                 2MB.</small>
+
+                            <!-- Preview image -->
+                            <div id="preview-container" class="mt-3">
+                                <img id="avatar-preview" src="#" alt="Image Preview"
+                                     style="display:none; max-width: 200px; max-height: 200px;"/>
+                            </div>
                         </div>
 
                         <!-- Password Change Section -->
@@ -204,7 +210,7 @@
     </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
     <script>
         // Show delete modal
         document.querySelector('.btn-outline-danger').addEventListener('click', function (e) {
@@ -224,5 +230,24 @@
                 reader.readAsDataURL(file);
             }
         });
+
+        $(document).ready(function () {
+            $('#avatar').on('change', function () {
+                const file = this.files[0];
+                const preview = $('#avatar-preview');
+
+                console.log(file);
+
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.attr('src', e.target.result).show();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.attr('src', '#').hide();
+                }
+            });
+        });
     </script>
-@endsection
+@endpush

@@ -17,3 +17,7 @@ export async function updateUser(id, data) {
 export async function deleteUser(id) {
     return await api.delete(`/users/${id}`);
 }
+
+export async function createUser(userData) {
+    return await api.post('/users', userData);
+}
