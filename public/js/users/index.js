@@ -8,8 +8,10 @@ let currentFilters = {
 };
 
 $(document).ready(async function () {
+    showLoadingState();
     setupEventListeners();
     await getUsers(currentFilters);
+    hideLoadingState();
 });
 
 function setupEventListeners() {

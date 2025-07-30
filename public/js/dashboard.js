@@ -2,6 +2,7 @@ import {renderOrders, renderStats, renderUsers} from "./utils/dashboard-utils.js
 
 const getDashboardData = async () => {
     try {
+        showLoadingState();
         const response = await api.get('/dashboard');
         if (response.status === 200) {
             const data = response.data?.data ?? {};
@@ -14,6 +15,8 @@ const getDashboardData = async () => {
     } catch (error) {
         showErrorMessage(error.response?.data?.message || 'An error occurred while fetching dashboard data.');
         console.error('Error fetching dashboard data:', error);
+    } finally {
+        hideLoadingState();
     }
 };
 

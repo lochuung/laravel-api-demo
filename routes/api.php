@@ -26,7 +26,9 @@ Route::prefix("v1")->group(function () {
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
-        Route::get('users/filter-options', [UserController::class, 'filterOptions'])->name('users.filter-options');
+        Route::post('upload/image', [\App\Http\Controllers\Api\V1\UploadController::class, 'uploadImage'])
+            ->name('upload.image');
+
         Route::apiResource('users', UserController::class);
 
         Route::apiResource('products', ProductController::class);

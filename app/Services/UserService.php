@@ -58,11 +58,10 @@ class UserService implements UserServiceInterface
     {
         // TODO: Implement getUserById() method.
 
-        if (Gate::denies('view', User::class)) {
+        $user = $this->userRepository->findByIdWithOrders($id);
+        if (Gate::denies('view', $user)) {
             throw new AuthorizationException('You do not have permission to view this user.');
         }
-
-        $user = $this->userRepository->findByIdWithOrders($id);
         if (!$user) {
             throw new Exception("User not found", 404);
         }

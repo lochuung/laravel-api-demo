@@ -1,0 +1,287 @@
+// JavaScript for User Show page
+// Handles loading and displaying user details from API
+
+let currentUserId = null;
+
+let user = null;
+let orders = [];
+
+$(document).ready(async function () {
+    // Get user ID from URL
+    currentUserId = getCurrentUserIdFromUrl();
+
+    if (currentUserId) {
+        await loadUserDetails(currentUserId);
+
+        // Setup event listeners
+        setupEventListeners();
+    } else {
+        showErrorMessage('User ID not found in URL');
+    }
+});
+
+/**
+ * Setup event listeners for buttons
+ */
+function setupEventListeners() {
+    // Suspend user button
+    $('#suspend-user-btn').on('click', async function () {
+        await suspendUser(currentUserId);
+    });
+
+    // Delete user button
+    $('#delete-user-btn').on('click', async function () {
+        await deleteUser(currentUserId);
+    });
+
+    // Send message button (placeholder)
+    $('#send-message-btn').on('click', function () {
+        showSuccessMessage('Message functionality not implemented yet');
+    });
+}
+
+/**
+ * Extract user ID from current URL
+ * Supports formats like: /users/123, /users/123/show, etc.
+ */
+function getCurrentUserIdFromUrl() {
+    const path = window.location.pathname;
+    const matches = path.match(/\/users\/(\d+)/);
+    return matches ? parseInt(matches[1]) : null;
+}
+
+/**
+ * Load user details from API and populate the UI
+ */
+async function loadUserDetails(userId) {
+    try {
+        showLoadingState();
+
+        const response = await api.get(`/users/${userId}`);
+        user = response.data.data;
+        orders = user?.orders || [];
+
+        renderUserProfile(user);
+        renderUserInfo(user);
+        renderUserStats(user);
+        renderOrders(orders);
+
+        hideLoadingState();
+
+    } catch (error) {
+        console.error('Failed to load user details:', error);
+        hideLoadingState();
+
+        const errorMessage = error.response?.data?.message || 'Không thể tải thông tin người dùng';
+        showErrorMessage(errorMessage);
+
+        // If user not found, redirect back to users list
+        if (error.response?.status === 404) {
+            setTimeout(() => {
+                window.location.href = '/users';
+            }, 3000);
+        }
+    }
+}
+
+/**
+ * Render user profile section (avatar, name, role, status)
+ */
+function renderUserProfile(user) {
+    const profileSection = $('.card-body.text-center').first();
+
+    // Update avatar
+    const avatarUrl = user.profile_picture || 'https://via.placeholder.com/150';
+
+    profileSection.find('img').attr('src', avatarUrl).attr('alt', user.name);
+
+    // Update name and role
+    profileSection.find('.card-title').text(user.name);
+    profileSection.find('.text-muted').first().text(getRoleDisplayName(user.role));
+
+    // Update status badge
+    const statusBadge = user.is_active
+        ? '<i class="fas fa-check-circle"></i> Active'
+        : '<i class="fas fa-times-circle"></i> Inactive';
+
+    const badgeClass = user.is_active ? 'bg-success' : 'bg-danger';
+    profileSection.find('.badge').removeClass('bg-success bg-danger').addClass(badgeClass).html(statusBadge);
+
+    // Update edit button with correct user ID
+    $('#edit-user-btn').attr('href', `/users/${user.id}/edit`);
+}
+
+/**
+ * Render user information in the Personal Info tab
+ */
+function renderUserInfo(user) {
+    const infoTab = $('#info');
+
+    // Update name
+    infoTab.find('.col-sm-9').eq(0).text(user.name);
+
+    // Update email with verification status
+    const emailHtml = user.email + ' ' + (user.email_verified_at
+        ? '<span class="badge bg-success ms-2"><i class="fas fa-check"></i> Verified</span>'
+        : '<span class="badge bg-warning ms-2"><i class="fas fa-clock"></i> Pending</span>');
+    infoTab.find('.col-sm-9').eq(1).html(emailHtml);
+
+    // Update phone
+    infoTab.find('.col-sm-9').eq(2).text(user.phone_number || 'Not provided');
+
+    // Update joined date
+    const joinedDate = new Date(user.created_at).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    infoTab.find('.col-sm-9').eq(3).text(joinedDate);
+
+    // Update address
+    const address = user.address || 'No address provided';
+    infoTab.find('.col-sm-9').eq(4).html(address.replace(/\n/g, '<br>'));
+}
+
+/**
+ * Render user statistics
+ */
+function renderUserStats(user) {
+    const statsCard = $('.card .row.text-center').first();
+
+    // Update orders count
+    statsCard.find('.text-primary').text(user.orders_count || 0);
+
+    // Update total spent
+    const totalSpent = user.total_spent ? formatCurrency(user.total_spent) : '0 ₫';
+    statsCard.find('.text-success').text(totalSpent);
+}
+
+function renderOrders(orders) {
+    const $tbody = $('#orders-body');
+    $tbody.empty(); // Clear old content
+
+    orders.forEach(order => {
+        // Format date
+        const orderDate = new Date(order.ordered_at);
+        const formattedDate = orderDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Dummy item count - bạn có thể thay đổi nếu có dữ liệu chi tiết về items
+        const itemCount = Math.floor(Math.random() * 5) + 1;
+
+        // Format total
+        const formattedTotal = `$${parseFloat(order.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+        // Status badge
+        let badgeClass = 'secondary';
+        switch (order.status) {
+            case 'completed':
+                badgeClass = 'success';
+                break;
+            case 'processing':
+                badgeClass = 'warning';
+                break;
+            case 'pending':
+                badgeClass = 'info';
+                break;
+            case 'cancelled':
+                badgeClass = 'danger';
+                break;
+        }
+
+        const statusBadge = `<span class="badge bg-${badgeClass}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>`;
+
+        // Create row
+        const row = `
+            <tr>
+                <td><a href="/orders/${order.id}">#${order.order_number}</a></td>
+                <td>${formattedDate}</td>
+                <td>${itemCount} item${itemCount > 1 ? 's' : ''}</td>
+                <td>${formattedTotal}</td>
+                <td>${statusBadge}</td>
+            </tr>
+        `;
+
+        $tbody.append(row);
+    });
+}
+
+/**
+ * Get display name for user role
+ */
+function getRoleDisplayName(role) {
+    const roleMap = {
+        'admin': 'Administrator',
+        'user': 'User',
+        'moderator': 'Moderator',
+        'manager': 'Manager'
+    };
+
+    return roleMap[role] || role.charAt(0).toUpperCase() + role.slice(1);
+}
+
+/**
+ * Handle suspend user action
+ */
+async function suspendUser(userId) {
+    const currentStatus = $('.badge').hasClass('bg-success');
+    const action = currentStatus ? 'suspend' : 'activate';
+    const actionText = currentStatus ? 'suspend' : 'activate';
+
+    if (!confirm(`Are you sure you want to ${actionText} this user?`)) {
+        return;
+    }
+
+    const $btn = $('#suspend-user-btn');
+    const originalHtml = $btn.html();
+
+    try {
+        // Show loading state
+        $btn.prop('disabled', true)
+            .html(`<i class="fas fa-spinner fa-spin me-1"></i>${actionText === 'suspend' ? 'Suspending' : 'Activating'}...`);
+
+        // Call API (you may need to adjust this endpoint based on your backend)
+        await api.patch(`/users/${userId}/toggle-status`);
+
+        showSuccessMessage(`User ${actionText}d successfully`);
+
+        // Reload user details to update UI
+        await loadUserDetails(userId);
+
+    } catch (error) {
+        console.error(`Failed to ${actionText} user:`, error);
+
+        // Restore button state
+        $btn.prop('disabled', false).html(originalHtml);
+
+        const errorMessage = error.response?.data?.message || `Failed to ${actionText} user`;
+        showErrorMessage(errorMessage);
+    }
+}
+
+/**
+ * Handle delete user action (if needed)
+ */
+async function deleteUser(userId) {
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone!')) {
+        return;
+    }
+
+    try {
+        await api.delete(`/users/${userId}`);
+        showSuccessMessage('User deleted successfully');
+
+        // Redirect to users list after successful deletion
+        setTimeout(() => {
+            window.location.href = '/users';
+        }, 2000);
+
+    } catch (error) {
+        console.error('Failed to delete user:', error);
+        const errorMessage = error.response?.data?.message || 'Failed to delete user';
+        showErrorMessage(errorMessage);
+    }
+}
