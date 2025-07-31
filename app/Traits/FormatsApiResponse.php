@@ -13,26 +13,31 @@ trait FormatsApiResponse
 
     protected function apiSuccessResponse(
         array  $data = [],
-        string $message = 'Success',
+        string $message = 'success',
         int    $status = 200
     ): JsonResponse
     {
+        $translatedMessage = $this->resolveMessage($message);
+
         return response()->json([
             'success' => true,
-            'message' => $message,
+            'message' => $translatedMessage,
             'data' => $data,
         ], $status);
     }
 
+
     protected function apiSuccessSingleResponse(
         JsonResource $data = null,
-        string       $message = 'Success',
+        string       $message = 'success',
         int          $status = 200
     ): JsonResponse
     {
+        $translatedMessage = $this->resolveMessage($message);
+
         return response()->json([
             'success' => true,
-            'message' => $message,
+            'message' => $translatedMessage,
             'data' => $data,
         ], $status);
     }
@@ -50,8 +55,10 @@ trait FormatsApiResponse
             return null;
         }
 
-        $context = $this->logContext($request, $extra);
-        $this->logApiError($logTitle, $status, $context);
+        if (!app()->environment('production')) {
+            $context = $this->logContext($request, $extra);
+            $this->logApiError($logTitle, $status, $context);
+        }
 
         $response = [
             'success' => false,
@@ -68,6 +75,14 @@ trait FormatsApiResponse
         }
 
         return response()->json($response, $status);
+    }
+
+    protected function resolveMessage(string $message): string
+    {
+        $translated = __('message.' . $message);
+
+        // If the translation key is not defined, fallback to raw string
+        return $translated === 'message.' . $message ? $message : $translated;
     }
 
     protected function formatDebug(Throwable $e): array

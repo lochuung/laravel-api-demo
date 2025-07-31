@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\BaseApiRequest;
-use Illuminate\Foundation\Http\FormRequest;
 
 class RefreshTokenRequest extends BaseApiRequest
 {
@@ -25,11 +24,11 @@ class RefreshTokenRequest extends BaseApiRequest
      *
      * @return array<string, string>
      */
-    public function messages()
+    public function messages(): array
     {
         return [
-            'refresh_token.required' => 'The refresh token field is required.',
-            'refresh_token.string' => 'The refresh token must be a string.',
+            'refresh_token.required' => __('validation.required', ['attribute' => __('validation.attributes.refresh_token')]),
+            'refresh_token.string' => __('validation.string', ['attribute' => __('validation.attributes.refresh_token')]),
         ];
     }
 

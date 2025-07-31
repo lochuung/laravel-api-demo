@@ -1,4 +1,4 @@
-import {getUser, updateUser, deleteUser} from '../../api/users.api.js';
+import {deleteUser, getUser, updateUser} from '../../api/users.api.js';
 import {uploadImage} from "../../api/upload.api.js";
 
 let currentUserId = null;

@@ -4,9 +4,7 @@ namespace App\Services;
 
 use App\Http\Resources\Dashboard\DashboardResource;
 use App\Repositories\Contracts\OrderRepositoryInterface;
-use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
-use App\Repositories\ProductRepository;
 use App\Services\Contracts\DashboardServiceInterface;
 use Illuminate\Support\Facades\DB;
 
