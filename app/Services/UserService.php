@@ -32,7 +32,7 @@ class UserService implements UserServiceInterface
     {
         // TODO: Implement getAllUsers() method.
         if (Gate::denies('viewAny', User::class)) {
-            throw new AuthorizationException('You do not have permission to view users.');
+            throw new AuthorizationException(__('exception.unauthorized'));
         }
         $perPage = $filters['per_page'] ?? 10;
         $users = $this->userRepository->searchAndFilter($filters, $perPage);
@@ -45,9 +45,7 @@ class UserService implements UserServiceInterface
      */
     public function getFilterOptions(): array
     {
-        if (Gate::denies('viewAny', User::class)) {
-            throw new AuthorizationException('You do not have permission to view user filter options.');
-        }
+        Gate::authorize('viewAny', User::class);
         return $this->userRepository->getFilterOptions();
     }
 
@@ -58,12 +56,10 @@ class UserService implements UserServiceInterface
     {
         // TODO: Implement getUserById() method.
         $user = $this->userRepository->find($id);
-        if (Gate::denies('view', $user)) {
-            throw new AuthorizationException('You do not have permission to view this user.');
-        }
         if (!$user) {
-            throw new BadRequestException("User not found", 404);
+            throw new BadRequestException(__('exception.not_found', ['name' => "user"]), 404);
         }
+        Gate::authorize('view', $user);
 
         return new UserResource($user);
     }
@@ -76,11 +72,9 @@ class UserService implements UserServiceInterface
         // TODO: Implement getUserById() method.
 
         $user = $this->userRepository->findByIdWithOrders($id);
-        if (Gate::denies('view', $user)) {
-            throw new AuthorizationException('You do not have permission to view this user.');
-        }
+        Gate::authorize('view', $user);
         if (!$user) {
-            throw new BadRequestException("User not found", 404);
+            throw new BadRequestException(__('exception.not_found', ['name' => "user"]), 404);
         }
         return new UserResource($user);
     }
@@ -92,9 +86,7 @@ class UserService implements UserServiceInterface
     public function createUser(array $data): UserResource
     {
         // TODO: Implement createUser() method.
-        if (Gate::denies('create', User::class)) {
-            throw new AuthorizationException('You do not have permission to create a user.');
-        }
+        Gate::authorize('create', User::class);
 
         $user = $this->userRepository->create($data);
         return new UserResource($user);
@@ -109,11 +101,9 @@ class UserService implements UserServiceInterface
         // TODO: Implement updateUser() method.
         $user = $this->userRepository->find($id);
         if (!$user) {
-            throw new BadRequestException("User not found", 404);
+            throw new BadRequestException(__('exception.not_found', ['name' => "user"]), 404);
         }
-        if (Gate::denies('update', $user)) {
-            throw new AuthorizationException('You do not have permission to update this user.');
-        }
+        Gate::authorize('update', $user);
 
         $user = $this->userRepository->update($id, $data);
 
@@ -128,12 +118,10 @@ class UserService implements UserServiceInterface
     {
         // TODO: Implement deleteById() method.
         $user = $this->userRepository->find($id);
-        if (!Gate::authorize('delete', $user)) {
-            throw new AuthorizationException("You do not have permission to delete this user", 403);
-        }
+        Gate::authorize('delete', $user);
 
         if (!$user) {
-            throw new BadRequestException("User not found", 404);
+            throw new BadRequestException(__('exception.not_found', ['name' => "user"]), 404);
         }
         $this->userRepository->delete($id);
     }

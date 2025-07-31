@@ -5,7 +5,6 @@
 @push('scripts')
     <script type="module" src="{{ asset('/js/views/users/edit.js')  }}"></script>
 @endpush
-F
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -212,12 +211,6 @@ F
 
 @push('scripts')
     <script>
-        // Show delete modal
-        document.querySelector('.btn-outline-danger').addEventListener('click', function (e) {
-            e.preventDefault();
-            new bootstrap.Modal(document.getElementById('deleteModal')).show();
-        });
-
         // Preview image on file selection
         document.getElementById('avatar').addEventListener('change', function (e) {
             const file = e.target.files[0];

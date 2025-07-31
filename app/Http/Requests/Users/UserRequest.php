@@ -40,5 +40,4 @@ class UserRequest extends BaseApiRequest
             ]);
         }
     }
-
 }

@@ -27,10 +27,12 @@ class VerifyEmailRequest extends BaseApiRequest
     public function messages(): array
     {
         return [
-            'token.required' => 'The verification token is required.',
-            'email.required' => 'The email field is required.',
-            'email.email' => 'The email must be a valid email address.',
-            'email.exists' => 'We can\'t find a user with that email address.',
+            'token.required' => __('validation.required', ['attribute' => __('validation.attributes.token')]),
+            'token.string' => __('validation.string', ['attribute' => __('validation.attributes.token')]),
+            'email.required' => __('validation.required', ['attribute' => __('validation.attributes.email')]),
+            'email.string' => __('validation.string', ['attribute' => __('validation.attributes.email')]),
+            'email.email' => __('validation.email', ['attribute' => __('validation.attributes.email')]),
+            'email.exists' => __('validation.exists', ['attribute' => __('validation.attributes.email')]),
         ];
     }
 }

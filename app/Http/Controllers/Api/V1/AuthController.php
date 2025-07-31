@@ -24,67 +24,70 @@ class AuthController extends BaseController
         $this->authService = $authService;
     }
 
-    function register(RegisterRequest $request): JsonResponse
-    {
-        return $this->apiSuccessSingleResponse($this->authService->register($request->validated()));
-    }
-
-    function login(LoginRequest $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
         return $this->apiSuccessSingleResponse(
-            $this->authService->login($request->validated())
+            $this->authService->register($request->validated()),
+            'auth.registered'
         );
     }
 
-    function logout(Request $request): void
+    public function login(LoginRequest $request): JsonResponse
+    {
+        return $this->apiSuccessSingleResponse(
+            $this->authService->login($request->validated()),
+            'auth.logged_in'
+        );
+    }
+
+    public function logout(Request $request): void
     {
         $this->authService->logout($request);
     }
 
-    function refresh(RefreshTokenRequest $request): JsonResponse
+    public function refresh(RefreshTokenRequest $request): JsonResponse
     {
         return $this->apiSuccessSingleResponse(
-            $this->authService->refresh($request->validated())
+            $this->authService->refresh($request->validated()),
+            'auth.token_refreshed'
         );
     }
 
-    function getMyProfile(Request $request): JsonResponse
+    public function getMyProfile(Request $request): JsonResponse
     {
-        $user = $request->user();
         return $this->apiSuccessSingleResponse(
-            new UserResource($user)
+            new UserResource($request->user()),
+            'auth.profile_retrieved'
         );
     }
 
-    function verifyEmail(VerifyEmailRequest $request): JsonResponse
+    public function verifyEmail(VerifyEmailRequest $request): JsonResponse
     {
         return $this->apiSuccessSingleResponse(
-            $this->authService->verifyEmail($request->validated())
+            $this->authService->verifyEmail($request->validated()),
+            'auth.email_verified'
         );
     }
 
-    function resendVerificationEmail(ResendVerificationEmailRequest $request): JsonResponse
+    public function resendVerificationEmail(ResendVerificationEmailRequest $request): JsonResponse
     {
         $this->authService->resendVerificationEmail($request->validated());
 
-        return $this->apiSuccessResponse(
-            message: 'Verification email sent successfully.'
-        );
+        return $this->apiSuccessResponse([], 'auth.verification_sent');
     }
 
-    function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
         $this->authService->forgotPassword($request->validated());
 
-        return $this->apiSuccessResponse(
-            message: 'Password reset email sent successfully.'
-        );
+        return $this->apiSuccessResponse([], 'auth.password_forgot');
     }
 
-    function resetPassword(ResetPasswordRequest $request): JsonResponse
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
         return $this->apiSuccessSingleResponse(
-            $this->authService->resetPassword($request->validated())
+            $this->authService->resetPassword($request->validated()),
+            'auth.password_reset'
         );
     }
 }

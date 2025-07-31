@@ -29,7 +29,7 @@ class DashboardController extends BaseController
     public function index(): JsonResponse
     {
         if (Gate::denies('is-moderator')) {
-            throw new AuthorizationException('You do not have permission to access this resource.');
+            throw new AuthorizationException(__('exception.unauthorized'));
         }
         $data = $this->dashboardService->getDashboardData();
         return $this->apiSuccessSingleResponse($data);

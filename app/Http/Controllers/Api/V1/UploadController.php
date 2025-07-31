@@ -4,18 +4,15 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Exceptions\BadRequestException;
 use App\Http\Controllers\BaseController;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
 
 class UploadController extends BaseController
 {
-    //
 
-    /**
-     * @throws BadRequestException
-     */
-    public function uploadImage(Request $request)
+    public function uploadImage(Request $request): JsonResponse
     {
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -34,10 +31,5 @@ class UploadController extends BaseController
                 ])
             );
         }
-
-        throw new BadRequestException(
-            'Invalid image file provided.',
-            400
-        );
     }
 }
