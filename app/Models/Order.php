@@ -22,7 +22,9 @@ class Order extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'customer_id',
         'order_number',
+        'order_date',
         'total_amount',
         'status',
         'shipping_address',
@@ -34,6 +36,7 @@ class Order extends Model
     ];
 
     protected $casts = [
+        'order_date' => 'datetime',
         'ordered_at' => 'datetime',
         'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',
@@ -45,8 +48,18 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function inventoryTransactions(): HasMany
+    {
+        return $this->hasMany(InventoryTransaction::class);
     }
 }

@@ -3,10 +3,22 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\BaseController;
+use App\Services\Contracts\OrderServiceInterface;
 use Illuminate\Http\Request;
 
 class OrderController extends BaseController
 {
+    private OrderServiceInterface $orderService;
+
+    /**
+     * @param OrderServiceInterface $orderService
+     */
+    public function __construct(OrderServiceInterface $orderService)
+    {
+        $this->orderService = $orderService;
+    }
+
+
     /**
      * Display a listing of the resource.
      */

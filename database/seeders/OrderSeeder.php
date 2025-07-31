@@ -6,7 +6,6 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Nette\Utils\Random;
 
 class OrderSeeder extends Seeder
 {
@@ -17,21 +16,21 @@ class OrderSeeder extends Seeder
     {
         User::all()->each(function ($user) {
             $user->orders()->createMany(
-                Order::factory()->count(5)->make()->toArray()
+                Order::factory()->count(rand(2, 5))->make()->toArray()
             )->each(function ($order) {
-                $products = Product::inRandomOrder()->take(5)->get();
+                $products = Product::inRandomOrder()->take(rand(2, 5))->get();
                 $order_items = $products->map(function ($product) use ($order) {
-                    $quantity = Random::generate(5, '12345'); // random quantity between 1 and 5
+                    $quantity = rand(1, 5); // random quantity between 1 and 5
                     return [
                         'order_id' => $order->id,
                         'product_id' => $product->id,
-                        'quantity' => $quantity, // random quantity between 1 and 5
-                        'price' => $product->price, // assuming price is a field in Product model,
-                        'total' => $product->price * $quantity, // total price
-                        'note' => 'This is a note for product ' . $product->name,
-                        'sku' => $product->sku, // assuming sku is a field in Product model
-                        'product_name' => $product->name, // assuming name is a field in Product model
-                        'product_image' => $product->image, // assuming image is a field in Product model
+                        'quantity' => $quantity,
+                        'price' => $product->price,
+                        'total' => $product->price * $quantity,
+                        'note' => 'Note for product ' . $product->name,
+                        'sku' => $product->sku,
+                        'product_name' => $product->name,
+                        'product_image' => $product->image,
                     ];
                 });
                 $order->items()->createMany($order_items->toArray());
@@ -39,8 +38,7 @@ class OrderSeeder extends Seeder
                 // Update order total amount
                 $order->total_amount = $order->items->sum('total');
                 $order->save();
-            }
-            );
+            });
         });
     }
 }

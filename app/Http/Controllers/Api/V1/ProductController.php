@@ -3,10 +3,22 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\BaseController;
+use App\Services\Contracts\ProductServiceInterface;
 use Illuminate\Http\Request;
 
 class ProductController extends BaseController
 {
+    private ProductServiceInterface $productService;
+
+    /**
+     * @param ProductServiceInterface $productService
+     */
+    public function __construct(ProductServiceInterface $productService)
+    {
+        $this->productService = $productService;
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -20,7 +32,7 @@ class ProductController extends BaseController
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
