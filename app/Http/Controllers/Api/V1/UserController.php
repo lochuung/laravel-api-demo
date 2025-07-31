@@ -3,16 +3,10 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\UserIndexRequest;
 use App\Http\Requests\Users\UserRequest;
-use App\Http\Resources\Users\UserCollection;
-use App\Models\User;
 use App\Services\Contracts\UserServiceInterface;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 
 class UserController extends BaseController
 {
@@ -29,7 +23,6 @@ class UserController extends BaseController
 
     /**
      * Display a listing of the resource.
-     * @throws AuthorizationException
      */
     public function index(UserIndexRequest $request): JsonResponse
     {
@@ -41,7 +34,6 @@ class UserController extends BaseController
 
     /**
      * Store a newly created resource in storage.
-     * @throws AuthorizationException
      */
     public function store(UserRequest $request): JsonResponse
     {
@@ -52,7 +44,6 @@ class UserController extends BaseController
 
     /**
      * Display the specified resource.
-     * @throws AuthorizationException
      */
     public function show(int $id): JsonResponse
     {

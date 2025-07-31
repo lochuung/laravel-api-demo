@@ -1,7 +1,4 @@
-import {
-    getUserWithOrders,
-    deleteUser as deleteUserApi
-} from '../../api/users.api.js';
+import {deleteUser as deleteUserApi, getUserWithOrders} from '../../api/users.api.js';
 
 let currentUserId = null;
 let user = null;

@@ -30,14 +30,15 @@ class RegisterRequest extends BaseApiRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'The name field is required.',
-            'email.required' => 'The email field is required.',
-            'email.email' => 'The email must be a valid email address.',
-            'email.unique' => 'The email has already been taken.',
-            'password.required' => 'The password field is required.',
-            'password.min' => 'The password must be at least 8 characters.',
-            'password.confirmed' => 'The password confirmation does not match.',
-            'password_confirmation.required' => 'The password confirmation field is required.',
+            'name.required' => __('validation.required', ['attribute' => __('validation.attributes.name')]),
+            'email.required' => __('validation.required', ['attribute' => __('validation.attributes.email')]),
+            'email.email' => __('validation.email', ['attribute' => __('validation.attributes.email')]),
+            'email.unique' => __('validation.unique', ['attribute' => __('validation.attributes.email')]),
+            'password.required' => __('validation.required', ['attribute' => __('validation.attributes.password')]),
+            'password.min' => __('validation.min.string', ['attribute' => __('validation.attributes.password'), 'min' => 8]),
+            'password.confirmed' => __('validation.confirmed', ['attribute' => __('validation.attributes.password')]),
+            'password_confirmation.required' => __('validation.required', ['attribute' => __('validation.attributes.password_confirmation')]),
+            'password_confirmation.min' => __('validation.min.string', ['attribute' => __('validation.attributes.password_confirmation'), 'min' => 8]),
         ];
     }
 }

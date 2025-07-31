@@ -29,9 +29,12 @@ class LoginRequest extends BaseApiRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'The email field is required.',
-            'email.email' => 'The email must be a valid email address.',
-            'password.required' => 'The password field is required.',
+            'email.required' => __('validation.required', ['attribute' => __('validation.attributes.email')]),
+            'email.string' => __('validation.string', ['attribute' => __('validation.attributes.email')]),
+            'email.email' => __('validation.email', ['attribute' => __('validation.attributes.email')]),
+            'email.max' => __('validation.max.string', ['attribute' => __('validation.attributes.email'), 'max' => 255]),
+            'password.required' => __('validation.required', ['attribute' => __('validation.attributes.password')]),
+            'password.string' => __('validation.string', ['attribute' => __('validation.attributes.password')]),
         ];
     }
 }
