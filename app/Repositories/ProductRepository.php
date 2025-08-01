@@ -2,16 +2,133 @@
 
 namespace App\Repositories;
 
-class ProductRepository extends BaseRepository implements Contracts\ProductRepositoryInterface
+use App\Models\Category;
+use App\Models\Product;
+use App\Repositories\Contracts\ProductRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+class ProductRepository extends BaseRepository implements ProductRepositoryInterface
 {
     /**
      * ProductRepository constructor.
      *
-     * @param \App\Models\Product $model
+     * @param Product $model
      */
-    public function __construct(\App\Models\Product $model)
+    public function __construct(Product $model)
     {
         parent::__construct($model);
     }
 
+    public function findByCode(string $code): ?Product
+    {
+        return $this->findBy('code', $code);
+    }
+
+    public function findByBarcode(string $barcode): ?Product
+    {
+        return $this->findBy('barcode', $barcode);
+    }
+
+    public function getActiveProducts(): Collection
+    {
+        return $this->findWhere(['is_active' => true]);
+    }
+
+    public function getFeaturedProducts(): Collection
+    {
+        return $this->findWhere(['is_featured' => true, 'is_active' => true]);
+    }
+
+    public function getProductsByCategory(int $categoryId): Collection
+    {
+        return $this->findWhere(['category_id' => $categoryId, 'is_active' => true]);
+    }
+
+    public function searchByName(string $name): Collection
+    {
+        return $this->newQuery()
+            ->where('name', 'LIKE', "%{$name}%")
+            ->where('is_active', true)
+            ->get();
+    }
+
+    public function getLowStockProducts(int $threshold = 10): Collection
+    {
+        return $this->newQuery()
+            ->where('stock', '<=', $threshold)
+            ->where('is_active', true)
+            ->get();
+    }
+
+    public function getExpiringSoonProducts(int $days = 30): Collection
+    {
+        return $this->newQuery()
+            ->whereNotNull('expiry_date')
+            ->where('expiry_date', '<=', now()->addDays($days))
+            ->where('expiry_date', '>', now())
+            ->where('is_active', true)
+            ->get();
+    }
+
+    public function searchAndFilter(array $filters = [], int $perPage = 10): LengthAwarePaginator
+    {
+        $query = $this->newQuery()->with('category');
+
+        // Search by name, code, or description
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('code', 'LIKE', "%{$search}%")
+                  ->orWhere('description', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Filter by category
+        if (!empty($filters['category_id'])) {
+            $query->where('category_id', $filters['category_id']);
+        }
+
+        // Filter by active status
+        if (isset($filters['is_active'])) {
+            $query->where('is_active', $filters['is_active']);
+        }
+
+        // Filter by featured status
+        if (isset($filters['is_featured'])) {
+            $query->where('is_featured', $filters['is_featured']);
+        }
+
+        // Filter by price range
+        if (!empty($filters['min_price'])) {
+            $query->where('price', '>=', $filters['min_price']);
+        }
+        if (!empty($filters['max_price'])) {
+            $query->where('price', '<=', $filters['max_price']);
+        }
+
+        // Sorting
+        $sortBy = $filters['sort_by'] ?? 'created_at';
+        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $query->orderBy($sortBy, $sortOrder);
+
+        return $query->paginate($perPage);
+    }
+
+    public function getFilterOptions(): array
+    {
+        return [
+            'categories' => Category::where('is_active', true)->pluck('name', 'id'),
+            'price_range' => [
+                'min' => $this->newQuery()->min('price') ?? 0,
+                'max' => $this->newQuery()->max('price') ?? 1000,
+            ],
+        ];
+    }
+
+    public function findWithCategory(int $id): ?Product
+    {
+        return $this->newQuery()->with('category')->find($id);
+    }
 }

@@ -19,7 +19,7 @@ class ProductFactory extends Factory
     {
         return [
             'name' => $this->faker->words(2, true),
-            'code' => $this->faker->unique()->regexify('[A-Z]{3}[0-9]{3}'),
+            'code' => $this->faker->unique()->regexify('ORD[0-9]{8}'),
             'category_id' => Category::factory(),
             'description' => $this->faker->sentence(),
             'price' => $this->faker->randomFloat(2, 5, 500),
