@@ -5,9 +5,12 @@ namespace App\Providers;
 use App\Services\AuthService;
 use App\Services\Contracts\AuthServiceInterface;
 use App\Services\Contracts\DashboardServiceInterface;
+use App\Services\Contracts\InventoryServiceInterface;
 use App\Services\Contracts\OrderServiceInterface;
 use App\Services\Contracts\ProductServiceInterface;
 use App\Services\Contracts\UserServiceInterface;
+use App\Services\DashboardService;
+use App\Services\InventoryService;
 use App\Services\OrderService;
 use App\Services\ProductService;
 use App\Services\UserService;
@@ -21,10 +24,11 @@ class BusinessServiceProvider extends ServiceProvider
 
     private const SERVICES = [
         AuthServiceInterface::class => AuthService::class,
-        DashboardServiceInterface::class => \App\Services\DashboardService::class,
+        DashboardServiceInterface::class => DashboardService::class,
         UserServiceInterface::class => UserService::class,
         ProductServiceInterface::class => ProductService::class,
-        OrderServiceInterface::class => OrderService::class
+        OrderServiceInterface::class => OrderService::class,
+        InventoryServiceInterface::class => InventoryService::class,
     ];
 
     public function register(): void
