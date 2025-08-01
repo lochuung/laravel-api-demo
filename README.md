@@ -21,6 +21,77 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## API Documentation
+
+### Product API Endpoints
+
+The Product API provides full CRUD operations for managing products in the system.
+
+#### Authentication
+All endpoints require authentication using Bearer token (Laravel Passport).
+
+#### Endpoints
+
+**GET** `/api/v1/products`
+- List all products with filtering and pagination
+- Available filters:
+  - `search`: Search by name, code, or description
+  - `category_id`: Filter by category ID
+  - `is_active`: Filter by active status (true/false)
+  - `is_featured`: Filter by featured status (true/false)
+  - `min_price`, `max_price`: Filter by price range
+  - `sort_by`: Sort by field (id, name, code, price, stock, created_at, updated_at)
+  - `sort_order`: Sort direction (asc, desc)
+  - `page`: Page number for pagination
+  - `per_page`: Items per page (max 100)
+
+**POST** `/api/v1/products` *(Admin/Moderator only)*
+- Create a new product
+- Required fields: `name`, `code`, `price`, `stock`, `category_id`
+- Optional fields: `description`, `cost`, `sku`, `barcode`, `expiry_date`, `image`, `is_active`, `is_featured`
+
+**GET** `/api/v1/products/{id}`
+- Show a specific product by ID
+
+**GET** `/api/v1/products/{id}/category`
+- Show a product with category details
+
+**PUT/PATCH** `/api/v1/products/{id}` *(Admin/Moderator only)*
+- Update an existing product
+- Same fields as POST endpoint
+
+**DELETE** `/api/v1/products/{id}` *(Admin/Moderator only)*
+- Delete a product
+
+#### Response Format
+All API responses follow a consistent format:
+```json
+{
+  "success": true,
+  "data": { ... },
+  "message": "Success message"
+}
+```
+
+#### Example Usage
+```bash
+# Get all products
+GET /api/v1/products?search=laptop&category_id=1&sort_by=price&sort_order=asc
+
+# Create a product
+POST /api/v1/products
+{
+  "name": "MacBook Pro",
+  "code": "MBP001",
+  "description": "Apple MacBook Pro 13-inch",
+  "price": 1299.99,
+  "stock": 10,
+  "category_id": 1,
+  "is_active": true,
+  "is_featured": true
+}
+```
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
