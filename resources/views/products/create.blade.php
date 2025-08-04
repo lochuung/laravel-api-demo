@@ -16,9 +16,17 @@
     </div>
 </div>
 
+<!-- Loading overlay -->
+<div id="loading-overlay" class="d-none">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
 <div class="row justify-content-center">
     <div class="col-md-10">
-        <form>
+        <form id="createProductForm" method="POST">
+            @csrf
             <div class="row">
                 <!-- Product Information -->
                 <div class="col-md-8">
@@ -35,6 +43,7 @@
                                 </label>
                                 <input type="text" class="form-control" id="name" name="name" 
                                        placeholder="Enter product name" required>
+                                <div class="invalid-feedback"></div>
                             </div>
 
                             <div class="mb-3">
@@ -43,28 +52,27 @@
                                 </label>
                                 <textarea class="form-control" id="description" name="description" rows="5" 
                                           placeholder="Enter product description"></textarea>
+                                <div class="invalid-feedback"></div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="sku" class="form-label">
-                                        <i class="fas fa-barcode"></i> SKU *
+                                        <i class="fas fa-barcode"></i> SKU
                                     </label>
                                     <input type="text" class="form-control" id="sku" name="sku" 
-                                           placeholder="e.g., PROD-001" required>
+                                           placeholder="e.g., PROD-001">
+                                    <div class="invalid-feedback"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="category" class="form-label">
-                                        <i class="fas fa-layer-group"></i> Category
+                                        <i class="fas fa-layer-group"></i> Category *
                                     </label>
-                                    <select class="form-select" id="category" name="category">
+                                    <select class="form-select" id="category" name="category" required>
                                         <option value="">Select Category</option>
-                                        <option value="electronics">Electronics</option>
-                                        <option value="clothing">Clothing</option>
-                                        <option value="books">Books</option>
-                                        <option value="home">Home & Garden</option>
-                                        <option value="sports">Sports</option>
+                                        <!-- Categories will be loaded dynamically -->
                                     </select>
+                                    <div class="invalid-feedback"></div>
                                 </div>
                             </div>
 
@@ -78,6 +86,7 @@
                                         <input type="number" class="form-control" id="price" name="price" 
                                                step="0.01" min="0" placeholder="0.00" required>
                                     </div>
+                                    <div class="invalid-feedback"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="cost_price" class="form-label">
@@ -88,6 +97,7 @@
                                         <input type="number" class="form-control" id="cost_price" name="cost_price" 
                                                step="0.01" min="0" placeholder="0.00">
                                     </div>
+                                    <div class="invalid-feedback"></div>
                                 </div>
                             </div>
 
@@ -98,30 +108,33 @@
                                     </label>
                                     <input type="number" class="form-control" id="stock" name="stock" 
                                            min="0" placeholder="0" required>
+                                    <div class="invalid-feedback"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="min_stock" class="form-label">
-                                        <i class="fas fa-exclamation-triangle"></i> Minimum Stock Level
+                                    <label for="barcode" class="form-label">
+                                        <i class="fas fa-qrcode"></i> Barcode
                                     </label>
-                                    <input type="number" class="form-control" id="min_stock" name="min_stock" 
-                                           min="0" placeholder="5">
+                                    <input type="text" class="form-control" id="barcode" name="barcode" 
+                                           placeholder="Enter barcode">
+                                    <div class="invalid-feedback"></div>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="weight" class="form-label">
-                                        <i class="fas fa-weight"></i> Weight (kg)
+                                    <label for="code_prefix" class="form-label">
+                                        <i class="fas fa-code"></i> Code Prefix
                                     </label>
-                                    <input type="number" class="form-control" id="weight" name="weight" 
-                                           step="0.01" min="0" placeholder="0.00">
+                                    <input type="text" class="form-control" id="code_prefix" name="code_prefix" 
+                                           placeholder="e.g., PRD, ELEC" maxlength="50">
+                                    <div class="invalid-feedback"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="dimensions" class="form-label">
-                                        <i class="fas fa-ruler-combined"></i> Dimensions (L×W×H cm)
+                                    <label for="expiry_date" class="form-label">
+                                        <i class="fas fa-calendar-alt"></i> Expiry Date
                                     </label>
-                                    <input type="text" class="form-control" id="dimensions" name="dimensions" 
-                                           placeholder="e.g., 10×5×2">
+                                    <input type="date" class="form-control" id="expiry_date" name="expiry_date">
+                                    <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                         </div>
@@ -171,20 +184,6 @@
                                     <i class="fas fa-star"></i> Featured Product
                                 </label>
                             </div>
-
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="track_stock" name="track_stock" checked>
-                                <label class="form-check-label" for="track_stock">
-                                    <i class="fas fa-chart-line"></i> Track Stock
-                                </label>
-                            </div>
-
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="allow_backorder" name="allow_backorder">
-                                <label class="form-check-label" for="allow_backorder">
-                                    <i class="fas fa-clock"></i> Allow Backorders
-                                </label>
-                            </div>
                         </div>
                     </div>
 
@@ -192,51 +191,20 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
-                                <i class="fas fa-search"></i> SEO Settings
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label for="meta_title" class="form-label">Meta Title</label>
-                                <input type="text" class="form-control" id="meta_title" name="meta_title" 
-                                       placeholder="SEO title">
-                                <small class="form-text text-muted">Recommended: 50-60 characters</small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="meta_description" class="form-label">Meta Description</label>
-                                <textarea class="form-control" id="meta_description" name="meta_description" 
-                                          rows="3" placeholder="SEO description"></textarea>
-                                <small class="form-text text-muted">Recommended: 150-160 characters</small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="tags" class="form-label">Tags</label>
-                                <input type="text" class="form-control" id="tags" name="tags" 
-                                       placeholder="tag1, tag2, tag3">
-                                <small class="form-text text-muted">Separate tags with commas</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-bolt"></i> Actions
+                                <i class="fas fa-search"></i> Quick Actions
                             </h5>
                         </div>
                         <div class="card-body">
                             <div class="d-grid gap-2">
-                                <button type="button" class="btn btn-outline-secondary">
+                                <button type="button" class="btn btn-outline-secondary" id="save-draft-btn">
                                     <i class="fas fa-save"></i> Save as Draft
                                 </button>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-plus-square"></i> Create Product
                                 </button>
-                                <button type="button" class="btn btn-outline-danger">
+                                <a href="{{ route('products.index') }}" class="btn btn-outline-danger">
                                     <i class="fas fa-times"></i> Cancel
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -247,48 +215,82 @@
 </div>
 @endsection
 
-@section('scripts')
-<script>
-    // Image preview functionality
-    document.getElementById('images').addEventListener('change', function(e) {
-        const files = e.target.files;
-        const previewContainer = document.getElementById('image-preview');
-        previewContainer.innerHTML = '';
+@push('scripts')
+<script type="module" src="{{ asset('js/views/products/create.js') }}"></script>
+@endpush
 
-        for (let i = 0; i < Math.min(files.length, 5); i++) {
-            const file = files[i];
-            const reader = new FileReader();
+@push('styles')
+<style>
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
 
-            reader.onload = function(e) {
-                const col = document.createElement('div');
-                col.className = 'col-md-4 mb-3';
-                col.innerHTML = `
-                    <div class="card">
-                        <img src="${e.target.result}" class="card-img-top" style="height: 150px; object-fit: cover;">
-                        <div class="card-body p-2">
-                            <small class="text-muted">${file.name}</small>
-                            ${i === 0 ? '<br><small class="text-primary">Main Image</small>' : ''}
-                        </div>
-                    </div>
-                `;
-                previewContainer.appendChild(col);
-            };
+.form-control.is-invalid {
+    border-color: #dc3545;
+}
 
-            reader.readAsDataURL(file);
-        }
-    });
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
 
-    // Auto-generate SKU from product name
-    document.getElementById('name').addEventListener('input', function(e) {
-        const skuField = document.getElementById('sku');
-        if (!skuField.value) {
-            const sku = e.target.value
-                .replace(/[^a-zA-Z0-9\s]/g, '')
-                .replace(/\s+/g, '-')
-                .toUpperCase()
-                .substring(0, 20);
-            skuField.value = sku;
-        }
-    });
-</script>
-@endsection
+.card {
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+    transition: all 0.15s ease-in-out;
+}
+
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+#image-preview .card {
+    transition: transform 0.2s ease;
+}
+
+#image-preview .card:hover {
+    transform: translateY(-2px);
+}
+
+.invalid-feedback {
+    display: block;
+}
+
+.text-success { color: #198754 !important; }
+.text-warning { color: #ffc107 !important; }
+.text-danger { color: #dc3545 !important; }
+
+/* Image upload area styling */
+#images {
+    border: 2px dashed #dee2e6;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    transition: border-color 0.15s ease-in-out;
+}
+
+#images:hover {
+    border-color: #0d6efd;
+}
+
+#images:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+</style>
+@endpush
