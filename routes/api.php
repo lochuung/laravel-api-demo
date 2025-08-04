@@ -33,6 +33,8 @@ Route::prefix("v1")->group(function () {
         Route::get('users/{id}/orders', [UserController::class, 'showWithOrders'])
             ->name('users.showWithOrders');
 
+        Route::get('products/filter-options', [ProductController::class, 'filterOptions'])
+            ->name('products.filterOptions');
         Route::apiResource('products', ProductController::class);
 
         Route::apiResource('orders', OrderController::class);

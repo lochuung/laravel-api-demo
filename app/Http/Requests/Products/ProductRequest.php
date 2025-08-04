@@ -21,13 +21,12 @@ class ProductRequest extends BaseApiRequest
             'price' => ['required', 'numeric', 'min:0'],
             'cost' => ['nullable', 'numeric', 'min:0'],
             'stock' => ['required', 'integer', 'min:0'],
-            'code_prefix' => ['nullable', 'string', 'max:50'],
+            'code_prefix' => ['nullable', 'string', 'max:50'], // PRD, KEO, BANH,...
             'sku' => ['nullable', 'string', 'max:100'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'expiry_date' => ['nullable', 'date', 'after:today'],
             'image' => ['nullable', 'url'],
             'is_active' => ['boolean'],
-            'is_featured' => ['boolean'],
         ];
 
         if ($this->isMethod('post')) {

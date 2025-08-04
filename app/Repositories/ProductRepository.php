@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Helpers\CodeGenerator;
 use App\Models\Category;
 use App\Models\Product;
 use App\Repositories\Contracts\ProductRepositoryInterface;
@@ -80,8 +81,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'LIKE', "%{$search}%")
-                  ->orWhere('code', 'LIKE', "%{$search}%")
-                  ->orWhere('description', 'LIKE', "%{$search}%");
+                    ->orWhere('code', 'LIKE', "%{$search}%")
+                    ->orWhere('description', 'LIKE', "%{$search}%");
             });
         }
 
@@ -108,6 +109,32 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             $query->where('price', '<=', $filters['max_price']);
         }
 
+        // filter by code_prefix
+        if (!empty($filters['code_prefix'])) {
+            $query->where('code', 'LIKE', "{$filters['code_prefix']}%");
+        }
+
+        // expiring_soon_days
+        if (!empty($filters['expiring_soon_days'])) {
+            $days = $filters['expiring_soon_days'];
+            $query->whereNotNull('expiry_date')
+                ->where('expiry_date', '<=', now()->addDays($days))
+                ->where('expiry_date', '>', now());
+        }
+
+        // is_expired
+        if (isset($filters['is_expired'])) {
+            if ($filters['is_expired']) {
+                $query->whereNotNull('expiry_date')
+                    ->where('expiry_date', '<=', now());
+            } else {
+                $query->where(function ($q) {
+                    $q->whereNull('expiry_date')
+                        ->orWhere('expiry_date', '>', now());
+                });
+            }
+        }
+
         // Sorting
         $sortBy = $filters['sort_by'] ?? 'created_at';
         $sortOrder = $filters['sort_order'] ?? 'desc';
@@ -119,11 +146,12 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     public function getFilterOptions(): array
     {
         return [
-            'categories' => Category::where('is_active', true)->pluck('name', 'id'),
+            'categories' => Category::all()->pluck('name', 'id'),
             'price_range' => [
                 'min' => $this->newQuery()->min('price') ?? 0,
                 'max' => $this->newQuery()->max('price') ?? 1000,
             ],
+            'code_prefixes' => CodeGenerator::getSuggestedPrefixes()
         ];
     }
 

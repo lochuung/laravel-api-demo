@@ -7,6 +7,7 @@ use App\Http\Requests\Products\ProductIndexRequest;
 use App\Http\Requests\Products\ProductRequest;
 use App\Services\Contracts\ProductServiceInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductController extends BaseController
 {
@@ -28,6 +29,18 @@ class ProductController extends BaseController
         return response()->json(
             $this->productService
                 ->getAllProducts($request->validated())
+        );
+    }
+
+    /**
+     * Get filter options for products
+     */
+    public function filterOptions(): JsonResponse
+    {
+        return $this->apiSuccessSingleResponse(
+            new JsonResource(
+                $this->productService->getFilterOptions()
+            )
         );
     }
 
