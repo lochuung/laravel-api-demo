@@ -81,23 +81,14 @@ function showError({message = '', errors = []}) {
  * Show loading state
  */
 function showLoadingState() {
-    const loadingHtml = `
-        <div id="loading-overlay" class="d-flex justify-content-center align-items-center position-fixed"
-             style="top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999;">
-            <div class="text-center">
-                <i class="fas fa-spinner fa-spin fa-3x text-primary mb-3"></i>
-                <h5>Loading...</h5>
-            </div>
-        </div>
-    `;
-    $('body').append(loadingHtml);
+    $('#loading-overlay').removeClass('d-none');
 }
 
 /**
  * Hide loading state
  */
 function hideLoadingState() {
-    $('#loading-overlay').remove();
+    $('#loading-overlay').addClass('d-none');
 }
 
 
@@ -136,4 +127,22 @@ function showErrorMessage(message) {
     setTimeout(() => {
         toast.fadeOut(() => toast.remove());
     }, 5000);
+}
+
+function extractCodePrefix(code) {
+    if (!code) return '';
+    // Extract prefix from code like "PRD001" -> "PRD"
+    const match = code.match(/^([A-Z]+)/);
+    return match ? match[1] : '';
+}
+
+function formatDateTime(dateString) {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 }

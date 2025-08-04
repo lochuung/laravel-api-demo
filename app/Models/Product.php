@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\DB;
 
 /**
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Product query()
+ * @method static Builder<static>|Product newModelQuery()
+ * @method static Builder<static>|Product newQuery()
+ * @method static Builder<static>|Product query()
  * @mixin \Eloquent
  */
 class Product extends Model
@@ -20,18 +20,16 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'code',
         'category_id',
         'description',
         'price',
-        'code',
         'cost',
         'stock',
-        'sku',
         'barcode',
         'expiry_date',
         'image',
         'is_active',
-        'is_featured',
     ];
 
     protected $casts = [
