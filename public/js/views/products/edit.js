@@ -89,6 +89,7 @@ function fillDataToForm(product) {
 
     // Stock
     $('#stock').val(product.stock || '');
+    $('#min-stock').val(product.min_stock || '');
 
     // Status checkboxes
     $('#is_active').prop('checked', product.is_active || false);
@@ -218,10 +219,12 @@ async function collectFormData() {
         price: parseFloat($('#price').val()) || 0,
         cost: parseFloat($('#cost_price').val()) || 0,
         stock: parseInt($('#stock').val()) || 0,
+        min_stock: parseInt($('#min-stock').val()) || 0,
         code_prefix: $('#code_prefix').val().trim(),
         is_active: $('#is_active').is(':checked'),
         is_featured: $('#is_featured').is(':checked')
     };
+
     // Handle new image upload
     const imageInput = $('#new_images')[0];
     const imageFile = imageInput?.files?.[0];

@@ -47,5 +47,10 @@ return [
         'sort_order' => 'sort order',
         'page' => 'page',
         'per_page' => 'per page',
+        'unit_name' => 'unit name',
+        'sku' => 'SKU',
+        'conversion_rate' => 'conversion rate',
+        'selling_price' => 'selling price',
+        'is_base_unit' => 'base unit status',
     ],
 ];

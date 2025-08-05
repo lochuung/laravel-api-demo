@@ -5,8 +5,11 @@ namespace App\Repositories;
 use App\Helpers\CodeGenerator;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductUnit;
 use App\Repositories\Contracts\ProductRepositoryInterface;
+use DB;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductRepository extends BaseRepository implements ProductRepositoryInterface
@@ -20,6 +23,41 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     {
         parent::__construct($model);
     }
+
+    /**
+     * @throws \Throwable
+     */
+    public function create(array $data): Product
+    {
+        return DB::transaction(function () use ($data) {
+            $unitName = $data['base_unit'] ?? 'units';
+            $data['base_sku'] = $data['base_sku'] ?? CodeGenerator::for("PRD") . '-' . ProductUnit::normalize($unitName);
+
+            $product = new Product(); // ← create a new instance
+            $product->fill($data);
+            $product->save();
+
+            // Create the base unit if it doesn't exist
+            $baseUnit = ProductUnit::firstOrCreate(
+                ['product_id' => $product->id, 'is_base_unit' => true],
+                [
+                    'product_id' => $product->id,
+                    'unit_name' => $unitName,
+                    'sku' => $data['base_sku'],
+                    'conversion_rate' => 1.0,
+                    'selling_price' => $data['price'] ?? 0.0,
+                    'is_base_unit' => true,
+                ]
+            );
+
+            // Update product with base_unit_id
+            $product->base_unit_id = $baseUnit->id;
+            $product->save();
+
+            return $product; // ← return the created product
+        });
+    }
+
 
     public function findByCode(string $code): ?Product
     {
@@ -155,8 +193,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         ];
     }
 
-    public function findWithCategory(int $id): ?Product
+    public function findWithDetails(int $id): ?Product
     {
-        return $this->newQuery()->with('category')->find($id);
+        return $this->newQuery()->with(['category', 'units'])->find($id);
     }
 }
