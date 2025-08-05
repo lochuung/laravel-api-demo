@@ -69,24 +69,24 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-6 mb-3">
                             <a href="{{ route('users.create') }}" class="btn btn-outline-primary w-100 p-3">
                                 <i class="fas fa-user-plus fa-2x d-block mb-2"></i>
                                 Add New User
                             </a>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-6 mb-3">
                             <a href="{{ route('products.create') }}" class="btn btn-outline-success w-100 p-3">
                                 <i class="fas fa-plus-square fa-2x d-block mb-2"></i>
                                 Add New Product
                             </a>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <a href="{{ route('orders.create') }}" class="btn btn-outline-warning w-100 p-3">
-                                <i class="fas fa-cart-plus fa-2x d-block mb-2"></i>
-                                Create Order
-                            </a>
-                        </div>
+{{--                        <div class="col-md-4 mb-3">--}}
+{{--                            <a href="{{ route('orders.create') }}" class="btn btn-outline-warning w-100 p-3">--}}
+{{--                                <i class="fas fa-cart-plus fa-2x d-block mb-2"></i>--}}
+{{--                                Create Order--}}
+{{--                            </a>--}}
+{{--                        </div>--}}
                     </div>
                 </div>
             </div>

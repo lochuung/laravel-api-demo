@@ -28,5 +28,5 @@ interface ProductRepositoryInterface extends BaseRepositoryInterface
 
     public function getFilterOptions(): array;
 
-    public function findWithCategory(int $id): ?Product;
+    public function findWithDetails(int $id): ?Product;
 }

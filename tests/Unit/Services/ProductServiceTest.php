@@ -94,7 +94,7 @@ class ProductServiceTest extends TestCase
             'is_active' => true,
             'per_page' => 20
         ];
-        
+
         $products = new LengthAwarePaginator([], 0, 20);
 
         $this->mockRepository
@@ -143,7 +143,7 @@ class ProductServiceTest extends TestCase
         $product = Product::factory()->make(['id' => $productId]);
 
         $this->mockRepository
-            ->shouldReceive('findWithCategory')
+            ->shouldReceive('findWithDetails')
             ->with($productId)
             ->once()
             ->andReturn($product);
@@ -166,7 +166,7 @@ class ProductServiceTest extends TestCase
         $productId = 999;
 
         $this->mockRepository
-            ->shouldReceive('findWithCategory')
+            ->shouldReceive('findWithDetails')
             ->with($productId)
             ->once()
             ->andReturn(null);
@@ -187,7 +187,7 @@ class ProductServiceTest extends TestCase
         $product = Product::factory()->make(['id' => $productId]);
 
         $this->mockRepository
-            ->shouldReceive('findWithCategory')
+            ->shouldReceive('findWithDetails')
             ->with($productId)
             ->once()
             ->andReturn($product);
@@ -553,7 +553,7 @@ class ProductServiceTest extends TestCase
 
         // Act & Assert
         $this->productService->deleteById($productId);
-        
+
         // If we reach here without exception, the test passes
         $this->assertTrue(true);
     }

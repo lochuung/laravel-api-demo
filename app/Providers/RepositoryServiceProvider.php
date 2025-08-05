@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Repositories\Contracts\InventoryRepositoryInterface;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Repositories\Contracts\ProductRepositoryInterface;
+use App\Repositories\Contracts\ProductUnitRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\InventoryRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
+use App\Repositories\ProductUnitRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,7 +24,8 @@ class RepositoryServiceProvider extends ServiceProvider
         UserRepositoryInterface::class => UserRepository::class,
         OrderRepositoryInterface::class => OrderRepository::class,
         ProductRepositoryInterface::class => ProductRepository::class,
-        InventoryRepositoryInterface::class => InventoryRepository::class
+        InventoryRepositoryInterface::class => InventoryRepository::class,
+        ProductUnitRepositoryInterface::class => ProductUnitRepository::class,
     ];
 
     public function register(): void

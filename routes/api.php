@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\ProductUnitController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,19 @@ Route::prefix("v1")->group(function () {
         Route::get('products/filter-options', [ProductController::class, 'filterOptions'])
             ->name('products.filterOptions');
         Route::apiResource('products', ProductController::class);
+
+        // Product Unit routes with nested and standalone structure
+        Route::get('products/{product}/units', [ProductUnitController::class, 'index'])
+            ->name('products.units.index');
+        Route::post('products/{product}/units', [ProductUnitController::class, 'store'])
+            ->name('products.units.store');
+        Route::get('products/{product}/units/{unit}', [ProductUnitController::class, 'show'])
+            ->name('products.units.show');
+        Route::put('products/units/{unit}', [ProductUnitController::class, 'update'])
+            ->name('products.units.update');
+        Route::delete('products/units/{unit}', [ProductUnitController::class, 'destroy'])
+            ->name('products.units.destroy');
+
 
         Route::apiResource('orders', OrderController::class);
     });

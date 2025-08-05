@@ -61,3 +61,45 @@ export async function updateProduct(id, productData) {
 export async function deleteProduct(id) {
     return await api.delete(`/products/${id}`);
 }
+
+/**
+ * Product Units API Functions
+ */
+
+/**
+ * Get all units for a specific product
+ * @param {number} productId - Product ID
+ * @returns {Promise} Axios response promise
+ */
+export async function getProductUnits(productId) {
+    return await api.get(`/products/${productId}/units`);
+}
+
+/**
+ * Create a new unit for a product
+ * @param {number} productId - Product ID
+ * @param {Object} unitData - Unit data
+ * @returns {Promise} Axios response promise
+ */
+export async function createProductUnit(productId, unitData) {
+    return await api.post(`/products/${productId}/units`, unitData);
+}
+
+/**
+ * Update an existing product unit
+ * @param {number} unitId - Unit ID
+ * @param {Object} unitData - Updated unit data
+ * @returns {Promise} Axios response promise
+ */
+export async function updateProductUnit(unitId, unitData) {
+    return await api.put(`/products/units/${unitId}`, unitData);
+}
+
+/**
+ * Delete a product unit
+ * @param {number} unitId - Unit ID
+ * @returns {Promise} Axios response promise
+ */
+export async function deleteProductUnit(unitId) {
+    return await api.delete(`/products/units/${unitId}`);
+}

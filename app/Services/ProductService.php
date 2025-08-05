@@ -7,7 +7,9 @@ use App\Helpers\CodeGenerator;
 use App\Http\Resources\Products\ProductCollection;
 use App\Http\Resources\Products\ProductResource;
 use App\Models\Product;
+use App\Models\ProductUnit;
 use App\Repositories\Contracts\ProductRepositoryInterface;
+use App\Repositories\Contracts\ProductUnitRepositoryInterface;
 use App\Services\Contracts\ProductServiceInterface;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -17,12 +19,16 @@ class ProductService implements ProductServiceInterface
 {
     private ProductRepositoryInterface $productRepository;
 
+    private ProductUnitRepositoryInterface $productUnitRepository;
+
     /**
      * @param ProductRepositoryInterface $productRepository
      */
-    public function __construct(ProductRepositoryInterface $productRepository)
+    public function __construct(ProductRepositoryInterface $productRepository
+        , ProductUnitRepositoryInterface                   $productUnitRepository)
     {
         $this->productRepository = $productRepository;
+        $this->productUnitRepository = $productUnitRepository;
     }
 
     /**
@@ -45,7 +51,7 @@ class ProductService implements ProductServiceInterface
      */
     function getProductById(int $id): ProductResource
     {
-        $product = $this->productRepository->findWithCategory($id);
+        $product = $this->productRepository->findWithDetails($id);
         if (!$product) {
             throw new BadRequestException(__('exception.not_found', ['name' => "product"]), 404);
         }
@@ -96,14 +102,6 @@ class ProductService implements ProductServiceInterface
             throw new AuthorizationException(__('exception.unauthorized'));
         }
 
-        $codePrefix = $data['code_prefix'] ?? 'PRD';
-        $code = CodeGenerator::for($codePrefix);
-
-        $data['code'] = $code;
-        if (!isset($data['barcode'])) {
-            $data['barcode'] = $data['code']; // Use code as barcode if not provided
-        }
-
         $product = $this->productRepository->create($data);
         return new ProductResource($product);
     }
@@ -123,11 +121,8 @@ class ProductService implements ProductServiceInterface
             throw new AuthorizationException(__('exception.unauthorized'));
         }
 
-        $data['code'] = $product->code; // Keep the existing code if it already has the prefix
-        $codePrefix = $data['code_prefix'] ?? 'PRD';
-        if (!str_contains($product->code, $codePrefix)) {
-            $data['code'] = CodeGenerator::for($codePrefix);
-        }
+        // remove price (only for product units)
+        unset($data['price']);
 
         $updatedProduct = $this->productRepository->update($id, $data);
         return new ProductResource($updatedProduct);
