@@ -34,6 +34,7 @@ class Product extends BaseModel
         'image',
         'is_active',
         'status',
+        'user_id'
     ];
 
     protected $casts = [

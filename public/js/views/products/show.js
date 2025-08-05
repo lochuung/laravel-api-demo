@@ -1,4 +1,10 @@
-import {getProduct, deleteProduct, createProductUnit, updateProductUnit, deleteProductUnit} from '../../api/products.api.js';
+import {
+    getProduct,
+    deleteProduct,
+    createProductUnit,
+    updateProductUnit,
+    deleteProductUnit
+} from '../../api/products.api.js';
 
 let currentProductId = null;
 let product = null;
@@ -31,18 +37,18 @@ function setupEventListeners() {
     });
 
     // Add unit button
-    $('#add-unit-btn').on('click', function() {
+    $('#add-unit-btn').on('click', function () {
         openUnitModal();
     });
 
     // Unit form submission
-    $('#unitForm').on('submit', async function(e) {
+    $('#unitForm').on('submit', async function (e) {
         e.preventDefault();
         await handleUnitFormSubmit();
     });
 
     // Unit actions
-    $(document).on('click', '.edit-unit-btn', function() {
+    $(document).on('click', '.edit-unit-btn', function () {
         const unitId = $(this).data('unit-id');
         const unit = product.units.find(u => u.id == unitId);
         if (unit) {
@@ -50,7 +56,7 @@ function setupEventListeners() {
         }
     });
 
-    $(document).on('click', '.delete-unit-btn', function() {
+    $(document).on('click', '.delete-unit-btn', function () {
         const unitId = $(this).data('unit-id');
         const unit = product.units.find(u => u.id == unitId);
         if (unit) {
@@ -59,7 +65,7 @@ function setupEventListeners() {
     });
 
     // Delete unit confirmation
-    $('#confirm-delete-unit-btn').on('click', async function() {
+    $('#confirm-delete-unit-btn').on('click', async function () {
         if (currentUnitId) {
             await handleDeleteUnit(currentUnitId);
         }
@@ -204,7 +210,7 @@ function renderProductStats(product) {
  */
 function renderUnitsTab(product) {
     const units = product.units || [];
-    
+
     // Update unit stats
     $('#total-units').text(units.length);
     const baseUnit = units.find(u => u.is_base_unit);
@@ -229,7 +235,7 @@ function renderUnitsTab(product) {
     }
 
     units.forEach(unit => {
-        const baseUnitBadge = unit.is_base_unit 
+        const baseUnitBadge = unit.is_base_unit
             ? '<span class="badge bg-warning"><i class="fas fa-star"></i> Base</span>'
             : '<span class="badge bg-light text-dark">Regular</span>';
 
@@ -244,7 +250,7 @@ function renderUnitsTab(product) {
                 <td><small>${unit.barcode || 'N/A'}</small></td>
                 <td>
                     <span class="badge bg-info">
-                        1 ${unit.unit_name} = ${unit.conversion_rate} ${baseUnit?.unit_name || 'base'}
+                        1 ${baseUnit?.unit_name || 'base'} = ${unit.conversion_rate} ${unit.unit_name}
                     </span>
                 </td>
                 <td><strong class="text-primary">${formatCurrency(unit.selling_price)}</strong></td>
@@ -298,7 +304,7 @@ function renderInventoryTab(product) {
     $('#inventory-margin').html(`<span class="${marginClass} fw-bold">${margin.toFixed(2)}%</span>`);
 
     // Expiry info
-    const expiredBadge = product.is_expired 
+    const expiredBadge = product.is_expired
         ? '<span class="badge bg-danger">Yes</span>'
         : '<span class="badge bg-success">No</span>';
     $('#inventory-expired').html(expiredBadge);
@@ -370,7 +376,7 @@ function openUnitModal(unit = null) {
 function openDeleteUnitModal(unit) {
     currentUnitId = unit.id;
     $('#delete-unit-name').text(unit.unit_name);
-    
+
     const modal = new bootstrap.Modal(document.getElementById('deleteUnitModal'));
     modal.show();
 }
@@ -413,7 +419,7 @@ async function handleUnitFormSubmit() {
 
     } catch (error) {
         console.error('Failed to save unit:', error);
-        
+
         if (error.response?.data?.errors) {
             // Handle validation errors
             const errors = error.response.data.errors;
@@ -433,9 +439,9 @@ async function handleUnitFormSubmit() {
 async function handleDeleteUnit(unitId) {
     try {
         await deleteProductUnit(unitId);
-        
+
         showSuccessMessage('Unit deleted successfully');
-        
+
         // Close modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('deleteUnitModal'));
         modal.hide();
@@ -480,9 +486,13 @@ function getStockStatusClass(stock, minStock = 10) {
 
 function getStockStatusBadgeClass(status) {
     switch (status) {
-        case 'in_stock': return 'bg-success';
-        case 'low_stock': return 'bg-warning';
-        case 'out_of_stock': return 'bg-danger';
-        default: return 'bg-secondary';
+        case 'in_stock':
+            return 'bg-success';
+        case 'low_stock':
+            return 'bg-warning';
+        case 'out_of_stock':
+            return 'bg-danger';
+        default:
+            return 'bg-secondary';
     }
 }

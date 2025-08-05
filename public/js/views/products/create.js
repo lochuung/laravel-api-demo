@@ -67,10 +67,6 @@ function setupEventListeners() {
     // Auto-generate SKU from product name
     $('#name').on('input', debounce(generateSKUFromName, 300));
 
-    // Generate code from code prefix and name
-    $('#code_prefix').on('input', debounce(generateProductCode, 300));
-    $('#name').on('input', debounce(generateProductCode, 300));
-
     // Set minimum date for expiry date (tomorrow)
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -144,8 +140,8 @@ async function handleSaveAsDraft() {
         formData.is_active = false; // Ensure it's saved as inactive (draft)
 
         // Validate required fields (relaxed for draft)
-        if (!formData.name || !formData.category_id) {
-            showErrorMessage('Product name and category are required even for drafts');
+        if (!formData.name || !formData.category_id || !formData.base_sku || !formData.base_unit) {
+            showErrorMessage('Product name, category, base SKU, and base unit are required even for drafts');
             return;
         }
 
@@ -174,15 +170,14 @@ async function collectFormData() {
         name: $('#name').val().trim(),
         description: $('#description').val().trim(),
         category_id: parseInt($('#category').val()) || null,
-        barcode: $('#barcode').val().trim(),
-        sku: $('#sku').val().trim(),
-        code_prefix: $('#code_prefix').val().trim(),
+        base_sku: $('#base_sku').val().trim(),
+        base_unit: $('#base_unit').val().trim(),
         expiry_date: $('#expiry_date').val() || null,
         price: parseFloat($('#price').val()) || 0,
         cost: parseFloat($('#cost_price').val()) || 0,
         stock: parseInt($('#stock').val()) || 0,
-        is_active: $('#is_active').is(':checked'),
-        is_featured: $('#is_featured').is(':checked')
+        min_stock: parseInt($('#min_stock').val()) || 0,
+        is_active: $('#is_active').is(':checked')
     };
 
     // Handle image upload
@@ -219,8 +214,23 @@ function validateFormData(data) {
         isValid = false;
     }
 
+    if (!data.description) {
+        showFieldError('description', 'Product description is required');
+        isValid = false;
+    }
+
     if (!data.category_id) {
         showFieldError('category', 'Category is required');
+        isValid = false;
+    }
+
+    if (!data.base_sku) {
+        showFieldError('base_sku', 'Base SKU is required');
+        isValid = false;
+    }
+
+    if (!data.base_unit) {
+        showFieldError('base_unit', 'Base unit is required');
         isValid = false;
     }
 
@@ -229,17 +239,20 @@ function validateFormData(data) {
         isValid = false;
     }
 
+    if (!data.cost || data.cost <= 0) {
+        showFieldError('cost_price', 'Cost is required and must be greater than 0');
+        isValid = false;
+    }
+
     if (data.stock < 0) {
         showFieldError('stock', 'Stock cannot be negative');
         isValid = false;
     }
 
-    if (data.cost && data.cost < 0) {
-        showFieldError('cost_price', 'Cost price cannot be negative');
+    if (data.min_stock < 0) {
+        showFieldError('min_stock', 'Minimum stock cannot be negative');
         isValid = false;
     }
-
-    // Validate barcode uniqueness is handled by the API
 
     return isValid;
 }
@@ -270,14 +283,17 @@ function mapFieldName(apiFieldName) {
     // Map API field names to form field names if they differ
     const fieldMapping = {
         'category_id': 'category',
-        'cost': 'cost_price'
+        'cost': 'cost_price',
+        'base_sku': 'base_sku',
+        'base_unit': 'base_unit',
+        'min_stock': 'min_stock'
     };
     
     return fieldMapping[apiFieldName] || apiFieldName;
 }
 
 function generateSKUFromName() {
-    const skuField = $('#sku');
+    const skuField = $('#base_sku');
     const nameValue = $('#name').val().trim();
     
     if (!skuField.val() && nameValue) {
@@ -287,20 +303,6 @@ function generateSKUFromName() {
             .toUpperCase()
             .substring(0, 20);
         skuField.val(sku);
-    }
-}
-
-function generateProductCode() {
-    const prefix = $('#code_prefix').val().trim();
-    const name = $('#name').val().trim();
-    
-    if (prefix && name) {
-        // Generate a simple sequential number (in real app, this would come from backend)
-        const timestamp = Date.now().toString().slice(-4);
-        const code = `${prefix}${timestamp}`;
-        
-        // Store in a hidden field or data attribute for later use
-        $('#createProductForm').data('generated-code', code);
     }
 }
 
