@@ -121,8 +121,11 @@ class ProductService implements ProductServiceInterface
             throw new AuthorizationException(__('exception.unauthorized'));
         }
 
-        // remove price (only for product units)
-        unset($data['price']);
+        // keep the base unit data
+        $data['price'] = $product->price;
+        $data['base_unit_id'] = $product->base_unit_id;
+        $data['base_unit'] = $product->base_unit ?? null;
+        $data['base_sku'] = $product->base_sku;
 
         $updatedProduct = $this->productRepository->update($id, $data);
         return new ProductResource($updatedProduct);

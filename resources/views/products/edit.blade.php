@@ -77,44 +77,12 @@
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="code_prefix" class="form-label">
-                                            <i class="fas fa-code"></i> Code Prefix
-                                        </label>
-                                        <input type="text" class="form-control" id="code_prefix" name="code_prefix"
-                                               placeholder="e.g. PRD, KEO, BANH" maxlength="50">
-                                        <small class="form-text text-muted">Used to generate product code (e.g.
-                                            PRD001)</small>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
                                         <label for="category" class="form-label">
                                             <i class="fas fa-layer-group"></i> Category *
                                         </label>
                                         <select class="form-select" id="category" name="category_id" required>
                                             <option value="">Select Category</option>
                                         </select>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="current_code" class="form-label">
-                                            <i class="fas fa-hashtag"></i> Current Product Code
-                                        </label>
-                                        <input type="text" class="form-control" id="current_code" name="current_code"
-                                               readonly>
-                                        <small class="form-text text-muted">Generated automatically from prefix</small>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="barcode" class="form-label">
-                                            <i class="fas fa-qrcode"></i> Base Barcode
-                                        </label>
-                                        <input type="text" class="form-control" id="barcode" name="base_barcode"
-                                               placeholder="Enter base barcode">
                                         <div class="invalid-feedback"></div>
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -128,49 +96,17 @@
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="base_sku" class="form-label">
-                                            <i class="fas fa-code"></i> Base SKU *
-                                        </label>
-                                        <input type="text" class="form-control" id="base_sku" name="base_sku"
-                                               placeholder="Enter base SKU" required>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="base_unit" class="form-label">
-                                            <i class="fas fa-ruler"></i> Base Unit *
-                                        </label>
-                                        <input type="text" class="form-control" id="base_unit" name="base_unit"
-                                               placeholder="e.g., piece, kg, liter" required>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="price" class="form-label">
-                                            <i class="fas fa-dollar-sign"></i> Price *
+                                        <label for="cost_price" class="form-label">
+                                            <i class="fas fa-money-bill"></i> Cost Price *
                                         </label>
                                         <div class="input-group">
                                             <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control" id="price" name="price"
+                                            <input type="number" class="form-control currency-input" id="cost_price"
+                                                   name="cost"
                                                    step="0.01" min="0" placeholder="0.00" required>
                                         </div>
                                         <div class="invalid-feedback"></div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="cost_price" class="form-label">
-                                            <i class="fas fa-money-bill"></i> Cost Price
-                                        </label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control" id="cost_price" name="cost"
-                                                   step="0.01" min="0" placeholder="0.00">
-                                        </div>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="stock" class="form-label">
                                             <i class="fas fa-boxes"></i> Stock Quantity *
@@ -179,13 +115,107 @@
                                                min="0" placeholder="0" required>
                                         <div class="invalid-feedback"></div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="min-stock" class="form-label">
-                                            <i class="fas fa-warning"></i> Min Stock Warning *
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="min_stock" class="form-label">
+                                            <i class="fas fa-exclamation-triangle"></i> Min Stock Warning *
                                         </label>
-                                        <input type="number" class="form-control" id="min-stock" name="min-stock"
+                                        <input type="number" class="form-control" id="min_stock" name="min_stock"
                                                min="0" placeholder="0" required>
                                         <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Current Base Unit Information -->
+                        <div class="card mb-4 base-unit-info">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-info-circle"></i> Current Base Unit Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    This information is read-only. Use the Units management feature to modify units.
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-star"></i> Base Unit
+                                        </label>
+                                        <div class="form-control-plaintext border rounded p-2 bg-light">
+                                            <span id="display-base-unit">Loading...</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="price" class="form-label">
+                                            <i class="fas fa-dollar-sign"></i> Unit Price *
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="text" class="form-control" id="price" name="price"
+                                                   step="0.01" min="0" placeholder="0.00" required disabled>
+                                        </div>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-code"></i> Base Unit SKU
+                                        </label>
+                                        <div class="form-control-plaintext border rounded p-2 bg-light">
+                                            <code id="display-base-sku">Loading...</code>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-barcode"></i> Base Unit Barcode
+                                        </label>
+                                        <div class="form-control-plaintext border rounded p-2 bg-light">
+                                            <span id="display-base-barcode">Loading...</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-percentage"></i> Margin Percentage
+                                        </label>
+                                        <div class="form-control-plaintext border rounded p-2 bg-light">
+                                            <span id="display-margin-percentage">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-chart-bar"></i> Stock Status
+                                        </label>
+                                        <div class="form-control-plaintext border rounded p-2 bg-light">
+                                            <span id="display-stock-status">Loading...</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-calendar-times"></i> Expiry Status
+                                        </label>
+                                        <div class="form-control-plaintext border rounded p-2 bg-light">
+                                            <span id="display-expiry-status">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <a href="#" id="manage-units-link" class="btn btn-outline-primary">
+                                            <i class="fas fa-layer-group"></i> Manage Product Units
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -238,10 +268,6 @@
                                     <label class="form-check-label" for="is_active">
                                         <i class="fas fa-eye"></i> Active (Visible to customers)
                                     </label>
-                                </div>
-
-                                <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="is_featured" name="is_featured">
                                 </div>
 
                                 <div class="alert alert-info">
@@ -419,6 +445,30 @@
         #new_images:focus {
             border-color: #0d6efd;
             box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+
+        /* Base Unit Display Styling */
+        .form-control-plaintext {
+            background-color: #f8f9fa !important;
+            border: 1px solid #dee2e6 !important;
+            font-weight: 500;
+        }
+
+        .base-unit-info .card {
+            border-left: 4px solid #0d6efd;
+        }
+
+        .base-unit-info .badge {
+            font-size: 0.85em;
+        }
+
+        #manage-units-link {
+            transition: all 0.3s ease;
+        }
+
+        #manage-units-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
     </style>
 @endpush
