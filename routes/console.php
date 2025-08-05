@@ -10,7 +10,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command("products:check-minimum-stock")
-    ->dailyAt('02:00')
+    ->cron('*/15 * * * *')
     ->onFailure(function () {
         Log::error("Failed to check minimum stock levels for products.");
     })

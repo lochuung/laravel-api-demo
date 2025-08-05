@@ -2,6 +2,10 @@
 
 @section('title', 'Create Product')
 
+@push('scripts')
+<script type="module" src="{{ asset('js/views/products/create.js') }}"></script>
+@endpush
+
 @section('content')
 <div class="row">
     <div class="col-12">
@@ -48,22 +52,33 @@
 
                             <div class="mb-3">
                                 <label for="description" class="form-label">
-                                    <i class="fas fa-align-left"></i> Description
+                                    <i class="fas fa-align-left"></i> Description *
                                 </label>
                                 <textarea class="form-control" id="description" name="description" rows="5" 
-                                          placeholder="Enter product description"></textarea>
+                                          placeholder="Enter product description" required></textarea>
                                 <div class="invalid-feedback"></div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="sku" class="form-label">
-                                        <i class="fas fa-barcode"></i> SKU
+                                    <label for="base_sku" class="form-label">
+                                        <i class="fas fa-barcode"></i> Base SKU *
                                     </label>
-                                    <input type="text" class="form-control" id="sku" name="sku" 
-                                           placeholder="e.g., PROD-001">
+                                    <input type="text" class="form-control" id="base_sku" name="base_sku" 
+                                           placeholder="e.g., SP-001" required>
                                     <div class="invalid-feedback"></div>
                                 </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="base_unit" class="form-label">
+                                        <i class="fas fa-ruler"></i> Base Unit *
+                                    </label>
+                                    <input type="text" class="form-control" id="base_unit" name="base_unit" 
+                                           placeholder="e.g., piece, kg, liter" required>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+
+                            <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="category" class="form-label">
                                         <i class="fas fa-layer-group"></i> Category *
@@ -72,6 +87,14 @@
                                         <option value="">Select Category</option>
                                         <!-- Categories will be loaded dynamically -->
                                     </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="barcode" class="form-label">
+                                        <i class="fas fa-qrcode"></i> Barcode
+                                    </label>
+                                    <input type="text" class="form-control" id="barcode" name="barcode" 
+                                           placeholder="Enter barcode">
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -111,24 +134,16 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="barcode" class="form-label">
-                                        <i class="fas fa-qrcode"></i> Barcode
+                                    <label for="min_stock" class="form-label">
+                                        <i class="fas fa-exclamation-triangle"></i> Minimum Stock *
                                     </label>
-                                    <input type="text" class="form-control" id="barcode" name="barcode" 
-                                           placeholder="Enter barcode">
+                                    <input type="number" class="form-control" id="min_stock" name="min_stock" 
+                                           min="0" placeholder="0" required>
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="code_prefix" class="form-label">
-                                        <i class="fas fa-code"></i> Code Prefix
-                                    </label>
-                                    <input type="text" class="form-control" id="code_prefix" name="code_prefix" 
-                                           placeholder="e.g., PRD, ELEC" maxlength="50">
-                                    <div class="invalid-feedback"></div>
-                                </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="expiry_date" class="form-label">
                                         <i class="fas fa-calendar-alt"></i> Expiry Date
@@ -178,11 +193,11 @@
                                 </label>
                             </div>
 
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="is_featured" name="is_featured">
-                                <label class="form-check-label" for="is_featured">
-                                    <i class="fas fa-star"></i> Featured Product
-                                </label>
+                            <div class="alert alert-info">
+                                <small>
+                                    <i class="fas fa-info-circle"></i>
+                                    Product code will be auto-generated after creation. Units can be managed after the product is created.
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -214,10 +229,6 @@
     </div>
 </div>
 @endsection
-
-@push('scripts')
-<script type="module" src="{{ asset('js/views/products/create.js') }}"></script>
-@endpush
 
 @push('styles')
 <style>
