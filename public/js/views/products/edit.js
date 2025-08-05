@@ -71,12 +71,9 @@ function fillDataToForm(product) {
     $('#name').val(product.name || '');
     $('#description').val(product.description || '');
     $('#category').val(product.category_id || '');
-    $('#barcode').val(product.barcode || '');
 
-    // Extract code prefix from product code (e.g., "PRD001" -> "PRD")
-    const codePrefix = extractCodePrefix(product.code);
-    $('#code_prefix').val(codePrefix || '');
-    $('#current_code').val(product.code || '');
+    // Show current product code (read-only)
+    $('#current_code').val(product.code || 'Auto-generated');
 
     // Dates
     if (product.expiry_date) {
@@ -84,16 +81,18 @@ function fillDataToForm(product) {
     }
 
     // Pricing
-    $('#price').val(product.price || '');
+    $('#price').val(formatCurrency(product.price) || '');
     $('#cost_price').val(product.cost || '');
 
     // Stock
     $('#stock').val(product.stock || '');
-    $('#min-stock').val(product.min_stock || '');
+    $('#min_stock').val(product.min_stock || '');
 
     // Status checkboxes
     $('#is_active').prop('checked', product.is_active || false);
-    $('#is_featured').prop('checked', product.is_featured || false);
+
+    // Fill base unit display information
+    fillBaseUnitDisplay(product);
 
     // Handle product image
     if (product.image) {
@@ -101,6 +100,47 @@ function fillDataToForm(product) {
     } else {
         displayNoImage();
     }
+}
+
+function fillBaseUnitDisplay(product) {
+    // Base Unit Information (read-only display)
+    $('#display-base-unit').text(product.base_unit || 'N/A');
+    $('#display-base-sku').text(product.base_sku || 'N/A');
+    $('#display-base-barcode').text(product.base_barcode || 'N/A');
+
+    // Margin percentage with color coding
+    const margin = product.margin_percentage || 0;
+    const marginClass = margin > 30 ? 'text-success' : margin > 15 ? 'text-warning' : 'text-danger';
+    $('#display-margin-percentage').html(`<span class="${marginClass} fw-bold">${margin.toFixed(2)}%</span>`);
+
+    // Stock status with badge
+    const stockStatus = product.stock_status || 'unknown';
+    const stockStatusClass = getStockStatusBadgeClass(stockStatus);
+    $('#display-stock-status').html(`<span class="badge ${stockStatusClass}">${stockStatus.replace('_', ' ').toUpperCase()}</span>`);
+
+    // Expiry status
+    const isExpired = product.is_expired || false;
+    const daysUntilExpiry = product.days_until_expiry || 0;
+    let expiryText = 'No expiry date';
+    let expiryClass = 'text-muted';
+
+    if (product.expiry_date) {
+        if (isExpired) {
+            expiryText = 'Expired';
+            expiryClass = 'text-danger';
+        } else if (daysUntilExpiry < 30) {
+            expiryText = `Expires in ${daysUntilExpiry} days`;
+            expiryClass = 'text-danger';
+        } else if (daysUntilExpiry < 90) {
+            expiryText = `Expires in ${daysUntilExpiry} days`;
+            expiryClass = 'text-warning';
+        } else {
+            expiryText = `${daysUntilExpiry} days remaining`;
+            expiryClass = 'text-success';
+        }
+    }
+
+    $('#display-expiry-status').html(`<span class="${expiryClass} fw-bold">${expiryText}</span>`);
 }
 
 function displayCurrentImage(imageUrl) {
@@ -135,6 +175,7 @@ function setupStaticElements(product) {
     // Update navigation links
     $('#view-product-link').attr('href', `/products/${currentProductId}`);
     $('#cancel-edit-link').attr('href', `/products/${currentProductId}`);
+    $('#manage-units-link').attr('href', `/products/${currentProductId}#units`);
 
     // Update statistics (placeholder for now)
     $('#total-sales').text('0');
@@ -214,15 +255,11 @@ async function collectFormData() {
         name: $('#name').val().trim(),
         description: $('#description').val().trim(),
         category_id: parseInt($('#category').val()) || null,
-        barcode: $('#barcode').val().trim(),
         expiry_date: $('#expiry_date').val() || null,
-        price: parseFloat($('#price').val()) || 0,
-        cost: parseFloat($('#cost_price').val()) || 0,
+        cost: parseFloat($('#cost_price').val().replace(/,/g, '')) || 0,
         stock: parseInt($('#stock').val()) || 0,
-        min_stock: parseInt($('#min-stock').val()) || 0,
-        code_prefix: $('#code_prefix').val().trim(),
-        is_active: $('#is_active').is(':checked'),
-        is_featured: $('#is_featured').is(':checked')
+        min_stock: parseInt($('#min_stock').val()) || 0,
+        is_active: $('#is_active').is(':checked')
     };
 
     // Handle new image upload
@@ -254,26 +291,37 @@ function validateFormData(data) {
     // Validate required fields
     if (!data.name) {
         showFieldError('name', 'Product name is required');
+        showErrorMessage('Product name is required');
         isValid = false;
     }
 
     if (!data.category_id) {
         showFieldError('category', 'Category is required');
+        showErrorMessage('Category is required');
         isValid = false;
     }
 
-    if (!data.price || data.price <= 0) {
-        showFieldError('price', 'Price must be greater than 0');
+    if (!data.cost || data.cost <= 0) {
+        showFieldError('cost_price', 'Cost price must be greater than 0');
+        showErrorMessage('Cost price must be greater than 0');
         isValid = false;
     }
 
     if (!data.stock && data.stock !== 0) {
         showFieldError('stock', 'Stock quantity is required');
+        showErrorMessage('Stock quantity is required');
         isValid = false;
     }
 
     if (data.stock < 0) {
         showFieldError('stock', 'Stock cannot be negative');
+        showErrorMessage('Stock cannot be negative');
+        isValid = false;
+    }
+
+    if (!data.min_stock && data.min_stock !== 0) {
+        showFieldError('min_stock', 'Minimum stock is required');
+        showErrorMessage('Minimum stock is required');
         isValid = false;
     }
 
@@ -356,3 +404,17 @@ window.addEventListener('beforeunload', function (e) {
         return e.returnValue;
     }
 });
+
+// Helper function for stock status badge classes
+function getStockStatusBadgeClass(status) {
+    switch (status) {
+        case 'in_stock':
+            return 'bg-success';
+        case 'low_stock':
+            return 'bg-warning';
+        case 'out_of_stock':
+            return 'bg-danger';
+        default:
+            return 'bg-secondary';
+    }
+}

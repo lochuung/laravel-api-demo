@@ -19,11 +19,11 @@ class ProductUnitRequest extends BaseApiRequest
 
         return [
             'unit_name' => ['required', 'string', 'max:255'],
-            'sku' => ['nullable', 'string', 'max:255', 
+            'sku' => ['nullable', 'string', 'max:255',
                 Rule::unique('product_units')->ignore($unitId)],
             'conversion_rate' => ['required', 'numeric', 'min:0.0001'],
             'selling_price' => ['required', 'numeric', 'min:0'],
-            'is_base_unit' => ['required', 'boolean'],
+            'is_base_unit' => ['nullable', 'boolean'],
         ];
     }
 
