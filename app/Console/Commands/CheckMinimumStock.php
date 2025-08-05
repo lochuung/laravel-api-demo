@@ -2,9 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Events\LowStockDetected;
 use App\Models\Product;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\Console\Command\Command as CommandAlias;
 
 class CheckMinimumStock extends Command
 {
@@ -25,21 +27,16 @@ class CheckMinimumStock extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
         $lowStockProducts = Product::with("owner")
             ->whereColumn('stock', '<', 'min_stock')->get();
 
-        if ($lowStockProducts->isEmpty()) {
-            $this->info('All products have sufficient stock.');
-            return 0;
-        }
-
         foreach ($lowStockProducts as $product) {
-            $ownerEmail = $product->owner->email;
-
-            Log::warning("Product {$product->name} (ID: {$product->id}) is below minimum stock level. Current stock: {$product->stock}, Minimum stock: {$product->min_stock}. Notifying owner at {$ownerEmail}.");
+            event(new LowStockDetected($product));
         }
 
+        $this->info("Checked stock. Low stock products: " . $lowStockProducts->count());
+        return CommandAlias::SUCCESS;
     }
 }
