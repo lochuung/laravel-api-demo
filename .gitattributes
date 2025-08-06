@@ -1,11 +1,66 @@
-* text=auto eol=lf
+# Laravel core files
+*.php               text eol=lf diff=php
 
-*.blade.php diff=html
-*.css diff=css
-*.html diff=html
-*.md diff=markdown
-*.php diff=php
+# Blade templates
+*.blade.php         text eol=lf
 
-/.github export-ignore
-CHANGELOG.md export-ignore
-.styleci.yml export-ignore
+# Config and env files
+*.env*              text eol=lf
+*.json              text eol=lf
+*.yml               text eol=lf
+*.yaml              text eol=lf
+
+# Documentation
+*.md                text eol=lf linguist-documentation
+*.rst               text eol=lf linguist-documentation
+
+# Scripts
+*.sh                text eol=lf
+*.bat               text eol=crlf
+
+# Frontend assets
+*.js                text eol=lf
+*.ts                text eol=lf
+*.css               text eol=lf
+*.scss              text eol=lf
+*.sass              text eol=lf
+*.less              text eol=lf
+
+# Fonts and binary assets
+*.woff              binary
+*.woff2             binary
+*.eot               binary
+*.ttf               binary
+*.otf               binary
+
+# Images
+*.png               binary
+*.jpg               binary
+*.jpeg              binary
+*.gif               binary
+*.svg               text
+*.ico               binary
+
+# Compressed files
+*.zip               binary
+*.gz                binary
+*.tar               binary
+
+# Vendor / compiled files
+/vendor/**          binary
+/node_modules/**    binary
+/public/build/**    binary
+
+# Migration and SQL
+*.sql               text eol=lf
+
+# Make language detection smarter for GitHub linguist
+resources/lang/**   linguist-language=PHP
+routes/**           linguist-language=PHP
+app/**              linguist-language=PHP
+config/**           linguist-language=PHP
+
+# Ignore lock file changes in diff views
+composer.lock       text eol=lf -diff
+package-lock.json   text eol=lf -diff
+yarn.lock           text eol=lf -diff
