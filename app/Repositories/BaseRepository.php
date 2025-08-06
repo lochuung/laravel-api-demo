@@ -69,12 +69,17 @@ abstract class BaseRepository implements BaseRepositoryInterface
     {
         $query = $this->model->newQuery();
 
-        foreach ($conditions as $field => $value) {
-            if (is_array($value)) {
-                // For whereIn conditions
-                $query->whereIn($field, $value);
+        foreach ($conditions as $key => $condition) {
+            if (is_array($condition) && is_numeric($key)) {
+                // Handle ['field', 'operator', 'value'] format
+                [$field, $operator, $value] = $condition;
+                $query->where($field, $operator, $value);
+            } elseif (is_array($condition)) {
+                // Handle whereIn: 'field' => ['value1', 'value2']
+                $query->whereIn($key, $condition);
             } else {
-                $query->where($field, $value);
+                // Simple where: 'field' => 'value'
+                $query->where($key, $condition);
             }
         }
 

@@ -11,6 +11,7 @@ class AuthServiceProvider extends ServiceProvider
 
     private const POLICIES = [
         User::class => \App\Policies\UserPolicy::class,
+        \App\Models\Product::class => \App\Policies\ProductPolicy::class,
     ];
 
     /**

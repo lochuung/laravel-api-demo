@@ -20,15 +20,16 @@ class DatabaseSeeder extends Seeder
             User::factory()->create([
                 'name' => 'Test User',
                 'email' => 'test@example.com',
+                'role' => 'Admin'
             ]);
         }
 
         $this->call([
             CategorySeeder::class,
-            ProductSeeder::class,
-            CustomerSeeder::class,
-            OrderSeeder::class,
-            InventoryTransactionSeeder::class,
+//            ProductSeeder::class,
+//            CustomerSeeder::class,
+//            OrderSeeder::class,
+//            InventoryTransactionSeeder::class,
         ]);
     }
 }
