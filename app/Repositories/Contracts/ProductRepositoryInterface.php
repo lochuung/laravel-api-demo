@@ -8,7 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface ProductRepositoryInterface extends BaseRepositoryInterface
 {
-    public function findByCode(string $code): ?Product;
+    public function findBySku(string $code): ?Product;
 
     public function findByBarcode(string $barcode): ?Product;
 

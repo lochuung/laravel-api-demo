@@ -128,6 +128,7 @@ readonly class ProductUnitService implements ProductUnitServiceInterface
         if ($newBaseRate > 0 && $originalStock > 0) {
             $convertedStock = $originalStock * $newBaseRate;
             $product->stock = (int)round($convertedStock);
+            $product->min_stock = (int)round($convertedStock * ($product->min_stock / $originalStock));
             $product->save();
         }
 
