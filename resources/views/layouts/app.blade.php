@@ -10,8 +10,59 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset("css/dashboard.css") }}">
     <script src="{{ asset('/js/auth.js')  }}"></script>
+    @stack('styles')
+    <style>
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .thumbnail-img {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail-img:hover {
+            opacity: 0.8;
+        }
+
+        .thumbnail-img.active {
+            border-color: #0d6efd !important;
+            border-width: 2px !important;
+        }
+
+        #main-image {
+            transition: opacity 0.3s ease;
+        }
+
+        .badge {
+            font-size: 0.85em;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body>
+<!-- Loading overlay -->
 <x-layouts.navbar/>
 @push('scripts')
     <script>
@@ -25,6 +76,11 @@
 @endpush
 
 <main class="container mt-4">
+    <div id="loading-overlay" class="d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
     @yield('content')
 </main>
 
