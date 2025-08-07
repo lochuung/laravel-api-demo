@@ -20,9 +20,22 @@ class ProductIndexRequest extends BaseApiRequest
             'is_active' => ['nullable', 'boolean'],
             'code_prefix' => ['nullable', 'string', 'max:10'],
             'min_price' => ['nullable', 'numeric', 'min:0'],
+            'max_price' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                function ($attribute, $value, $fail) {
+                    if (request()->filled('min_price') && $value < request()->input('min_price')) {
+                        $fail(__('validation.gte.numeric', [
+                            'attribute' => __('validation.attributes.max_price'),
+                            'value' => __('validation.attributes.min_price')
+                        ]));
+                    }
+                }
+            ],
+            'stock_threshold' => ['nullable', 'integer', 'min:0'],
             'expiring_soon_days' => ['nullable', 'integer', 'min:1'],
             'is_expired' => ['nullable', 'boolean'],
-            'max_price' => ['nullable', 'numeric', 'min:0', 'gte:min_price'],
             'sort_by' => ['nullable', 'string', 'in:id,name,code,price,stock,created_at,updated_at'],
             'sort_order' => ['nullable', 'string', 'in:asc,desc'],
             'page' => ['nullable', 'integer', 'min:1'],

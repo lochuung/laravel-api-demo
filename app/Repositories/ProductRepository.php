@@ -59,9 +59,9 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     }
 
 
-    public function findByCode(string $code): ?Product
+    public function findBySku(string $code): ?Product
     {
-        return $this->findBy('code', $code);
+        return $this->findBy('base_sku', $code);
     }
 
     public function findByBarcode(string $barcode): ?Product
@@ -119,7 +119,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'LIKE', "%{$search}%")
-                    ->orWhere('code', 'LIKE', "%{$search}%")
+                    ->orWhere('base_sku', 'LIKE', "%{$search}%")
                     ->orWhere('description', 'LIKE', "%{$search}%");
             });
         }
@@ -134,11 +134,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             $query->where('is_active', $filters['is_active']);
         }
 
-        // Filter by featured status
-        if (isset($filters['is_featured'])) {
-            $query->where('is_featured', $filters['is_featured']);
-        }
-
         // Filter by price range
         if (!empty($filters['min_price'])) {
             $query->where('price', '>=', $filters['min_price']);
@@ -149,12 +144,13 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
         // filter by code_prefix
         if (!empty($filters['code_prefix'])) {
-            $query->where('code', 'LIKE', "{$filters['code_prefix']}%");
+            $query->where('base_sku', 'LIKE', "{$filters['code_prefix']}%");
         }
 
         // expiring_soon_days
         if (!empty($filters['expiring_soon_days'])) {
-            $days = $filters['expiring_soon_days'];
+            $days = (int)$filters['expiring_soon_days'];
+
             $query->whereNotNull('expiry_date')
                 ->where('expiry_date', '<=', now()->addDays($days))
                 ->where('expiry_date', '>', now());
@@ -171,6 +167,12 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                         ->orWhere('expiry_date', '>', now());
                 });
             }
+        }
+
+        // stock_threshold
+        if (isset($filters['stock_threshold'])) {
+            $threshold = (int)$filters['stock_threshold'];
+            $query->where('stock', '<=', $threshold);
         }
 
         // Sorting
