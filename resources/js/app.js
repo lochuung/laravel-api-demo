@@ -1,7 +1,7 @@
 import './bootstrap';
-import './axios';
+import './api/api.js';
 import $ from 'jquery';
-import { Notyf } from 'notyf';
+import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
 // Import utilities and API functions
@@ -13,17 +13,7 @@ import {
     showLoadingState,
     hideLoadingState
 } from './utils/common.js';
-
-import {
-    handleLogin,
-    handleRegister,
-    handleLogout,
-    getCurrentUser,
-    handleForgotPassword,
-    handleResetPassword,
-    handleVerifyEmail,
-    handleResendVerificationEmail
-} from './api/auth.api.js';
+import {getCurrentUser} from "@/api/auth.api.js";
 
 // Make functions globally available
 window.$ = $;
@@ -34,20 +24,10 @@ window.withButtonControl = withButtonControl;
 window.showLoadingState = showLoadingState;
 window.hideLoadingState = hideLoadingState;
 
-// Auth functions
-window.handleLogin = handleLogin;
-window.handleRegister = handleRegister;
-window.handleLogout = handleLogout;
-window.getCurrentUser = getCurrentUser;
-window.handleForgotPassword = handleForgotPassword;
-window.handleResetPassword = handleResetPassword;
-window.handleVerifyEmail = handleVerifyEmail;
-window.handleResendVerificationEmail = handleResendVerificationEmail;
-
 // Initialize Notyf globally
 window.notyf = new Notyf({
     duration: 4000,
-    position: { x: 'right', y: 'top' },
+    position: {x: 'right', y: 'top'},
     ripple: true,
     dismissible: true
 });

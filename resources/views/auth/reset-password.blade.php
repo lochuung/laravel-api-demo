@@ -2,211 +2,115 @@
 
 @section('title', 'Reset Password')
 
-@push('scripts')
-    <script>
-        $(function () {
-            const wrappedHandleResetPassword = withButtonControl(handleResetPassword, $('#submit'));
-
-            // Get token and email from URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('token');
-            const email = urlParams.get('email');
-
-            if (email) {
-                $('#email').val(email);
-            }
-
-            if (!token) {
-                showError({message: 'Invalid reset token. Please request a new password reset.'});
-                $('#submit').prop('disabled', true);
-            }
-
-            $('form').on('submit', function (e) {
-                e.preventDefault();
-                if (!token) {
-                    showError({message: 'Invalid reset token. Please request a new password reset.'});
-                    return;
-                }
-                
-                wrappedHandleResetPassword({
-                    token: token,
-                    email: $('#email').val().trim(),
-                    password: $('#password').val(),
-                    password_confirmation: $('#password_confirmation').val()
-                });
-            });
-        });
-    </script>
-@endpush
-
 @section('card-content')
-    <div class="text-center mb-4 fade-in">
-        <div class="icon-wrapper">
-            <i class="fas fa-lock fa-4x text-primary mb-3"
-               style="background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+    <div class="text-center mb-6 animate-fade-in">
+        <div class="inline-block animate-float">
+            <i class="fas fa-lock text-6xl mb-4 bg-gradient-to-br from-indigo-500 to-purple-600 bg-clip-text text-transparent"></i>
         </div>
-        <h2 class="fw-bold mb-2" style="color: var(--text-dark);">Reset Password</h2>
-        <p class="text-muted mb-0">Choose a new password for your account</p>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Reset Password</h2>
+        <p class="text-gray-600 mb-0">Choose a new password for your account</p>
 
-        <div id="errors" class="mt-3"></div>
+        <div id="errors" class="mt-4"></div>
     </div>
 
-    <form class="fade-in" style="animation-delay: 0.2s;">
-        <div class="mb-3">
-            <label for="email" class="form-label">
-                <i class="fas fa-envelope me-2"></i>Email Address
+    <form id="reset-password-form" class="animate-fade-in" style="animation-delay: 0.2s;">
+        <div class="mb-4">
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-envelope mr-2"></i>Email Address
             </label>
-            <input type="email" class="form-control" id="email" name="email"
-                   placeholder="Enter your email" required readonly>
-        </div>
-
-        <div class="mb-3">
-            <label for="password" class="form-label">
-                <i class="fas fa-lock me-2"></i>New Password
-            </label>
-            <div class="position-relative">
-                <input type="password" class="form-control" id="password" name="password"
-                       placeholder="Enter new password" required onkeyup="checkPasswordStrength()">
-                <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y"
-                        style="border: none; background: none; color: var(--text-muted);"
-                        onclick="togglePassword('password')">
-                    <i class="fas fa-eye" id="toggleIconPassword"></i>
-                </button>
-            </div>
-            <div class="password-strength mt-2" id="passwordStrength" style="display: none;">
-                <div class="progress" style="height: 4px;">
-                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-                </div>
-                <small class="text-muted mt-1 d-block" id="strengthText"></small>
-            </div>
+            <input 
+                type="email" 
+                id="email" 
+                name="email"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-100 text-sm cursor-not-allowed"
+                placeholder="Enter your email" 
+                required 
+                readonly
+            >
         </div>
 
         <div class="mb-4">
-            <label for="password_confirmation" class="form-label">
-                <i class="fas fa-lock me-2"></i>Confirm New Password
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-lock mr-2"></i>New Password
             </label>
-            <div class="position-relative">
-                <input type="password" class="form-control" id="password_confirmation"
-                       name="password_confirmation" placeholder="Confirm new password" required
-                       onkeyup="checkPasswordMatch()">
-                <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y"
-                        style="border: none; background: none; color: var(--text-muted);"
-                        onclick="togglePassword('password_confirmation')">
+            <div class="relative">
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password"
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-indigo-500 focus:ring-3 focus:ring-indigo-100 transition-all duration-300 text-sm pr-12"
+                    placeholder="Enter new password" 
+                    required 
+                    onkeyup="checkPasswordStrength()"
+                >
+                <button 
+                    type="button" 
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                    onclick="togglePassword('password')"
+                >
+                    <i class="fas fa-eye" id="toggleIconPassword"></i>
+                </button>
+            </div>
+            <div id="passwordStrength" class="mt-2" style="display: none;">
+                <div class="w-full bg-gray-200 rounded-full h-1">
+                    <div class="progress-bar h-1 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <div class="mt-1" id="strengthText"></div>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-lock mr-2"></i>Confirm New Password
+            </label>
+            <div class="relative">
+                <input 
+                    type="password" 
+                    id="password_confirmation"
+                    name="password_confirmation" 
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-indigo-500 focus:ring-3 focus:ring-indigo-100 transition-all duration-300 text-sm pr-12"
+                    placeholder="Confirm new password" 
+                    required
+                    onkeyup="checkPasswordMatch()"
+                >
+                <button 
+                    type="button" 
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                    onclick="togglePassword('password_confirmation')"
+                >
                     <i class="fas fa-eye" id="toggleIconConfirm"></i>
                 </button>
             </div>
             <div id="passwordMatch" class="mt-2" style="display: none;">
-                <small class="text-muted" id="matchText"></small>
+                <div id="matchText"></div>
             </div>
         </div>
 
-        <div class="d-grid mb-4">
-            <button type="submit" class="btn btn-primary btn-lg" id="submit">
-                <i class="fas fa-key me-2"></i>Reset Password
+        <div class="mb-6">
+            <button 
+                type="submit" 
+                id="submit"
+                class="w-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden"
+            >
+                <span class="relative z-10">
+                    <i class="fas fa-key mr-2"></i>Reset Password
+                </span>
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 hover:opacity-20 transform -skew-x-12 -translate-x-full hover:translate-x-full transition-transform duration-500"></div>
             </button>
         </div>
     </form>
 
-    <div class="text-center fade-in" style="animation-delay: 0.4s;">
-        <p class="text-muted mb-0">
+    <div class="text-center animate-fade-in" style="animation-delay: 0.4s;">
+        <p class="text-gray-600 mb-0">
             Remember your password?
-            <a href="{{ route('login') }}" class="text-decoration-none fw-semibold"
-               style="color: var(--primary-color);">
+            <a 
+                href="{{ route('login') }}" 
+                class="text-indigo-600 hover:text-indigo-800 font-semibold hover:underline transition-colors"
+            >
                 Back to Login
             </a>
         </p>
     </div>
-
-    <script>
-        function togglePassword(fieldId) {
-            const field = document.getElementById(fieldId);
-            const iconId = fieldId === 'password' ? 'toggleIconPassword' : 'toggleIconConfirm';
-            const icon = document.getElementById(iconId);
-
-            if (field.type === 'password') {
-                field.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                field.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
-
-        function checkPasswordStrength() {
-            const password = document.getElementById('password').value;
-            const strengthDiv = document.getElementById('passwordStrength');
-            const progressBar = strengthDiv.querySelector('.progress-bar');
-            const strengthText = document.getElementById('strengthText');
-
-            if (password.length === 0) {
-                strengthDiv.style.display = 'none';
-                return;
-            }
-
-            strengthDiv.style.display = 'block';
-
-            let strength = 0;
-            let text = '';
-            let color = '';
-
-            if (password.length >= 8) strength++;
-            if (/[A-Z]/.test(password)) strength++;
-            if (/[a-z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[^A-Za-z0-9]/.test(password)) strength++;
-
-            switch (strength) {
-                case 0:
-                case 1:
-                    text = 'Very Weak';
-                    color = '#ef4444';
-                    break;
-                case 2:
-                    text = 'Weak';
-                    color = '#f59e0b';
-                    break;
-                case 3:
-                    text = 'Fair';
-                    color = '#3b82f6';
-                    break;
-                case 4:
-                    text = 'Good';
-                    color = '#10b981';
-                    break;
-                case 5:
-                    text = 'Strong';
-                    color = '#059669';
-                    break;
-            }
-
-            progressBar.style.width = (strength * 20) + '%';
-            progressBar.style.backgroundColor = color;
-            strengthText.textContent = text;
-            strengthText.style.color = color;
-        }
-
-        function checkPasswordMatch() {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('password_confirmation').value;
-            const matchDiv = document.getElementById('passwordMatch');
-            const matchText = document.getElementById('matchText');
-
-            if (confirmPassword.length === 0) {
-                matchDiv.style.display = 'none';
-                return;
-            }
-
-            matchDiv.style.display = 'block';
-
-            if (password === confirmPassword) {
-                matchText.textContent = '✓ Passwords match';
-                matchText.style.color = '#10b981';
-            } else {
-                matchText.textContent = '✗ Passwords do not match';
-                matchText.style.color = '#ef4444';
-            }
-        }
-    </script>
 @endsection
+
+@vite('resources/js/pages/reset-password.js')

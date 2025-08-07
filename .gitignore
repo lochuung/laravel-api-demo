@@ -24,3 +24,4 @@ Homestead.yaml
 Thumbs.db
 /.github/instructions/
 .env.testing
+/.github/prompts/
