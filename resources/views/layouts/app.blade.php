@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Laravel CRUD Demo')</title>
-    @vite(['resources/js/app.js'])
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset("css/dashboard.css") }}">
-    <script src="{{ asset('/js/auth.js')  }}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @stack('styles')
     <style>
+        /* Loading overlay */
         #loading-overlay {
             position: fixed;
             top: 0;
@@ -19,12 +17,12 @@
             width: 100%;
             height: 100%;
             background: rgba(255, 255, 255, 0.8);
-            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
         }
 
+        /* Image thumbnails */
         .thumbnail-img {
             cursor: pointer;
             transition: all 0.3s ease;
@@ -35,7 +33,7 @@
         }
 
         .thumbnail-img.active {
-            border-color: #0d6efd !important;
+            border-color: #3b82f6 !important;
             border-width: 2px !important;
         }
 
@@ -43,42 +41,24 @@
             transition: opacity 0.3s ease;
         }
 
-        .badge {
-            font-size: 0.85em;
-        }
-
-        .table td {
-            vertical-align: middle;
-        }
-
-        .card {
+        /* Card hover effects */
+        .card-hover {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .card:hover {
+        .card-hover:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 font-inter">
 <!-- Loading overlay -->
 <x-layouts.navbar/>
-@push('scripts')
-    <script>
-        $(document).ready(async function () {
-            window.user = await getCurrentUser();
-            if (!window.user) {
-                window.location.href = "{{ route('login') }}";
-            }
-        });
-    </script>
-@endpush
 
-<main class="container mt-4">
-    <div id="loading-overlay" class="d-none">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+<main class="container mx-auto px-4 pt-6 max-w-7xl">
+    <div id="loading-overlay" class="hidden">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600">
         </div>
     </div>
     @yield('content')
@@ -86,11 +66,6 @@
 
 <x-layouts.footer/>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
-<script src="{{ asset('/js/functions.js')  }}"></script>
 @stack('scripts')
 </body>
 </html>

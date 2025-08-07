@@ -2,245 +2,176 @@
 
 @section('title', 'Edit User')
 
-@push('scripts')
-    <script type="module" src="{{ asset('/js/views/users/edit.js')  }}"></script>
-@endpush
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0">
-                    <i class="fas fa-user-edit"></i> Edit User
-                </h1>
-                <div>
-                    <a href="#" class="btn btn-info me-2" id="view-btn">
-                        <i class="fas fa-eye"></i> View
-                    </a>
-                    <a href="{{ route('users.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to Users
-                    </a>
-                </div>
+    <div class="mb-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4 md:mb-0 flex items-center">
+                <i class="fas fa-user-edit mr-3 text-blue-600"></i>
+                Edit User
+            </h1>
+            <div class="flex flex-col md:flex-row gap-2">
+                <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center" id="view-btn">
+                    <i class="fas fa-eye mr-2"></i>View
+                </a>
+                <a href="{{ route('users.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Users
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-user"></i> Edit User Information
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <form id="editUserForm">
-                        <!-- Current Avatar -->
-                        <div class="text-center mb-4">
-                            <img src="" class="rounded-circle mb-2" alt="Current Avatar"
-                                 width="100" height="100" id="profile_picture">
-                            <h6>Current Profile Picture</h6>
-                        </div>
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-user mr-3 text-blue-600"></i>
+                    Edit User Information
+                </h3>
+            </div>
+            <div class="p-6">
+                <form id="editUserForm">
+                    <!-- Current Avatar -->
+                    <div class="text-center mb-6">
+                        <img src="" class="w-24 h-24 rounded-full mx-auto mb-2 border-4 border-gray-200" alt="Current Avatar" id="profile_picture">
+                        <h6 class="text-sm font-medium text-gray-700">Current Profile Picture</h6>
+                    </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="name" class="form-label">
-                                    <i class="fas fa-user"></i> Full Name *
-                                </label>
-                                <input type="text" class="form-control" id="name" name="name"
-                                       required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">
-                                    <i class="fas fa-envelope"></i> Email Address *
-                                </label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                       required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="phone" class="form-label">
-                                    <i class="fas fa-phone"></i> Phone Number
-                                </label>
-                                <input type="tel" class="form-control" id="phone" name="phone">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="role" class="form-label">
-                                    <i class="fas fa-user-tag"></i> Role
-                                </label>
-                                <select class="form-select" id="role" name="role">
-                                    <option value="User">User</option>
-                                    <option value="Moderator">Moderator</option>
-                                    <option value="Admin" selected>Administrator</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="address" class="form-label">
-                                <i class="fas fa-map-marker-alt"></i> Address
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-user mr-2"></i>Full Name *
                             </label>
-                            <textarea class="form-control" id="address" name="address" rows="3"></textarea>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="name" name="name" required>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="avatar" class="form-label">
-                                <i class="fas fa-image"></i> Update Profile Picture
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-envelope mr-2"></i>Email Address *
                             </label>
-                            <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
-                            <small class="form-text text-muted">Leave blank to keep current picture. Maximum file size:
-                                2MB.</small>
+                            <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="email" name="email" required>
+                        </div>
+                    </div>
 
-                            <!-- Preview image -->
-                            <div id="preview-container" class="mt-3">
-                                <img id="avatar-preview" src="#" alt="Image Preview"
-                                     style="display:none; max-width: 200px; max-height: 200px;"/>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-phone mr-2"></i>Phone Number
+                            </label>
+                            <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="phone" name="phone">
+                        </div>
+                        <div>
+                            <label for="role" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-user-tag mr-2"></i>Role
+                            </label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="role" name="role">
+                                <option value="User">User</option>
+                                <option value="Moderator">Moderator</option>
+                                <option value="Admin" selected>Administrator</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-map-marker-alt mr-2"></i>Address
+                        </label>
+                        <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="address" name="address" rows="3"></textarea>
+                    </div>
+
+                    <div class="mt-6">
+                        <label for="avatar" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-image mr-2"></i>Update Profile Picture
+                        </label>
+                        <input type="file" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="avatar" name="avatar" accept="image/*">
+                        <p class="mt-1 text-sm text-gray-500">Leave blank to keep current picture. Maximum file size: 2MB.</p>
+
+                        <!-- Preview image -->
+                        <div id="preview-container" class="mt-3">
+                            <img id="avatar-preview" src="#" alt="Image Preview" class="hidden max-w-48 max-h-48 rounded-lg border border-gray-200"/>
+                        </div>
+                    </div>
+
+                    <!-- Password Change Section -->
+                    <div class="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <h6 class="text-sm font-semibold text-gray-700 mb-4 flex items-center">
+                            <i class="fas fa-key mr-2"></i>Change Password (Optional)
+                        </h6>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                                <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="password" name="password" placeholder="Leave blank to keep current password">
+                            </div>
+                            <div>
+                                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                                <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="password_confirmation" name="password_confirmation" placeholder="Confirm new password">
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Password Change Section -->
-                        <div class="card border-0 bg-light mb-3">
-                            <div class="card-header bg-transparent">
-                                <h6 class="mb-0">
-                                    <i class="fas fa-key"></i> Change Password (Optional)
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="password" class="form-label">New Password</label>
-                                        <input type="password" class="form-control" id="password" name="password"
-                                               placeholder="Leave blank to keep current password">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="password_confirmation" class="form-label">Confirm New
-                                            Password</label>
-                                        <input type="password" class="form-control" id="password_confirmation"
-                                               name="password_confirmation" placeholder="Confirm new password">
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- Status Options -->
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" id="is_active" name="is_active" checked>
+                            <label class="ml-2 text-sm font-medium text-gray-700" for="is_active">
+                                <i class="fas fa-check-circle mr-2"></i>Active User
+                            </label>
                         </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" id="email_verified" name="email_verified" checked>
+                            <label class="ml-2 text-sm font-medium text-gray-700" for="email_verified">
+                                <i class="fas fa-envelope-check mr-2"></i>Email Verified
+                            </label>
+                        </div>
+                    </div>
 
-                        <!-- Status Options -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="is_active" name="is_active"
-                                           checked>
-                                    <label class="form-check-label" for="is_active">
-                                        <i class="fas fa-check-circle"></i> Active User
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="email_verified"
-                                           name="email_verified" checked>
-                                    <label class="form-check-label" for="email_verified">
-                                        <i class="fas fa-envelope-check"></i> Email Verified
-                                    </label>
-                                </div>
-                            </div>
+                    <!-- Account Information -->
+                    <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <h6 class="text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                            <i class="fas fa-info-circle mr-2"></i>Account Information
+                        </h6>
+                        <div>
+                            <span class="text-sm text-gray-500">Created:</span>
+                            <span id="created_at" class="text-sm font-medium text-gray-900 ml-2">January 15, 2025</span>
                         </div>
+                    </div>
 
-                        <!-- Account Information -->
-                        <div class="card border-0 bg-light mb-3">
-                            <div class="card-body">
-                                <h6 class="card-title">
-                                    <i class="fas fa-info-circle"></i> Account Information
-                                </h6>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <small class="text-muted">Created:</small><br>
-                                        <span id="created_at">January 15, 2025</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="d-flex justify-content-end">
-                                    <div>
-                                        <button type="button" class="btn btn-outline-danger me-2"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal">
-                                            <i class="fas fa-trash"></i> Delete User
-                                        </button>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-save"></i> Update User
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                    <div class="flex flex-col md:flex-row md:justify-end items-center gap-4 mt-8 pt-6 border-t border-gray-200">
+                        <button type="button" class="w-full md:w-auto px-6 py-2 bg-red-100 hover:bg-red-200 text-red-700 font-medium rounded-lg transition-colors flex items-center justify-center" id="delete-modal-trigger">
+                            <i class="fas fa-trash mr-2"></i>Delete User
+                        </button>
+                        <button type="submit" class="w-full md:w-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center">
+                            <i class="fas fa-save mr-2"></i>Update User
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">
-                        <i class="fas fa-exclamation-triangle text-danger"></i> Confirm Delete
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete this user? This action cannot be undone.</p>
-                    <div class="alert alert-warning">
-                        <strong>Warning:</strong> All associated data (orders, activity logs) will also be deleted.
+    <div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex items-center mb-4">
+                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn" data-bs-dismiss="modal">
-                        <i class="fas fa-trash"></i> Delete User
-                    </button>
+                <div class="text-center">
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Confirm Delete</h3>
+                    <p class="text-sm text-gray-500 mb-4">Are you sure you want to delete this user? This action cannot be undone.</p>
+                    <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg mb-4">
+                        <p class="text-sm text-amber-800"><strong>Warning:</strong> All associated data (orders, activity logs) will also be deleted.</p>
+                    </div>
+                    <div class="flex gap-3 justify-center">
+                        <button id="cancelDelete" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors">Cancel</button>
+                        <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors flex items-center">
+                            <i class="fas fa-trash mr-2"></i>Delete User
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
 
-@push('scripts')
-    <script>
-        // Preview image on file selection
-        document.getElementById('avatar').addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    // Update preview image
-                    document.querySelector('.rounded-circle').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        $(document).ready(function () {
-            $('#avatar').on('change', function () {
-                const file = this.files[0];
-                const preview = $('#avatar-preview');
-
-                console.log(file);
-
-                if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        preview.attr('src', e.target.result).show();
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    preview.attr('src', '#').hide();
-                }
-            });
-        });
-    </script>
-@endpush
+@vite('resources/js/pages/users/edit.js')

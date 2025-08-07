@@ -77,7 +77,7 @@ export function updateUserCount(total) {
 
 // ==================== Show error from response ====================
 export function showError({message = '', errors = []}) {
-    if (message) showErrorMessage(message);
+    if (message && !errors) showErrorMessage(message);
     for (const key in errors) {
         if (Object.prototype.hasOwnProperty.call(errors, key)) {
             const errorMessages = errors[key];
@@ -92,11 +92,15 @@ export function showError({message = '', errors = []}) {
 
 // ==================== Loading Overlay ====================
 export function showLoadingState() {
-    document.getElementById('loading-overlay')?.classList.remove('d-none');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    loadingOverlay.classList.remove('hidden');
+    loadingOverlay.classList.add('flex');
 }
 
 export function hideLoadingState() {
-    document.getElementById('loading-overlay')?.classList.add('d-none');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    loadingOverlay.classList.add('hidden');
+    loadingOverlay.classList.remove('flex');
 }
 
 // ==================== Toast Message (Notyf) ====================

@@ -2,153 +2,122 @@
 
 @section('title', 'Create User')
 
-@push('scripts')
-    <script type="module" src="{{ asset('js/views/users/create.js')  }}"></script>
-@endpush
-
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0">
-                    <i class="fas fa-user-plus"></i> Create New User
-                </h1>
-                <a href="{{ route('users.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Users
-                </a>
-            </div>
+    <div class="mb-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4 md:mb-0 flex items-center">
+                <i class="fas fa-user-plus mr-3 text-blue-600"></i>
+                Create New User
+            </h1>
+            <a href="{{ route('users.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Users
+            </a>
         </div>
     </div>
 
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-user"></i> User Information
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <form id="createUserForm">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="name" class="form-label">
-                                    <i class="fas fa-user"></i> Full Name *
-                                </label>
-                                <input type="text" class="form-control" id="name" name="name"
-                                       placeholder="Enter full name" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">
-                                    <i class="fas fa-envelope"></i> Email Address *
-                                </label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                       placeholder="Enter email address" required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="password" class="form-label">
-                                    <i class="fas fa-lock"></i> Password *
-                                </label>
-                                <input type="password" class="form-control" id="password" name="password"
-                                       placeholder="Enter password" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="password_confirmation" class="form-label">
-                                    <i class="fas fa-lock"></i> Confirm Password *
-                                </label>
-                                <input type="password" class="form-control" id="password_confirmation"
-                                       name="password_confirmation" placeholder="Confirm password" required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="phone" class="form-label">
-                                    <i class="fas fa-phone"></i> Phone Number
-                                </label>
-                                <input type="tel" class="form-control" id="phone" name="phone_number"
-                                       placeholder="Enter phone number">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="role" class="form-label">
-                                    <i class="fas fa-user-tag"></i> Role
-                                </label>
-                                <select class="form-select" id="role" name="role">
-                                    <option value="User">User</option>
-                                    <option value="Moderator">Moderator</option>
-                                    <option value="Admin">Administrator</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="address" class="form-label">
-                                <i class="fas fa-map-marker-alt"></i> Address
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-user mr-3 text-blue-600"></i>
+                    User Information
+                </h3>
+            </div>
+            <div class="p-6">
+                <form id="createUserForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-user mr-2"></i>Full Name *
                             </label>
-                            <textarea class="form-control" id="address" name="address" rows="3"
-                                      placeholder="Enter address"></textarea>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="name" name="name" placeholder="Enter full name" required>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="avatar" class="form-label">
-                                <i class="fas fa-image"></i> Profile Picture
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-envelope mr-2"></i>Email Address *
                             </label>
-                            <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
-                            <small class="form-text text-muted">Maximum file size: 2MB. Supported formats: JPG, PNG,
-                                GIF</small>
+                            <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="email" name="email" placeholder="Enter email address" required>
                         </div>
+                    </div>
 
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="is_active" name="is_active" checked>
-                            <label class="form-check-label" for="is_active">
-                                <i class="fas fa-check-circle"></i> Active User
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-lock mr-2"></i>Password *
+                            </label>
+                            <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="password" name="password" placeholder="Enter password" required>
+                        </div>
+                        <div>
+                            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-lock mr-2"></i>Confirm Password *
+                            </label>
+                            <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="password_confirmation" name="password_confirmation" placeholder="Confirm password" required>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-phone mr-2"></i>Phone Number
+                            </label>
+                            <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="phone" name="phone_number" placeholder="Enter phone number">
+                        </div>
+                        <div>
+                            <label for="role" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-user-tag mr-2"></i>Role
+                            </label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="role" name="role">
+                                <option value="User">User</option>
+                                <option value="Moderator">Moderator</option>
+                                <option value="Admin">Administrator</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-map-marker-alt mr-2"></i>Address
+                        </label>
+                        <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="address" name="address" rows="3" placeholder="Enter address"></textarea>
+                    </div>
+
+                    <div class="mt-6">
+                        <label for="avatar" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-image mr-2"></i>Profile Picture
+                        </label>
+                        <input type="file" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" id="avatar" name="avatar" accept="image/*">
+                        <p class="mt-1 text-sm text-gray-500">Maximum file size: 2MB. Supported formats: JPG, PNG, GIF</p>
+                    </div>
+
+                    <div class="mt-6 space-y-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" id="is_active" name="is_active" checked>
+                            <label class="ml-2 text-sm font-medium text-gray-700" for="is_active">
+                                <i class="fas fa-check-circle mr-2"></i>Active User
                             </label>
                         </div>
 
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="email_verified" name="email_verified">
-                            <label class="form-check-label" for="email_verified">
-                                <i class="fas fa-envelope-check"></i> Email Verified
+                        <div class="flex items-center">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" id="email_verified" name="email_verified">
+                            <label class="ml-2 text-sm font-medium text-gray-700" for="email_verified">
+                                <i class="fas fa-envelope-check mr-2"></i>Email Verified
                             </label>
                         </div>
+                    </div>
 
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="d-flex justify-content-between">
-                                    <a href="{{ route('users.index') }}" class="btn btn-outline-secondary">
-                                        <i class="fas fa-times"></i> Cancel
-                                    </a>
-                                    <div>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-user-plus"></i> Create User
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                    <div class="flex flex-col md:flex-row md:justify-between items-center gap-4 mt-8 pt-6 border-t border-gray-200">
+                        <a href="{{ route('users.index') }}" class="w-full md:w-auto px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors flex items-center justify-center">
+                            <i class="fas fa-times mr-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="w-full md:w-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center">
+                            <i class="fas fa-user-plus mr-2"></i>Create User
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 @endsection
 
-@section('scripts')
-    <script>
-        // Preview image on file selection
-        document.getElementById('avatar').addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    // Add image preview functionality here
-                    console.log('Image selected:', file.name);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
-@endsection
+@vite('resources/js/pages/users/create.js')

@@ -1,3 +1,5 @@
+import api from './api.js';
+
 export async function getUser(id) {
     return await api.get(`/users/${id}`);
 }

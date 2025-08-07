@@ -23,6 +23,16 @@ export async function logout() {
     }
 }
 
+export async function handleLogout() {
+    try {
+        await logout();
+    } finally {
+        // Clear local storage and user data regardless of API response
+        localStorage.removeItem('access_token');
+        window.user = null;
+    }
+}
+
 export async function getCurrentUser() {
     const response = await api.get('/auth/me');
     return response.data?.data || null;

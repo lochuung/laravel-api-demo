@@ -20,6 +20,7 @@
         "vite": "^6.2.4"
     },
     "dependencies": {
+        "alpinejs": "^3.14.9",
         "date-fns": "^4.1.0",
         "dayjs": "^1.11.13",
         "jquery": "^3.7.1",
