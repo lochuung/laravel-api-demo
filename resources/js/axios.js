@@ -53,3 +53,5 @@ api.interceptors.response.use(
 );
 
 window.api = api;
+
+export default api;
