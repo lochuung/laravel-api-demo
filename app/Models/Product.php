@@ -40,7 +40,7 @@ class Product extends BaseModel
     protected $casts = [
         'price' => 'decimal:2',
         'cost' => 'decimal:2',
-        'stock' => 'integer',
+        'stock' => 'decimal:4',
         'min_stock' => 'integer',
         'is_active' => 'boolean',
         'expiry_date' => 'date',

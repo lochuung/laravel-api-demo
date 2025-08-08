@@ -46,7 +46,7 @@ readonly class ProductUnitService implements ProductUnitServiceInterface
         return new ProductUnitResource($unit);
     }
 
-    /**
+        /**
      * @throws \Throwable
      */
     public function createProductUnit(int $productId, array $data): ProductUnitResource
@@ -62,7 +62,7 @@ readonly class ProductUnitService implements ProductUnitServiceInterface
 
             // Handle base unit logic before creation
             if (!empty($data['is_base_unit'])) {
-                $data = $this->handleBaseUnitUpdate($product, null, $data);
+                $data = $this->handleBaseUnitUpdate($product, $data, null);
             }
 
             $unit = $this->productUnitRepository->create($data);
@@ -91,10 +91,15 @@ readonly class ProductUnitService implements ProductUnitServiceInterface
             $product = $unit->product;
 
             if (!empty($data['is_base_unit'])) {
-                $data = $this->handleBaseUnitUpdate($product, $unit, $data);
+                $data = $this->handleBaseUnitUpdate($product, $data, $unit);
             }
 
             $updatedUnit = $this->productUnitRepository->update($unit->id, $data);
+
+            // Update product's base_unit_id if this unit became the new base
+            if (!empty($data['is_base_unit'])) {
+                $product->update(['base_unit_id' => $unit->id]);
+            }
 
             return new ProductUnitResource($updatedUnit);
         });
@@ -107,7 +112,7 @@ readonly class ProductUnitService implements ProductUnitServiceInterface
      * - Update conversion rates
      * - Set conversion_rate = 1.0
      */
-    private function handleBaseUnitUpdate($product, $newBaseUnit = null, array $data): array
+    private function handleBaseUnitUpdate($product, array $data, $newBaseUnit = null): array
     {
         // 1. Unset all current base units
         $existingBaseUnits = $this->productUnitRepository->findWhere([
