@@ -3,13 +3,14 @@
 namespace App\Console\Commands;
 
 use App\Events\LowStockDetected;
-use App\Models\Product;
+use App\Repositories\Contracts\ProductRepositoryInterface;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 
 class CheckMinimumStock extends Command
 {
+
+
     /**
      * The name and signature of the console command.
      *
@@ -25,13 +26,22 @@ class CheckMinimumStock extends Command
     protected $description = 'Check for products below their minimum stock level';
 
     /**
+     * @param ProductRepositoryInterface $productRepository
+     */
+    private ProductRepositoryInterface $productRepository;
+
+    public function __construct(ProductRepositoryInterface $productRepository)
+    {
+        parent::__construct();
+        $this->productRepository = $productRepository;
+    }
+
+    /**
      * Execute the console command.
      */
     public function handle(): int
     {
-        $lowStockProducts = Product::with("owner")
-            ->whereColumn('stock', '<', 'min_stock')->get();
-
+        $lowStockProducts = $this->productRepository->getProductsBelowMinimumStock();
         foreach ($lowStockProducts as $product) {
             event(new LowStockDetected($product));
         }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\InventoryController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\ProductUnitController;
+use App\Http\Controllers\Api\V1\UploadController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,10 +25,9 @@ Route::prefix("v1")->group(function () {
 
 
     Route::middleware('auth:api')->group(function () {
-
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
-        Route::post('upload/image', [\App\Http\Controllers\Api\V1\UploadController::class, 'uploadImage'])
+        Route::post('upload/image', [UploadController::class, 'uploadImage'])
             ->name('upload.image');
 
         Route::apiResource('users', UserController::class);
@@ -57,7 +57,9 @@ Route::prefix("v1")->group(function () {
             Route::post('import', [InventoryController::class, 'import'])->name('import');
             Route::post('export', [InventoryController::class, 'export'])->name('export');
             Route::post('adjust', [InventoryController::class, 'adjust'])->name('adjust');
-            Route::get('products/{product}/history', [InventoryController::class, 'productHistory'])->name('product.history');
+            Route::get('products/{product}/history', [InventoryController::class, 'productHistory'])->name(
+                'product.history'
+            );
         });
 
         Route::apiResource('orders', OrderController::class);

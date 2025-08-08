@@ -21,7 +21,7 @@ class PassportServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Passport::tokensExpireIn(CarbonInterval::days(1));
+        Passport::tokensExpireIn(CarbonInterval::days());
         Passport::refreshTokensExpireIn(CarbonInterval::days(7));
         Passport::personalAccessTokensExpireIn(CarbonInterval::months(3));
         Passport::loadKeysFrom(storage_path('oauth'));

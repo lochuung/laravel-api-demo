@@ -30,4 +30,14 @@ interface InventoryRepositoryInterface extends BaseRepositoryInterface
      * Get low stock alerts data
      */
     public function getLowStockData(): Collection;
+
+    /**
+     * Get inventory statistics
+     */
+    public function getInventoryStats(): array;
+
+    /**
+     * Get recent transactions with limit
+     */
+    public function getRecentTransactions(int $limit = 20): Collection;
 }

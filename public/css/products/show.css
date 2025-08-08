@@ -250,17 +250,17 @@
     .stats-card {
         margin-bottom: 15px;
     }
-    
+
     .unit-actions .btn {
         width: 30px;
         height: 30px;
         font-size: 0.8rem;
     }
-    
+
     .table-responsive {
         font-size: 0.9rem;
     }
-    
+
     .modal-dialog {
         margin: 10px;
     }
@@ -271,7 +271,7 @@
     .btn, .modal, .nav-tabs {
         display: none !important;
     }
-    
+
     .card {
         border: 1px solid #dee2e6 !important;
         box-shadow: none !important;

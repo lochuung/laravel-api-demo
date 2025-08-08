@@ -27,7 +27,8 @@
             <span class="input-group-text">
                 <i class="fas fa-search"></i>
             </span>
-                <input type="text" id="search-input" class="form-control" placeholder="Search users by name or email...">
+                <input type="text" id="search-input" class="form-control"
+                       placeholder="Search users by name or email...">
                 <button id="search-button" class="btn btn-outline-secondary" type="button">Search</button>
             </div>
         </div>

@@ -15,7 +15,8 @@
 
 @section('content')
     <!-- Loading Overlay -->
-    <div id="loading-overlay" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center d-none" 
+    <div id="loading-overlay"
+         class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center d-none"
          style="background-color: rgba(255, 255, 255, 0.8); z-index: 9999;">
         <div class="text-center">
             <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
@@ -213,21 +214,21 @@
                                 </div>
                                 <div class="col-sm-9" id="product-stock">Loading...</div>
                             </div>
-                            
+
                             <div class="row mb-3 product-detail-row">
                                 <div class="col-sm-3">
                                     <strong><i class="fas fa-exclamation-triangle"></i> Min Stock:</strong>
                                 </div>
                                 <div class="col-sm-9" id="product-min-stock">Loading...</div>
                             </div>
-                            
+
                             <div class="row mb-3 product-detail-row">
                                 <div class="col-sm-3">
                                     <strong><i class="fas fa-chart-bar"></i> Stock Status:</strong>
                                 </div>
                                 <div class="col-sm-9" id="product-stock-status">Loading...</div>
                             </div>
-                            
+
                             <div class="row mb-3 product-detail-row">
                                 <div class="col-sm-3">
                                     <strong><i class="fas fa-calendar-times"></i> Expiry:</strong>
@@ -456,14 +457,14 @@
                 <form id="unitForm" novalidate>
                     <div class="modal-body">
                         <input type="hidden" id="unit-id" name="unit_id">
-                        
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="unit-name" class="form-label">
                                         <i class="fas fa-tag"></i> Unit Name *
                                     </label>
-                                    <input type="text" class="form-control" id="unit-name" name="unit_name" 
+                                    <input type="text" class="form-control" id="unit-name" name="unit_name"
                                            placeholder="e.g., piece, box, carton" required>
                                     <div class="invalid-feedback"></div>
                                 </div>
@@ -473,7 +474,7 @@
                                     <label for="unit-sku" class="form-label">
                                         <i class="fas fa-code"></i> SKU
                                     </label>
-                                    <input type="text" class="form-control" id="unit-sku" name="sku" 
+                                    <input type="text" class="form-control" id="unit-sku" name="sku"
                                            placeholder="e.g., PROD-001-BOX">
                                     <div class="invalid-feedback"></div>
                                 </div>
@@ -486,7 +487,7 @@
                                     <label for="unit-barcode" class="form-label">
                                         <i class="fas fa-barcode"></i> Barcode
                                     </label>
-                                    <input type="text" class="form-control" id="unit-barcode" name="barcode" 
+                                    <input type="text" class="form-control" id="unit-barcode" name="barcode"
                                            placeholder="e.g., 1234567890123">
                                     <div class="invalid-feedback"></div>
                                 </div>
@@ -496,7 +497,7 @@
                                     <label for="unit-conversion-rate" class="form-label">
                                         <i class="fas fa-exchange-alt"></i> Conversion Rate *
                                     </label>
-                                    <input type="number" class="form-control" id="unit-conversion-rate" 
+                                    <input type="number" class="form-control" id="unit-conversion-rate"
                                            name="conversion_rate" step="0.01" min="0.01" placeholder="1.0" required>
                                     <div class="form-text">How many base units equal 1 of this unit</div>
                                     <div class="invalid-feedback"></div>
@@ -510,7 +511,7 @@
                                     <label for="unit-selling-price" class="form-label">
                                         <i class="fas fa-dollar-sign"></i> Selling Price *
                                     </label>
-                                    <input type="number" class="form-control" id="unit-selling-price" 
+                                    <input type="number" class="form-control" id="unit-selling-price"
                                            name="selling_price" step="0.01" min="0" placeholder="0.00" required>
                                     <div class="invalid-feedback"></div>
                                 </div>
@@ -518,7 +519,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <div class="form-check mt-4">
-                                        <input class="form-check-input" type="checkbox" id="unit-is-base" 
+                                        <input class="form-check-input" type="checkbox" id="unit-is-base"
                                                name="is_base_unit">
                                         <label class="form-check-label" for="unit-is-base">
                                             <i class="fas fa-star"></i> Set as Base Unit
@@ -543,19 +544,21 @@
     </div>
 
     <!-- Delete Unit Confirmation Modal -->
-    <div class="modal fade" id="deleteUnitModal" tabindex="-1" aria-labelledby="deleteUnitModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteUnitModal" tabindex="-1" aria-labelledby="deleteUnitModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title" id="deleteUnitModalLabel">
                         <i class="fas fa-exclamation-triangle"></i> Confirm Delete Unit
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <p>Are you sure you want to delete the unit "<strong id="delete-unit-name"></strong>"?</p>
                     <p class="text-danger mb-0">
-                        <i class="fas fa-exclamation-triangle"></i> 
+                        <i class="fas fa-exclamation-triangle"></i>
                         This action cannot be undone.
                     </p>
                 </div>

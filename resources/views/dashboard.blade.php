@@ -81,12 +81,12 @@
                                 Add New Product
                             </a>
                         </div>
-{{--                        <div class="col-md-4 mb-3">--}}
-{{--                            <a href="{{ route('orders.create') }}" class="btn btn-outline-warning w-100 p-3">--}}
-{{--                                <i class="fas fa-cart-plus fa-2x d-block mb-2"></i>--}}
-{{--                                Create Order--}}
-{{--                            </a>--}}
-{{--                        </div>--}}
+                        {{--                        <div class="col-md-4 mb-3">--}}
+                        {{--                            <a href="{{ route('orders.create') }}" class="btn btn-outline-warning w-100 p-3">--}}
+                        {{--                                <i class="fas fa-cart-plus fa-2x d-block mb-2"></i>--}}
+                        {{--                                Create Order--}}
+                        {{--                            </a>--}}
+                        {{--                        </div>--}}
                     </div>
                 </div>
             </div>

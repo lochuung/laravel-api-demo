@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Users;
 
 use App\Http\Requests\BaseApiRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class UserIndexRequest extends BaseApiRequest
 {
@@ -10,7 +11,7 @@ class UserIndexRequest extends BaseApiRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -28,7 +29,10 @@ class UserIndexRequest extends BaseApiRequest
     {
         return [
             'search.string' => __('validation.string', ['attribute' => __('validation.attributes.search')]),
-            'search.max' => __('validation.max.string', ['attribute' => __('validation.attributes.search'), 'max' => 255]),
+            'search.max' => __(
+                'validation.max.string',
+                ['attribute' => __('validation.attributes.search'), 'max' => 255]
+            ),
             'role.string' => __('validation.string', ['attribute' => __('validation.attributes.role')]),
             'role.in' => __('validation.in', ['attribute' => __('validation.attributes.role')]),
             'sort_by.string' => __('validation.string', ['attribute' => __('validation.attributes.sort_by')]),
@@ -38,8 +42,14 @@ class UserIndexRequest extends BaseApiRequest
             'page.integer' => __('validation.integer', ['attribute' => __('validation.attributes.page')]),
             'page.min' => __('validation.min.numeric', ['attribute' => __('validation.attributes.page'), 'min' => 1]),
             'per_page.integer' => __('validation.integer', ['attribute' => __('validation.attributes.per_page')]),
-            'per_page.min' => __('validation.min.numeric', ['attribute' => __('validation.attributes.per_page'), 'min' => 1]),
-            'per_page.max' => __('validation.max.numeric', ['attribute' => __('validation.attributes.per_page'), 'max' => 100]),
+            'per_page.min' => __(
+                'validation.min.numeric',
+                ['attribute' => __('validation.attributes.per_page'), 'min' => 1]
+            ),
+            'per_page.max' => __(
+                'validation.max.numeric',
+                ['attribute' => __('validation.attributes.per_page'), 'max' => 100]
+            ),
         ];
     }
 

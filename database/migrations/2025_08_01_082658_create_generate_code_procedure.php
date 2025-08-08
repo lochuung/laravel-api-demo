@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     /**
@@ -12,7 +10,8 @@ return new class extends Migration {
     {
         DB::unprepared('DROP PROCEDURE IF EXISTS generate_code');
         $collation = config('database.collation', 'utf8mb4_unicode_ci');
-        DB::unprepared("
+        DB::unprepared(
+            "
     CREATE PROCEDURE generate_code(
         IN prefix_input VARCHAR(50),
         OUT result_code VARCHAR(100)
@@ -49,7 +48,8 @@ return new class extends Migration {
         -- Ghép mã kết quả: PREFIX + 000X
         SET result_code = CONCAT(prefix_input, LPAD(last_num, 4, '0'));
     END
-");
+"
+        );
     }
 
     /**
@@ -57,7 +57,9 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        DB::unprepared('
-        DROP PROCEDURE IF EXISTS generate_code;');
+        DB::unprepared(
+            '
+        DROP PROCEDURE IF EXISTS generate_code;'
+        );
     }
 };

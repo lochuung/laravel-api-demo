@@ -2,33 +2,43 @@
 
 namespace App\Services;
 
-use App\Events\InventoryLowStock;
+use App\Events\LowStockDetected;
 use App\Models\InventoryTransaction;
 use App\Models\Product;
-use App\Models\ProductUnit;
 use App\Repositories\Contracts\InventoryRepositoryInterface;
+use App\Repositories\Contracts\ProductRepositoryInterface;
+use App\Repositories\Contracts\ProductUnitRepositoryInterface;
 use App\Services\Contracts\InventoryServiceInterface;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
-class InventoryService implements InventoryServiceInterface
+readonly class InventoryService implements InventoryServiceInterface
 {
     public function __construct(
-        private InventoryRepositoryInterface $inventoryRepository
-    )
-    {
+        private InventoryRepositoryInterface $inventoryRepository,
+        private ProductRepositoryInterface $productRepository,
+        private ProductUnitRepositoryInterface $productUnitRepository
+    ) {
     }
 
     /**
      * Import inventory with base unit
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function importInventory(int $productId, int $quantity, float $price, ?string $notes = null): InventoryTransaction
-    {
+    public function importInventory(
+        int $productId,
+        int $quantity,
+        float $price,
+        ?string $notes = null
+    ): InventoryTransaction {
         return DB::transaction(function () use ($productId, $quantity, $price, $notes) {
-            $product = Product::findOrFail($productId);
+            $product = $this->productRepository->find($productId);
+            if (!$product) {
+                throw new Exception("Product not found");
+            }
 
             // Create inventory transaction
             $transaction = $this->inventoryRepository->create([
@@ -41,7 +51,8 @@ class InventoryService implements InventoryServiceInterface
             ]);
 
             // Update product stock (always in base unit)
-            $product->increment('stock', $quantity);
+            $newStock = $product->stock + $quantity;
+            $this->productRepository->updateStock($productId, $newStock);
 
             return $transaction;
         });
@@ -49,20 +60,31 @@ class InventoryService implements InventoryServiceInterface
 
     /**
      * Export inventory with unit options
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function exportInventory(int $productId, int $quantity, ?int $unitId = null, ?int $orderId = null, ?string $notes = null): InventoryTransaction
-    {
+    public function exportInventory(
+        int $productId,
+        int $quantity,
+        ?int $unitId = null,
+        ?int $orderId = null,
+        ?string $notes = null
+    ): InventoryTransaction {
         return DB::transaction(function () use ($productId, $quantity, $unitId, $orderId, $notes) {
-            $product = Product::findOrFail($productId);
+            /** @var Product|null $product */
+            $product = $this->productRepository->find($productId);
+            if (!$product) {
+                throw new Exception("Product not found");
+            }
             $baseQuantity = $quantity;
             $unitPrice = $product->price;
 
             // If unit is specified, calculate base quantity and price
             if ($unitId) {
-                $unit = ProductUnit::where('product_id', $productId)
-                    ->where('id', $unitId)
-                    ->firstOrFail();
+                $unit = $this->productUnitRepository->findByProductAndUnit($productId, $unitId);
+
+                if (!$unit) {
+                    throw new Exception("Product unit not found");
+                }
 
                 $baseQuantity = $quantity / $unit->conversion_rate;
                 $unitPrice = $unit->selling_price ?? $product->price;
@@ -86,11 +108,12 @@ class InventoryService implements InventoryServiceInterface
             ]);
 
             // Update product stock
-            $product->decrement('stock', $baseQuantity);
+            $newStock = $product->stock - $baseQuantity;
+            $this->productRepository->updateStock($productId, $newStock);
 
             // Check for low stock alert
-            if ($product->stock <= (int)$product->min_stock) {
-                event(new InventoryLowStock($product));
+            if ($newStock <= $product->min_stock) {
+                event(new LowStockDetected($product));
             }
 
             return $transaction;
@@ -110,16 +133,11 @@ class InventoryService implements InventoryServiceInterface
      */
     public function getInventoryStats(): array
     {
-        $lowStockProducts = Product::whereRaw('stock <= CAST(min_stock AS UNSIGNED)')->count();
-        $outOfStockProducts = Product::where('stock', 0)->count();
-        $totalProducts = Product::count();
-
-        $totalStockValue = Product::selectRaw('SUM(stock * cost) as total_value')->value('total_value') ?? 0;
-
-        $recentTransactions = InventoryTransaction::with(['product', 'order'])
-            ->orderBy('created_at', 'desc')
-            ->limit(20)
-            ->get();
+        $lowStockProducts = count($this->productRepository->getLowStockProducts());
+        $outOfStockProducts = $this->productRepository->getOutOfStockProductsCount();
+        $totalProducts = $this->productRepository->getProductsCount();
+        $totalStockValue = $this->productRepository->getTotalStockValue();
+        $recentTransactions = $this->inventoryRepository->getRecentTransactions();
 
         return [
             'low_stock_products' => $lowStockProducts,
@@ -132,11 +150,19 @@ class InventoryService implements InventoryServiceInterface
 
     /**
      * Adjust inventory (for corrections)
+     * @throws Throwable
      */
-    public function adjustInventory(int $productId, int $newQuantity, string $reason = 'Manual adjustment'): InventoryTransaction
-    {
+    public function adjustInventory(
+        int $productId,
+        int $newQuantity,
+        string $reason = 'Manual adjustment'
+    ): InventoryTransaction {
         return DB::transaction(function () use ($productId, $newQuantity, $reason) {
-            $product = Product::findOrFail($productId);
+            /** @var Product|null $product */
+            $product = $this->productRepository->find($productId);
+            if (!$product) {
+                throw new Exception("Product not found");
+            }
             $currentStock = $product->stock;
             $difference = $newQuantity - $currentStock;
 
@@ -154,16 +180,16 @@ class InventoryService implements InventoryServiceInterface
                 'quantity' => $quantity,
                 'price' => 0, // Adjustments don't have a price
                 'date' => Carbon::now(),
-                'notes' => "Adjustment: {$reason}. From {$currentStock} to {$newQuantity}",
+                'notes' => "Adjustment: $reason. From $currentStock to $newQuantity",
                 'is_adjustment' => true,
             ]);
 
             // Update product stock
-            $product->update(['stock' => $newQuantity]);
+            $this->productRepository->updateStock($productId, $newQuantity);
 
             // Check for low stock if decreased
-            if ($difference < 0 && $newQuantity <= (int)$product->min_stock) {
-                event(new InventoryLowStock($product));
+            if ($difference < 0 && $newQuantity <= $product->min_stock) {
+                event(new LowStockDetected($product));
             }
 
             return $transaction;

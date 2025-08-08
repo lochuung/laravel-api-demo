@@ -27,7 +27,7 @@
                     showError({message: 'Invalid reset token. Please request a new password reset.'});
                     return;
                 }
-                
+
                 wrappedHandleResetPassword({
                     token: token,
                     email: $('#email').val().trim(),

@@ -18,7 +18,7 @@ class ProductUnitTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->user = User::factory()->create();
         $this->product = Product::factory()->create();
     }
@@ -214,7 +214,7 @@ class ProductUnitTest extends TestCase
             'product_id' => $this->product->id,
             'is_base_unit' => true
         ]);
-        
+
         $this->product->update(['base_unit_id' => $baseUnit->id]);
 
         // Act

@@ -1,4 +1,5 @@
 <?php
+
 return [
     'bad_request' => 'Invalid request.',
     'unauthenticated' => 'Authentication failed.',

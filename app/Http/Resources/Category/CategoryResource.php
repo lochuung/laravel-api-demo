@@ -7,6 +7,14 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryResource extends JsonResource
 {
+    public int $id;
+    public string $name;
+    public string $description;
+    public int $parent_id;
+    public object $children;
+    public string $created_at;
+    public string $updated_at;
+
     /**
      * Transform the resource into an array.
      *

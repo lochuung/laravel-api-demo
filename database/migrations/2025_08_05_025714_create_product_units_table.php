@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void
@@ -26,7 +26,8 @@ return new class extends Migration {
         });
 
         // Di chuyển dữ liệu từ bảng products sang product_units
-        DB::statement("
+        DB::statement(
+            "
             INSERT INTO product_units (
                 product_id, unit_name, sku, conversion_rate, selling_price, is_base_unit, created_at, updated_at
             )
@@ -40,7 +41,8 @@ return new class extends Migration {
                 created_at,
                 updated_at
             FROM products
-        ");
+        "
+        );
     }
 
     public function down(): void

@@ -154,6 +154,5 @@ abstract class BaseRepository implements BaseRepositoryInterface
     {
         return $this->model->orderBy($field, $direction)->get();
     }
-
 }
 

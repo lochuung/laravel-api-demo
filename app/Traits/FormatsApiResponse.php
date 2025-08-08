@@ -12,11 +12,10 @@ trait FormatsApiResponse
     use LogsApiContext;
 
     protected function apiSuccessResponse(
-        array  $data = [],
+        array $data = [],
         string $message = 'success',
-        int    $status = 200
-    ): JsonResponse
-    {
+        int $status = 200
+    ): JsonResponse {
         $translatedMessage = $this->resolveMessage($message);
 
         return response()->json([
@@ -29,10 +28,9 @@ trait FormatsApiResponse
 
     protected function apiSuccessSingleResponse(
         JsonResource $data = null,
-        string       $message = 'success',
-        int          $status = 200
-    ): JsonResponse
-    {
+        string $message = 'success',
+        int $status = 200
+    ): JsonResponse {
         $translatedMessage = $this->resolveMessage($message);
 
         return response()->json([
@@ -44,13 +42,12 @@ trait FormatsApiResponse
 
     protected function apiErrorResponse(
         Request $request,
-        int     $status,
-        string  $message,
-        string  $errorCode,
-        string  $logTitle = 'API Exception',
-        array   $extra = []
-    ): ?JsonResponse
-    {
+        int $status,
+        string $message,
+        string $errorCode,
+        string $logTitle = 'API Exception',
+        array $extra = []
+    ): ?JsonResponse {
         if (!$this->isApi($request)) {
             return null;
         }

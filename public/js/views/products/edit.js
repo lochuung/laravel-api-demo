@@ -1,4 +1,4 @@
-import {getProduct, updateProduct, deleteProduct, getProductFilterOptions} from '../../api/products.api.js';
+import {deleteProduct, getProduct, getProductFilterOptions, updateProduct} from '../../api/products.api.js';
 import {uploadImage} from "../../api/upload.api.js";
 
 let currentProductId = null;

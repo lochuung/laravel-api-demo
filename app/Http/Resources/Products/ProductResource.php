@@ -104,6 +104,6 @@ class ProductResource extends JsonResource
             return null;
         }
 
-        return now()->diffInDays($this->expiry_date, false);
+        return now()->diffInDays($this->expiry_date);
     }
 }

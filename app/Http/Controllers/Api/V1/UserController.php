@@ -70,7 +70,7 @@ class UserController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse
     {
         $this->userService->deleteById($id);
         return $this->apiSuccessSingleResponse();

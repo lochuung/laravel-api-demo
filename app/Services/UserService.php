@@ -11,6 +11,7 @@ use App\Services\Contracts\UserServiceInterface;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserService implements UserServiceInterface
 {
@@ -28,7 +29,7 @@ class UserService implements UserServiceInterface
     /**
      * @throws AuthorizationException
      */
-    function getAllUsers(array $filters = []): UserCollection
+    public function getAllUsers(array $filters = []): UserCollection
     {
         // TODO: Implement getAllUsers() method.
         if (Gate::denies('viewAny', User::class)) {
@@ -52,12 +53,12 @@ class UserService implements UserServiceInterface
     /**
      * @throws AuthorizationException|BadRequestException
      */
-    function getUserById(int $id): UserResource
+    public function getUserById(int $id): UserResource
     {
         // TODO: Implement getUserById() method.
         $user = $this->userRepository->find($id);
         if (!$user) {
-            throw new BadRequestException(__('exception.not_found', ['name' => "user"]), 404);
+            throw new BadRequestException(__('exception.not_found', ['name' => "user"]), Response::HTTP_NOT_FOUND);
         }
         Gate::authorize('view', $user);
 
@@ -67,14 +68,14 @@ class UserService implements UserServiceInterface
     /**
      * @throws Exception
      */
-    function getUserWithOrdersById(int $id): UserResource
+    public function getUserWithOrdersById(int $id): UserResource
     {
         // TODO: Implement getUserById() method.
 
         $user = $this->userRepository->findByIdWithOrders($id);
         Gate::authorize('view', $user);
         if (!$user) {
-            throw new BadRequestException(__('exception.not_found', ['name' => "user"]), 404);
+            throw new BadRequestException(__('exception.not_found', ['name' => "user"]), Response::HTTP_NOT_FOUND);
         }
         return new UserResource($user);
     }
@@ -101,7 +102,7 @@ class UserService implements UserServiceInterface
         // TODO: Implement updateUser() method.
         $user = $this->userRepository->find($id);
         if (!$user) {
-            throw new BadRequestException(__('exception.not_found', ['name' => "user"]), 404);
+            throw new BadRequestException(__('exception.not_found', ['name' => "user"]), Response::HTTP_NOT_FOUND);
         }
         Gate::authorize('update', $user);
 
@@ -121,7 +122,7 @@ class UserService implements UserServiceInterface
         Gate::authorize('delete', $user);
 
         if (!$user) {
-            throw new BadRequestException(__('exception.not_found', ['name' => "user"]), 404);
+            throw new BadRequestException(__('exception.not_found', ['name' => "user"]), Response::HTTP_NOT_FOUND);
         }
         $this->userRepository->delete($id);
     }

@@ -2,16 +2,18 @@
 
 namespace App\Repositories;
 
+use App\Models\Order;
 use App\Repositories\Contracts\OrderRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 {
     /**
      * OrderRepository constructor.
      *
-     * @param \App\Models\Order $model
+     * @param Order $model
      */
-    public function __construct(\App\Models\Order $model)
+    public function __construct(Order $model)
     {
         parent::__construct($model);
     }
@@ -26,7 +28,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ?? 0;
     }
 
-    public function getRecentOrders(int $limit = 5): \Illuminate\Database\Eloquent\Collection
+    public function getRecentOrders(int $limit = 5): Collection
     {
         // TODO: Implement getRecentOrders() method.
         return $this->model::with('user')

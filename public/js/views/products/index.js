@@ -1,6 +1,15 @@
-import { renderProductsGrid, renderProductsList, updateProductCount, populateCategoryFilter, populateCodePrefixFilter, setPriceRangeInfo, updateFilterTags, updateSortIndicators } from '../../utils/products/products-ui.js';
-import { renderPagination } from '../../utils/pagination-utils.js';
-import { getProducts, getProductFilterOptions, deleteProduct as deleteProductApi } from '../../api/products.api.js';
+import {
+    populateCategoryFilter,
+    populateCodePrefixFilter,
+    renderProductsGrid,
+    renderProductsList,
+    setPriceRangeInfo,
+    updateFilterTags,
+    updateProductCount,
+    updateSortIndicators
+} from '../../utils/products/products-ui.js';
+import {renderPagination} from '../../utils/pagination-utils.js';
+import {deleteProduct as deleteProductApi, getProductFilterOptions, getProducts} from '../../api/products.api.js';
 
 const PER_PAGE = 12;
 let currentView = 'grid'; // 'grid' or 'list'
@@ -22,7 +31,7 @@ $(document).ready(async function () {
 
 function setupEventListeners() {
     // View toggle (Grid/List)
-    $('input[name="view"]').on('change', function() {
+    $('input[name="view"]').on('change', function () {
         currentView = $(this).val();
         toggleView();
     });
@@ -66,7 +75,7 @@ function setupEventListeners() {
         const val = $('#status-filter').val();
         delete currentFilters.is_active;
         delete currentFilters.is_expired;
-        
+
         if (val === 'active') {
             currentFilters.is_active = true;
         } else if (val === 'inactive') {
@@ -77,7 +86,7 @@ function setupEventListeners() {
         } else {
             delete currentFilters.max_stock;
         }
-        
+
         currentFilters.page = 1;
         updateFiltersAndLoad();
     });
@@ -94,14 +103,14 @@ function setupEventListeners() {
     $('#apply-price-filter').on('click', () => {
         const minPrice = parseFloat($('#min-price').val()) || undefined;
         const maxPrice = parseFloat($('#max-price').val()) || undefined;
-        
+
         currentFilters.min_price = minPrice;
         currentFilters.max_price = maxPrice;
         currentFilters.page = 1;
-        
+
         // Close modal using jQuery and Bootstrap
         $('#priceFilterModal').modal('hide');
-        
+
         updateFiltersAndLoad();
     });
 
@@ -112,15 +121,15 @@ function setupEventListeners() {
         delete currentFilters.min_price;
         delete currentFilters.max_price;
         currentFilters.page = 1;
-        
+
         // Close modal using jQuery and Bootstrap
         $('#priceFilterModal').modal('hide');
-        
+
         updateFiltersAndLoad();
     });
 
     // Remove individual filter tags
-    $(document).on('click', '[data-filter-remove]', function() {
+    $(document).on('click', '[data-filter-remove]', function () {
         const filterType = $(this).data('filter-remove');
         removeFilter(filterType);
     });
@@ -146,14 +155,14 @@ function setupEventListeners() {
         updateFiltersAndLoad();
     });
 
-    $('#sort-order').on('click', function() {
+    $('#sort-order').on('click', function () {
         const currentOrder = $(this).data('order');
         const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
-        
+
         $(this).data('order', newOrder);
         currentFilters.sort_order = newOrder;
         currentFilters.page = 1;
-        
+
         // Update button icon
         const icon = $(this).find('i');
         if (newOrder === 'asc') {
@@ -163,14 +172,14 @@ function setupEventListeners() {
             icon.removeClass('fa-sort-amount-up').addClass('fa-sort-amount-down');
             $(this).attr('title', 'Sort Descending');
         }
-        
+
         updateFiltersAndLoad();
     });
 
     // Table header sorting (for list view)
-    $(document).on('click', '.sortable', function() {
+    $(document).on('click', '.sortable', function () {
         const sortField = $(this).data('sort');
-        
+
         // If clicking the same field, toggle order
         if (currentFilters.sort_by === sortField) {
             currentFilters.sort_order = currentFilters.sort_order === 'asc' ? 'desc' : 'asc';
@@ -179,14 +188,14 @@ function setupEventListeners() {
             currentFilters.sort_by = sortField;
             currentFilters.sort_order = 'asc';
         }
-        
+
         currentFilters.page = 1;
-        
+
         // Update the sort dropdown to match
         $('#sort-by').val(sortField);
         const sortButton = $('#sort-order');
         sortButton.data('order', currentFilters.sort_order);
-        
+
         const icon = sortButton.find('i');
         if (currentFilters.sort_order === 'asc') {
             icon.removeClass('fa-sort-amount-down').addClass('fa-sort-amount-up');
@@ -195,7 +204,7 @@ function setupEventListeners() {
             icon.removeClass('fa-sort-amount-up').addClass('fa-sort-amount-down');
             sortButton.attr('title', 'Sort Descending');
         }
-        
+
         updateFiltersAndLoad();
     });
 }
@@ -203,15 +212,15 @@ function setupEventListeners() {
 async function loadFilterOptions() {
     try {
         const response = await getProductFilterOptions();
-        
+
         // Handle different response structures
         let categories = {};
-        let priceRange = { min: 0, max: 1000 };
+        let priceRange = {min: 0, max: 1000};
         let codePrefixes = [];
-        
+
         if (response.data.data) {
             const data = response.data.data;
-            
+
             // Categories
             if (data.categories) {
                 if (typeof data.categories === 'object' && !Array.isArray(data.categories)) {
@@ -223,7 +232,7 @@ async function loadFilterOptions() {
                     }, {});
                 }
             }
-            
+
             // Price range
             if (data.price_range) {
                 priceRange = {
@@ -231,31 +240,31 @@ async function loadFilterOptions() {
                     max: data.price_range.max || 1000
                 };
             }
-            
+
             // Code prefixes
             if (Array.isArray(data.code_prefixes)) {
                 codePrefixes = data.code_prefixes;
             }
         }
-        
+
         // Store filter options for later use
         filterOptions = {
             categories,
             price_range: priceRange,
             code_prefixes: codePrefixes
         };
-        
+
         // Populate UI elements
         if (Object.keys(categories).length > 0) {
             populateCategoryFilter(categories);
         }
-        
+
         if (codePrefixes.length > 0) {
             populateCodePrefixFilter(codePrefixes);
         }
-        
+
         setPriceRangeInfo(priceRange);
-        
+
     } catch (error) {
         console.error('Failed to load filter options:', error);
         // Continue without filter options if this fails
@@ -266,9 +275,9 @@ async function loadProducts(params = {}) {
     try {
         // Show loading in the current view
         showProductsLoading();
-        
+
         const response = await getProducts(params);
-        const { data, meta } = response.data;
+        const {data, meta} = response.data;
 
         // Render products based on current view
         if (currentView === 'grid') {
@@ -280,7 +289,7 @@ async function loadProducts(params = {}) {
         // Update pagination and count
         renderPagination(meta.current_page, meta.last_page);
         updateProductCount(meta.total);
-        
+
         // Update sort indicators in list view
         updateSortIndicators(currentFilters.sort_by, currentFilters.sort_order);
 
@@ -321,7 +330,7 @@ function removeFilter(filterType) {
             $('#max-price').val('');
             break;
     }
-    
+
     currentFilters.page = 1;
     updateFiltersAndLoad();
 }
@@ -334,22 +343,22 @@ function clearAllFilters() {
     $('#code-prefix-filter').val('all');
     $('#min-price').val('');
     $('#max-price').val('');
-    
+
     // Reset filters object
-    currentFilters = { 
-        page: 1, 
+    currentFilters = {
+        page: 1,
         per_page: PER_PAGE,
         sort_by: 'created_at',
         sort_order: 'desc'
     };
-    
+
     // Reset sort controls
     $('#sort-by').val('created_at');
     const sortButton = $('#sort-order');
     sortButton.data('order', 'desc');
     sortButton.find('i').removeClass('fa-sort-amount-up').addClass('fa-sort-amount-down');
     sortButton.attr('title', 'Sort Descending');
-    
+
     updateFiltersAndLoad();
 }
 
@@ -429,7 +438,7 @@ async function handleDeleteProduct(productId) {
         console.error('Failed to delete product:', error);
         const errorMessage = error.response?.data?.message || 'Failed to delete product';
         showErrorMessage(errorMessage);
-        
+
         deleteBtn.prop('disabled', false).html(originalHtml);
     }
 }

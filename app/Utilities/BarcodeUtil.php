@@ -20,10 +20,10 @@ class BarcodeUtil
 
         switch ($barcodeFormat) {
             case 'EAN-13':
-                return self::generateEAN13((int) $value);
+                return self::generateEAN13((int)$value);
 
             case 'UPC-A':
-                return self::generateUPCA((int) $value);
+                return self::generateUPCA((int)$value);
 
             case 'CODE_128':
                 return self::generateCode128($value);
@@ -40,6 +40,7 @@ class BarcodeUtil
     /**
      * Generate EAN-13 barcode
      * Format: country_code + company_code + product_code + check_digit
+     * @throws Exception
      */
     public static function generateEAN13(int $productId): string
     {
@@ -65,6 +66,7 @@ class BarcodeUtil
 
     /**
      * Calculate EAN-13 check digit
+     * @throws Exception
      */
     public static function calculateEAN13CheckDigit(string $code): int
     {
@@ -85,6 +87,7 @@ class BarcodeUtil
     /**
      * Generate UPC-A barcode
      * Format: 11 digits + 1 check digit
+     * @throws Exception
      */
     public static function generateUPCA(int $productId): string
     {
@@ -95,6 +98,7 @@ class BarcodeUtil
 
     /**
      * Calculate UPC-A check digit
+     * @throws Exception
      */
     public static function calculateUPCACheckDigit(string $code): int
     {
@@ -118,7 +122,7 @@ class BarcodeUtil
      */
     public static function generateCode128(string|int $value): string
     {
-        return strtoupper((string) $value);
+        return strtoupper((string)$value);
     }
 
     /**
@@ -126,6 +130,6 @@ class BarcodeUtil
      */
     public static function generateCode39(string|int $value): string
     {
-        return strtoupper((string) $value);
+        return strtoupper((string)$value);
     }
 }

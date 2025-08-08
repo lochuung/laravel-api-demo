@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductUnit;
 use App\Services\Contracts\ProductUnitServiceInterface;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductUnitController extends BaseController
 {
@@ -43,7 +44,7 @@ class ProductUnitController extends BaseController
     {
         // Ensure the unit belongs to the product
         if ($unit->product_id !== $product->id) {
-            abort(403, __('exception.unit_not_belongs_to_product'));
+            abort(Response::HTTP_FORBIDDEN, __('exception.unit_not_belongs_to_product'));
         }
 
         $unitResource = $this->productUnitService->getProductUnitById($unit->id);

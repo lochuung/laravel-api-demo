@@ -3,13 +3,14 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\BaseApiRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class ResetPasswordRequest extends BaseApiRequest
 {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -35,10 +36,19 @@ class ResetPasswordRequest extends BaseApiRequest
             'email.exists' => __('validation.exists', ['attribute' => __('validation.attributes.email')]),
             'password.required' => __('validation.required', ['attribute' => __('validation.attributes.password')]),
             'password.string' => __('validation.string', ['attribute' => __('validation.attributes.password')]),
-            'password.min' => __('validation.min.string', ['attribute' => __('validation.attributes.password'), 'min' => 8]),
+            'password.min' => __(
+                'validation.min.string',
+                ['attribute' => __('validation.attributes.password'), 'min' => 8]
+            ),
             'password.confirmed' => __('validation.confirmed', ['attribute' => __('validation.attributes.password')]),
-            'password_confirmation.required' => __('validation.required', ['attribute' => __('validation.attributes.password_confirmation')]),
-            'password_confirmation.string' => __('validation.string', ['attribute' => __('validation.attributes.password_confirmation')]),
+            'password_confirmation.required' => __(
+                'validation.required',
+                ['attribute' => __('validation.attributes.password_confirmation')]
+            ),
+            'password_confirmation.string' => __(
+                'validation.string',
+                ['attribute' => __('validation.attributes.password_confirmation')]
+            ),
         ];
     }
 }

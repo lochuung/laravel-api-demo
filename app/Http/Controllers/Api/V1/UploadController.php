@@ -12,6 +12,9 @@ use Illuminate\Support\Str;
 class UploadController extends BaseController
 {
 
+    /**
+     * @throws BadRequestException
+     */
     public function uploadImage(Request $request): JsonResponse
     {
         $request->validate([
@@ -31,5 +34,6 @@ class UploadController extends BaseController
                 ])
             );
         }
+        throw new BadRequestException('Invalid image file.');
     }
 }

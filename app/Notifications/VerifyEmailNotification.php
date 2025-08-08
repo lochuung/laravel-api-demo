@@ -38,9 +38,11 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $verificationUrl = config('app.frontend_url') . '/verify-email?token=' . $this->token . '&email=' . urlencode($this->email);
+        $verificationUrl = config('app.frontend_url') . '/verify-email?token=' . $this->token . '&email=' . urlencode(
+                $this->email
+            );
 
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject('Verify Your Email Address')
             ->greeting('Hello ' . $notifiable->name . '!')
             ->line('Thank you for registering with us.')

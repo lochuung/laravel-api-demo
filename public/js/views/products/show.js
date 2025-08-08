@@ -1,9 +1,9 @@
 import {
-    getProduct,
-    deleteProduct,
     createProductUnit,
-    updateProductUnit,
-    deleteProductUnit
+    deleteProduct,
+    deleteProductUnit,
+    getProduct,
+    updateProductUnit
 } from '../../api/products.api.js';
 
 let currentProductId = null;
@@ -50,7 +50,7 @@ function setupEventListeners() {
     // Unit actions
     $(document).on('click', '.edit-unit-btn', function () {
         const unitId = $(this).data('unit-id');
-        const unit = product.units.find(u => u.id == unitId);
+        const unit = product.units.find(u => u.id === unitId);
         if (unit) {
             openUnitModal(unit);
         }
@@ -58,7 +58,7 @@ function setupEventListeners() {
 
     $(document).on('click', '.delete-unit-btn', function () {
         const unitId = $(this).data('unit-id');
-        const unit = product.units.find(u => u.id == unitId);
+        const unit = product.units.find(u => u.id === unitId);
         if (unit) {
             openDeleteUnitModal(unit);
         }

@@ -11,7 +11,6 @@ use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Services\ProductService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 use Mockery;
@@ -20,8 +19,6 @@ use Tests\TestCase;
 
 class ProductServiceTest extends TestCase
 {
-    use RefreshDatabase;
-
     private ProductService $productService;
     private ProductRepositoryInterface $mockRepository;
 

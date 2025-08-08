@@ -29,8 +29,8 @@ class DashboardService implements DashboardServiceInterface
         // TODO: Implement getDashboardData() method.
         $totals = $this->getTotals();
 
-        $recentOrders = $this->orderRepository->getRecentOrders(5);
-        $recentUsers = $this->userRepository->getRecentUsers(5);
+        $recentOrders = $this->orderRepository->getRecentOrders();
+        $recentUsers = $this->userRepository->getRecentUsers();
 
         return new DashboardResource(
             (object)[
@@ -44,14 +44,17 @@ class DashboardService implements DashboardServiceInterface
     private function getTotals(): array
     {
         $totals = DB::table('users')
-            ->selectRaw('
+            ->selectRaw(
+                '
         (SELECT COUNT(*) FROM users) as total_users,
         (SELECT COUNT(*) FROM products) as total_products,
         (SELECT COUNT(*) FROM orders) as total_orders,
         (SELECT COALESCE(SUM(total_amount), 0)
             FROM orders
             WHERE MONTH(created_at) = ? AND YEAR(created_at) = ?
-        ) as monthly_revenue', [now()->month, now()->year])
+        ) as monthly_revenue',
+                [now()->month, now()->year]
+            )
             ->first();
         return [
             'total_users' => $totals->total_users,
