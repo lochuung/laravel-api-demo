@@ -166,3 +166,18 @@ export function updateURLParams(params) {
     // Update URL without refreshing page
     window.history.replaceState({}, '', url);
 }
+
+/**
+ * Update product count display
+ */
+export function updateProductCount(total) {
+    const countElement = document.getElementById('product-count');
+    if (countElement) {
+        countElement.textContent = total.toLocaleString();
+    }
+
+    const titleElement = document.querySelector('.products-title');
+    if (titleElement) {
+        titleElement.textContent = `Products (${total.toLocaleString()})`;
+    }
+}

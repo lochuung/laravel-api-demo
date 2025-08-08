@@ -286,6 +286,43 @@ const handleSubmit = withButtonControl(async () => {
 
 ---
 
+## 🔢 Pagination Utilities (`resources/js/utils/pagination.js`)
+
+This utility provides helper functions for implementing paginated UIs in your Laravel + Vite project. It handles rendering Tailwind CSS pagination controls, syncing pagination state with the URL, and updating the UI accordingly.
+
+| Function / Export                                       | Description                                                                  |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `renderPagination(currentPage, lastPage, onPageChange)` | Renders pagination controls dynamically based on the current and last page.  |
+| `updateUserCount(total)`                                | Updates the user count display in a heading (e.g., `All Users (32)`).        |
+| `getPaginationParams()`                                 | Parses current URL to get pagination-related query params (page, per\_page). |
+| `updateURLParams(params)`                               | Updates the browser URL with new pagination/filter parameters.               |
+
+---
+
+### 🧪 Example Usage
+
+```js
+import {
+  renderPagination,
+  updateUserCount,
+  getPaginationParams,
+  updateURLParams
+} from '../utils/pagination.js';
+
+// Load pagination state
+const { page, per_page, search, role } = getPaginationParams();
+
+// After fetching paginated user data:
+updateUserCount(response.data.total);
+
+renderPagination(page, response.data.last_page, (newPage) => {
+  updateURLParams({ page: newPage, per_page, search, role });
+  // Re-fetch data based on newPage
+});
+```
+
+---
+
 ## 🔁 Standard Form Flow
 
 1. Call `withButtonControl()` to show loading state and disable submit.

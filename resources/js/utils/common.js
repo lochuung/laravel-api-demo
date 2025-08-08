@@ -9,32 +9,49 @@ const notyf = new Notyf({
 });
 
 // ==================== Button Wrapper ====================
-export function withButtonControl(fn, buttonSelector) {
+export function withButtonControl(fn, buttons = []) {
     return async function (...args) {
-        const button = document.querySelector(buttonSelector);
-        if (!button) return;
+        // Handle both single button selector string and array of button elements
+        const buttonElements = Array.isArray(buttons)
+            ? buttons
+            : [typeof buttons === 'string' ? document.querySelector(buttons) : buttons];
 
-        // Store original content
-        const originalHTML = button.innerHTML;
-        button.disabled = true;
-        button.innerHTML = `
-            <span class="flex items-center justify-center gap-2">
-                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-                     viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10"
-                            stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor"
-                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                </svg>
-                Processing...
-            </span>
-        `;
+        const originalStates = [];
+
+        // Store original states and disable buttons
+        buttonElements.forEach((button, index) => {
+            if (button) {
+                originalStates[index] = {
+                    disabled: button.disabled,
+                    innerHTML: button.innerHTML
+                };
+
+                button.disabled = true;
+                button.innerHTML = `
+                    <span class="flex items-center justify-center gap-2">
+                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                             viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                    stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                        Processing...
+                    </span>
+                `;
+            }
+        });
 
         try {
             return await fn(...args);
         } finally {
-            button.disabled = false;
-            button.innerHTML = originalHTML;
+            // Restore original states
+            buttonElements.forEach((button, index) => {
+                if (button && originalStates[index]) {
+                    button.disabled = originalStates[index].disabled;
+                    button.innerHTML = originalStates[index].innerHTML;
+                }
+            });
         }
     };
 }
@@ -129,4 +146,21 @@ export function formatDateTime(dateString) {
         hour: '2-digit',
         minute: '2-digit'
     });
+}
+
+export function formatPriceInput(e) {
+    let value = e.target.value.replace(/[^\d.]/g, '');
+
+    // Ensure only one decimal point
+    const parts = value.split('.');
+    if (parts.length > 2) {
+        value = parts[0] + '.' + parts.slice(1).join('');
+    }
+
+    // Limit decimal places to 2
+    if (parts[1] && parts[1].length > 2) {
+        value = parts[0] + '.' + parts[1].substring(0, 2);
+    }
+
+    e.target.value = value;
 }

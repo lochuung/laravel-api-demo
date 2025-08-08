@@ -1,3 +1,5 @@
+import api from './api.js';
+
 /**
  * Product API functions using the configured Axios instance
  */

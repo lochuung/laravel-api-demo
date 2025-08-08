@@ -8,7 +8,10 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
-                'resources/js/pages/users/show.js'
+                'resources/js/pages/users/show.js',
+                'resources/js/pages/products-index.js',
+                'resources/js/pages/products-create.js',
+                'resources/js/pages/products-edit.js'
             ],
             refresh: true,
         }),

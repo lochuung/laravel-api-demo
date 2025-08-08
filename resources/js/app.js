@@ -4,6 +4,10 @@ import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 import Alpine from 'alpinejs';
 
+// Import Alpine components
+import './components/product-show.js';
+import './components/product-edit.js';
+
 // Start Alpine
 window.Alpine = Alpine;
 Alpine.start();

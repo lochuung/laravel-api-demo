@@ -11,7 +11,7 @@ import { createProduct, getProductFilterOptions } from '../api/products.api.js';
 import { uploadImage } from '../api/upload.api.js';
 
 let categories = {};
-let uploadedImageUrls = [];
+let uploadedImageUrl = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Load initial data
@@ -42,7 +42,7 @@ async function loadCategories() {
 }
 
 function populateCategorySelect() {
-    const categorySelect = document.getElementById('category');
+    const categorySelect = document.getElementById('category_id');
     categorySelect.innerHTML = '<option value="">Select Category</option>';
 
     Object.entries(categories).forEach(([id, name]) => {
@@ -98,100 +98,121 @@ function setupEventListeners() {
 }
 
 const initializeImagePreview = () => {
-    const imageInput = document.getElementById('images');
+    const imageInput = document.getElementById('image');
+    const imageDropZone = document.getElementById('image-drop-zone');
+    const removeImageBtn = document.getElementById('remove-image');
 
-    imageInput.addEventListener('change', async (e) => {
-        const files = Array.from(e.target.files);
-        if (files.length === 0) {
-            // Clear preview if no files selected
-            clearImagePreviews();
-            return;
-        }
-
-        await handleImageUpload(files);
+    // Click to select file
+    imageDropZone.addEventListener('click', () => {
+        imageInput.click();
     });
+
+    // File input change
+    imageInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            await handleImageUpload(file);
+        } else {
+            clearImagePreview();
+        }
+    });
+
+    // Drag and drop
+    imageDropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        imageDropZone.classList.add('border-blue-500', 'bg-blue-50');
+    });
+
+    imageDropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        imageDropZone.classList.remove('border-blue-500', 'bg-blue-50');
+    });
+
+    imageDropZone.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        imageDropZone.classList.remove('border-blue-500', 'bg-blue-50');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.type.startsWith('image/')) {
+                // Set the file to the input
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                imageInput.files = dt.files;
+
+                await handleImageUpload(file);
+            } else {
+                showErrorMessage('Please select a valid image file');
+            }
+        }
+    });
+
+    // Remove image
+    if (removeImageBtn) {
+        removeImageBtn.addEventListener('click', () => {
+            clearImagePreview();
+        });
+    }
 };
 
-const handleImageUpload = async (files) => {
-    // Validate total number of images
-    if (uploadedImageUrls.length + files.length > 5) {
-        showErrorMessage('Maximum 5 images allowed');
+const handleImageUpload = async (file) => {
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        showErrorMessage('Please select a valid image file');
+        return;
+    }
+
+    // Validate file size (2MB limit)
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    if (file.size > maxSize) {
+        showErrorMessage('Image size must be less than 2MB');
         return;
     }
 
     showLoadingState();
 
     try {
-        const uploadPromises = files.map(async (file) => {
-            // Validate file type
-            if (!file.type.startsWith('image/')) {
-                throw new Error(`${file.name} is not a valid image file`);
-            }
+        // Upload image
+        const imageUrl = await uploadImage(file);
+        uploadedImageUrl = imageUrl;
 
-            // Validate file size (2MB limit)
-            const maxSize = 2 * 1024 * 1024; // 2MB
-            if (file.size > maxSize) {
-                throw new Error(`Image ${file.name} is too large. Maximum 2MB per image.`);
-            }
-
-            // Upload image
-            const imageUrl = await uploadImage(file);
-            return imageUrl;
-        });
-
-        const newImageUrls = await Promise.all(uploadPromises);
-        uploadedImageUrls.push(...newImageUrls);
-
-        updateImagePreview();
-        showSuccessMessage(`${files.length} image(s) uploaded successfully!`);
+        showImagePreview(imageUrl);
+        showSuccessMessage('Image uploaded successfully!');
 
     } catch (error) {
         console.error('Image upload error:', error);
-        showErrorMessage(error.message || 'Failed to upload images');
+        showErrorMessage(error.message || 'Failed to upload image');
 
         // Clear the file input
-        const imageInput = document.getElementById('images');
+        const imageInput = document.getElementById('image');
         imageInput.value = '';
     } finally {
         hideLoadingState();
     }
 };
 
-const updateImagePreview = () => {
-    const imagePreview = document.getElementById('image-preview');
-    imagePreview.innerHTML = '';
+const showImagePreview = (imageUrl) => {
+    const dropZone = document.getElementById('image-drop-zone');
+    const preview = document.getElementById('image-preview');
+    const previewImage = document.getElementById('preview-image');
 
-    uploadedImageUrls.forEach((url, index) => {
-        const imageContainer = document.createElement('div');
-        imageContainer.className = 'relative group';
-        imageContainer.innerHTML = `
-            <img src="${url}" alt="Preview ${index + 1}" class="w-full h-32 object-cover rounded-lg border">
-            <button type="button" onclick="removeImage(${index})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                ×
-            </button>
-            ${index === 0 ? '<div class="absolute bottom-1 left-1 bg-blue-500 text-white text-xs px-2 py-1 rounded">Main</div>' : ''}
-        `;
-        imagePreview.appendChild(imageContainer);
-    });
+    previewImage.src = imageUrl;
+    dropZone.classList.add('hidden');
+    preview.classList.remove('hidden');
 };
 
-const removeImage = (index) => {
-    uploadedImageUrls.splice(index, 1);
-    updateImagePreview();
+const clearImagePreview = () => {
+    const dropZone = document.getElementById('image-drop-zone');
+    const preview = document.getElementById('image-preview');
+    const imageInput = document.getElementById('image');
 
-    // Clear the file input since we're managing URLs separately
-    const imageInput = document.getElementById('images');
+    uploadedImageUrl = null;
     imageInput.value = '';
-};
 
-const clearImagePreviews = () => {
-    uploadedImageUrls = [];
-    const imagePreview = document.getElementById('image-preview');
-    imagePreview.innerHTML = '';
+    preview.classList.add('hidden');
+    dropZone.classList.remove('hidden');
 };
-
-// Make removeImage function global so it can be called from HTML
-window.removeImage = removeImage;
 
 function generateProductSKU() {
     const name = document.getElementById('name').value.trim();
@@ -313,25 +334,32 @@ function getFieldErrorMessage(field) {
     return 'This field is invalid';
 }
 
-const buildProductFormData = async () => {
+const buildProductFormData = () => {
     const formData = {
         name: document.getElementById('name').value.trim(),
         description: document.getElementById('description').value.trim(),
         base_sku: document.getElementById('base_sku').value.trim(),
-        category: document.getElementById('category').value,
-        price: document.getElementById('price').value,
-        stock: document.getElementById('stock').value,
-        min_stock: document.getElementById('min_stock').value,
+        category_id: parseInt(document.getElementById('category_id').value),
+        price: parseFloat(document.getElementById('price').value),
+        stock: parseInt(document.getElementById('stock').value),
+        min_stock: parseInt(document.getElementById('min_stock').value),
         base_unit: document.getElementById('base_unit').value.trim(),
-        barcode: document.getElementById('barcode').value.trim() || null,
-        cost_price: document.getElementById('cost_price').value || null,
-        expiry_date: document.getElementById('expiry_date').value || null,
         is_active: document.getElementById('is_active').checked,
     };
 
-    // Add uploaded image URLs
-    if (uploadedImageUrls.length > 0) {
-        formData.images = uploadedImageUrls;
+    // Add optional fields
+    const barcode = document.getElementById('barcode').value.trim();
+    if (barcode) formData.barcode = barcode;
+
+    const cost = document.getElementById('cost').value;
+    if (cost) formData.cost = parseFloat(cost);
+
+    const expiryDate = document.getElementById('expiry_date').value;
+    if (expiryDate) formData.expiry_date = expiryDate;
+
+    // Add uploaded image URL
+    if (uploadedImageUrl) {
+        formData.image = uploadedImageUrl;
     }
 
     return formData;
@@ -369,7 +397,7 @@ async function submitForm(isDraft = false) {
         }
 
         // Build form data
-        const formData = await buildProductFormData();
+        const formData = buildProductFormData();
 
         // Add draft status
         if (isDraft) {
@@ -396,8 +424,7 @@ async function submitForm(isDraft = false) {
 
         if (error.response?.status === 422) {
             // Validation errors
-            const errors = error.response.data.errors || {};
-            handleValidationErrors(errors);
+            handleValidationErrors(error);
         } else {
             showErrorMessage(error.response?.data?.message || 'Failed to create product');
         }
@@ -409,6 +436,15 @@ async function submitForm(isDraft = false) {
 function handleValidationErrors(error) {
     if (error.response?.data?.errors) {
         showError(error.response.data);
+
+        // Also show field-specific errors
+        const errors = error.response.data.errors;
+        Object.entries(errors).forEach(([field, messages]) => {
+            const input = document.getElementById(field);
+            if (input) {
+                showFieldError(input, messages[0]);
+            }
+        });
     } else {
         showErrorMessage(error.response?.data?.message || 'Failed to create product.');
     }
