@@ -23,7 +23,7 @@ class ProductResource extends JsonResource
             'description' => $this->description,
             'price' => (float)$this->price,
             'cost' => (float)$this->cost,
-            'stock' => (int)$this->stock,
+            'stock' => (float)$this->stock,
             'min_stock' => (int)$this->min_stock,
             'expiry_date' => $this->expiry_date?->format('Y-m-d'),
             'image' => $this->image ? asset($this->image) : null,

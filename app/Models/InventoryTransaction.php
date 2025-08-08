@@ -17,12 +17,18 @@ class InventoryTransaction extends Model
         'price',
         'date',
         'order_id',
+        'notes',
+        'unit_id',
+        'unit_quantity',
+        'is_adjustment',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'quantity' => 'integer',
+        'unit_quantity' => 'integer',
         'date' => 'datetime',
+        'is_adjustment' => 'boolean',
     ];
 
     public function product(): BelongsTo
@@ -33,5 +39,22 @@ class InventoryTransaction extends Model
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(ProductUnit::class, 'unit_id');
+    }
+
+    /**
+     * Get formatted transaction type
+     */
+    public function getFormattedTypeAttribute(): string
+    {
+        return match ($this->type) {
+            'import' => 'Import',
+            'export' => 'Export',
+            default => ucfirst($this->type)
+        };
     }
 }
