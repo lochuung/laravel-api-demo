@@ -2,10 +2,15 @@
 
 namespace App\Http\Requests\Inventory;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class InventoryAdjustRequest extends FormRequest
 {
+    public int $product_id;
+    public int $new_quantity;
+    public string $reason;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -17,7 +22,7 @@ class InventoryAdjustRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {

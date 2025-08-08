@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Product;
+use App\Models\InventoryTransaction;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\InventoryTransaction>
+ * @extends Factory<InventoryTransaction>
  */
 class InventoryTransactionFactory extends Factory
 {

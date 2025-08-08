@@ -5,7 +5,9 @@ namespace App\Repositories;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
+use Str;
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
@@ -16,18 +18,24 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     public function findByEmail(string $email): ?User
     {
-        return $this->findBy('email', $email);
+        /** @var User|null $user */
+        $user = $this->findBy('email', $email);
+        return $user;
     }
 
     public function createWithHashedPassword(array $data): User
     {
         $data['password'] = Hash::make($data['password']);
-        return $this->create($data);
+        /** @var User $user */
+        $user = $this->create($data);
+        return $user;
     }
 
     public function findByEmailVerificationToken(string $token): ?User
     {
-        return $this->findBy('email_verification_token', $token);
+        /** @var User|null $user */
+        $user = $this->findBy('email_verification_token', $token);
+        return $user;
     }
 
     public function getActiveUsers(): Collection
@@ -89,7 +97,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
      */
     public function generateEmailVerificationToken(User $user): User
     {
-        $token = \Str::random(64);
+        $token = Str::random(64);
 
         $user->update([
             'email_verification_token' => $token,
@@ -99,7 +107,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $user->fresh();
     }
 
-    public function getLatestUsers(int $limit = 5): \Illuminate\Database\Eloquent\Collection
+    public function getLatestUsers(int $limit = 5): Collection
     {
         // TODO: Implement getLatestUsers() method.
         return $this->newQuery()
@@ -108,7 +116,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             ->get();
     }
 
-    public function searchAndFilter(array $filters = [], int $perPage = 10): \Illuminate\Pagination\LengthAwarePaginator
+    public function searchAndFilter(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
         // TODO: Implement searchAndFilter() method.
         $query = $this->newQuery();

@@ -38,8 +38,10 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $resetUrl = config('app.frontend_url') . '/reset-password?token=' . $this->token . '&email=' . urlencode($this->email);
-        return (new MailMessage)
+        $resetUrl = config('app.frontend_url') . '/reset-password?token=' . $this->token . '&email=' . urlencode(
+                $this->email
+            );
+        return (new MailMessage())
             ->subject('Reset Your Password')
             ->greeting('Hello ' . $notifiable->name . '!')
             ->line('You are receiving this email because we received a password reset request for your account.')

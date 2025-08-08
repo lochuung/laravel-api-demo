@@ -3,17 +3,15 @@
 namespace App\Services;
 
 use App\Exceptions\BadRequestException;
-use App\Helpers\CodeGenerator;
 use App\Http\Resources\Products\ProductCollection;
 use App\Http\Resources\Products\ProductResource;
 use App\Models\Product;
-use App\Models\ProductUnit;
 use App\Repositories\Contracts\ProductRepositoryInterface;
-use App\Repositories\Contracts\ProductUnitRepositoryInterface;
 use App\Services\Contracts\ProductServiceInterface;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductService implements ProductServiceInterface
 {
@@ -30,7 +28,7 @@ class ProductService implements ProductServiceInterface
     /**
      * @throws AuthorizationException
      */
-    function getAllProducts(array $filters = []): ProductCollection
+    public function getAllProducts(array $filters = []): ProductCollection
     {
         if (Gate::denies('viewAny', Product::class)) {
             throw new AuthorizationException(__('exception.unauthorized'));
@@ -45,11 +43,11 @@ class ProductService implements ProductServiceInterface
     /**
      * @throws AuthorizationException|BadRequestException
      */
-    function getProductById(int $id): ProductResource
+    public function getProductById(int $id): ProductResource
     {
         $product = $this->productRepository->findWithDetails($id);
         if (!$product) {
-            throw new BadRequestException(__('exception.not_found', ['name' => "product"]), 404);
+            throw new BadRequestException(__('exception.not_found', ['name' => "product"]), Response::HTTP_NOT_FOUND);
         }
 
         if (Gate::denies('view', $product)) {
@@ -78,7 +76,7 @@ class ProductService implements ProductServiceInterface
     {
         $product = $this->productRepository->find($id);
         if (!$product) {
-            throw new BadRequestException(__('exception.not_found', ['name' => "product"]), 404);
+            throw new BadRequestException(__('exception.not_found', ['name' => "product"]), Response::HTTP_NOT_FOUND);
         }
 
         if (Gate::denies('delete', $product)) {
@@ -110,7 +108,7 @@ class ProductService implements ProductServiceInterface
     {
         $product = $this->productRepository->find($id);
         if (!$product) {
-            throw new BadRequestException(__('exception.not_found', ['name' => "product"]), 404);
+            throw new BadRequestException(__('exception.not_found', ['name' => "product"]), Response::HTTP_NOT_FOUND);
         }
 
         if (Gate::denies('update', $product)) {
@@ -135,15 +133,17 @@ class ProductService implements ProductServiceInterface
     }
 
     public
-    function getLowStockProducts(int $threshold = 10): array
-    {
+    function getLowStockProducts(
+        int $threshold = 10
+    ): array {
         $products = $this->productRepository->getLowStockProducts($threshold);
         return ProductResource::collection($products)->toArray(request());
     }
 
     public
-    function getExpiringSoonProducts(int $days = 30): array
-    {
+    function getExpiringSoonProducts(
+        int $days = 30
+    ): array {
         $products = $this->productRepository->getExpiringSoonProducts($days);
         return ProductResource::collection($products)->toArray(request());
     }

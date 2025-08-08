@@ -82,8 +82,29 @@ class InventoryRepository extends BaseRepository implements InventoryRepositoryI
         return $this->model->whereHas('product', function ($query) {
             $query->whereRaw('stock <= CAST(min_stock AS UNSIGNED)');
         })
-        ->with('product')
-        ->orderBy('created_at', 'desc')
-        ->get();
+            ->with('product')
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    /**
+     * Get inventory statistics
+     */
+    public function getInventoryStats(): array
+    {
+        // This method is now handled in the service layer
+        // as it needs to coordinate between multiple repositories
+        return [];
+    }
+
+    /**
+     * Get recent transactions with limit
+     */
+    public function getRecentTransactions(int $limit = 20): Collection
+    {
+        return $this->model->with(['product', 'order'])
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\BaseApiRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class LoginRequest extends BaseApiRequest
 {
@@ -11,7 +12,7 @@ class LoginRequest extends BaseApiRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -32,7 +33,8 @@ class LoginRequest extends BaseApiRequest
             'email.required' => __('validation.required', ['attribute' => __('validation.attributes.email')]),
             'email.string' => __('validation.string', ['attribute' => __('validation.attributes.email')]),
             'email.email' => __('validation.email', ['attribute' => __('validation.attributes.email')]),
-            'email.max' => __('validation.max.string', ['attribute' => __('validation.attributes.email'), 'max' => 255]),
+            'email.max' => __('validation.max.string', ['attribute' => __('validation.attributes.email'), 'max' => 255]
+            ),
             'password.required' => __('validation.required', ['attribute' => __('validation.attributes.password')]),
             'password.string' => __('validation.string', ['attribute' => __('validation.attributes.password')]),
         ];

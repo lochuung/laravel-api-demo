@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Product;
 use App\Models\User;
+use App\Policies\ProductPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -10,8 +13,8 @@ class AuthServiceProvider extends ServiceProvider
 {
 
     private const POLICIES = [
-        User::class => \App\Policies\UserPolicy::class,
-        \App\Models\Product::class => \App\Policies\ProductPolicy::class,
+        User::class => UserPolicy::class,
+        Product::class => ProductPolicy::class,
     ];
 
     /**

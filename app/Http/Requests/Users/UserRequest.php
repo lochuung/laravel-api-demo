@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Users;
 
 use App\Http\Requests\BaseApiRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class UserRequest extends BaseApiRequest
@@ -10,7 +11,7 @@ class UserRequest extends BaseApiRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -29,7 +30,7 @@ class UserRequest extends BaseApiRequest
         if ($this->isMethod('post')) {
             // Validation rules for creating a user
             return array_merge($commonRules, [
-                'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+                'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->whereNull('deleted_at')],
                 'password' => ['required', 'string', 'min:6', 'confirmed'],
             ]);
         } else {

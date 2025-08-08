@@ -51,7 +51,7 @@ function setupEventListeners() {
     $('#clear-filters').on('click', () => {
         $('#search-input').val('');
         $('#role-filter').val('all');
-        currentFilters = { page: 1, per_page: PER_PAGE };
+        currentFilters = {page: 1, per_page: PER_PAGE};
         loadUsers(currentFilters);
     });
 
@@ -71,7 +71,7 @@ async function loadUsers(params = {}) {
     try {
         $('#user-table-body').html(`<tr><td colspan="7" class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>`);
         const response = await fetchUsers(params);
-        const { data, meta } = response.data;
+        const {data, meta} = response.data;
 
         renderUsers(data);
         renderPagination(meta.current_page, meta.last_page);

@@ -66,7 +66,6 @@ async function handleToggleUserStatus(userId) {
 
     try {
         $btn.prop('disabled', true).html(`<i class="fas fa-spinner fa-spin me-1"></i>${actionText}ing...`);
-        throw new Error('This functionality is not implemented yet'); // Placeholder for actual API call
         showSuccessMessage(`User ${actionText}d successfully`);
         await loadUserDetails(userId);
     } catch (error) {

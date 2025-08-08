@@ -29,4 +29,26 @@ interface ProductRepositoryInterface extends BaseRepositoryInterface
     public function getFilterOptions(): array;
 
     public function findWithDetails(int $id): ?Product;
+
+    /**
+     * Update product stock
+     */
+    public function updateStock(int $productId, int $newStock): bool;
+
+    /**
+     * Get products count
+     */
+    public function getProductsCount(): int;
+
+    /**
+     * Get total stock value
+     */
+    public function getTotalStockValue(): float;
+
+    /**
+     * Get out of stock products count
+     */
+    public function getOutOfStockProductsCount(): int;
+
+    public function getProductsBelowMinimumStock();
 }

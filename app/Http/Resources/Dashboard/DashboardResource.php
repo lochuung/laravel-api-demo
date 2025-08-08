@@ -7,6 +7,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class DashboardResource extends JsonResource
 {
+    public int $total_users;
+    public int $total_products;
+    public int $total_orders;
+    public float $monthly_revenue;
+    public ?array $recent_orders;
+    public ?array $recent_users;
+
     /**
      * Transform the resource into an array.
      *

@@ -9,8 +9,8 @@ use App\Models\ProductUnit;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use DB;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Throwable;
 
 class ProductRepository extends BaseRepository implements ProductRepositoryInterface
 {
@@ -25,13 +25,15 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function create(array $data): Product
     {
         return DB::transaction(function () use ($data) {
             $unitName = $data['base_unit'] ?? 'units';
-            $data['base_sku'] = $data['base_sku'] ?? CodeGenerator::for("PRD") . '-' . ProductUnit::normalize($unitName);
+            $data['base_sku'] = $data['base_sku'] ?? CodeGenerator::for("PRD") . '-' . ProductUnit::normalize(
+                $unitName
+            );
 
             $product = new Product(); // ← create a new instance
             $product->fill($data);
@@ -61,12 +63,18 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
     public function findBySku(string $code): ?Product
     {
-        return $this->findBy('base_sku', $code);
+        /** @var Product|null $product */
+        $product = $this->findBy('base_sku', $code);
+        return $product;
     }
 
     public function findByBarcode(string $barcode): ?Product
     {
-        return $this->findBy('barcode', $barcode);
+        return $this->newQuery()
+            ->whereHas('units', function ($query) use ($barcode) {
+                $query->where('barcode', $barcode);
+            })
+            ->first();
     }
 
     public function getActiveProducts(): Collection
@@ -198,5 +206,42 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     public function findWithDetails(int $id): ?Product
     {
         return $this->newQuery()->with(['category', 'units'])->find($id);
+    }
+
+    /**
+     * Update product stock
+     */
+    public function updateStock(int $productId, int $newStock): bool
+    {
+        return $this->model->where('id', $productId)->update(['stock' => $newStock]);
+    }
+
+    /**
+     * Get products count
+     */
+    public function getProductsCount(): int
+    {
+        return $this->model->count();
+    }
+
+    /**
+     * Get total stock value
+     */
+    public function getTotalStockValue(): float
+    {
+        return $this->model->selectRaw('SUM(stock * cost) as total_value')->value('total_value') ?? 0;
+    }
+
+    /**
+     * Get out of stock products count
+     */
+    public function getOutOfStockProductsCount(): int
+    {
+        return $this->model->where('stock', 0)->count();
+    }
+
+    public function getProductsBelowMinimumStock()
+    {
+        return $this->model->where('stock', '<=', 'min_stock')->get();
     }
 }

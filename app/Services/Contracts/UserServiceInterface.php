@@ -7,11 +7,11 @@ use App\Http\Resources\Users\UserResource;
 
 interface UserServiceInterface
 {
-    function getAllUsers(array $filters = []): UserCollection;
+    public function getAllUsers(array $filters = []): UserCollection;
 
-    function getUserById(int $id): UserResource;
+    public function getUserById(int $id): UserResource;
 
-    function getUserWithOrdersById(int $id): UserResource;
+    public function getUserWithOrdersById(int $id): UserResource;
 
     public function getFilterOptions(): array;
 

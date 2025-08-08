@@ -4,9 +4,16 @@ namespace App\Http\Resources\Dashboard;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 class RecentUserResource extends JsonResource
 {
+    public int $id;
+    public string $name;
+    public string $email;
+    public ?string $profile_picture;
+    public Carbon $created_at;
+
     /**
      * Transform the resource into an array.
      *

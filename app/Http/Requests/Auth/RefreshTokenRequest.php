@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\BaseApiRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class RefreshTokenRequest extends BaseApiRequest
 {
@@ -10,7 +11,7 @@ class RefreshTokenRequest extends BaseApiRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -27,8 +28,12 @@ class RefreshTokenRequest extends BaseApiRequest
     public function messages(): array
     {
         return [
-            'refresh_token.required' => __('validation.required', ['attribute' => __('validation.attributes.refresh_token')]),
-            'refresh_token.string' => __('validation.string', ['attribute' => __('validation.attributes.refresh_token')]),
+            'refresh_token.required' => __(
+                'validation.required',
+                ['attribute' => __('validation.attributes.refresh_token')]
+            ),
+            'refresh_token.string' => __('validation.string', ['attribute' => __('validation.attributes.refresh_token')]
+            ),
         ];
     }
 

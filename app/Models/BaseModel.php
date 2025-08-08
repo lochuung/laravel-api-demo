@@ -2,9 +2,17 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @method static Builder<static>|BaseModel newModelQuery()
+ * @method static Builder<static>|BaseModel newQuery()
+ * @method static Builder<static>|BaseModel query()
+ * @mixin Eloquent
+ */
 class BaseModel extends Model
 {
     protected static function booted(): void

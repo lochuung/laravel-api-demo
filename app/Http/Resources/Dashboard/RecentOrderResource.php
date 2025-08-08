@@ -2,11 +2,20 @@
 
 namespace App\Http\Resources\Dashboard;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 class RecentOrderResource extends JsonResource
 {
+    public int $id;
+    public string $order_number;
+    public float $total_amount;
+    public ?string $status;
+    public ?Carbon $created_at;
+    public ?User $user;
+
     /**
      * Transform the resource into an array.
      *

@@ -52,11 +52,11 @@
                         <i class="fas fa-box"></i> Products
                     </a>
                 </li>
-{{--                <li class="nav-item">--}}
-{{--                    <a class="nav-link" href="{{ route('orders.index') }}">--}}
-{{--                        <i class="fas fa-shopping-cart"></i> Orders--}}
-{{--                    </a>--}}
-{{--                </li>--}}
+                {{--                <li class="nav-item">--}}
+                {{--                    <a class="nav-link" href="{{ route('orders.index') }}">--}}
+                {{--                        <i class="fas fa-shopping-cart"></i> Orders--}}
+                {{--                    </a>--}}
+                {{--                </li>--}}
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">

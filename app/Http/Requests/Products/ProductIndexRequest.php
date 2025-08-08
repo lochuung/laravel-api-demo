@@ -47,21 +47,39 @@ class ProductIndexRequest extends BaseApiRequest
     {
         return [
             'search.string' => __('validation.string', ['attribute' => __('validation.attributes.search')]),
-            'search.max' => __('validation.max.string', ['attribute' => __('validation.attributes.search'), 'max' => 255]),
+            'search.max' => __(
+                'validation.max.string',
+                ['attribute' => __('validation.attributes.search'), 'max' => 255]
+            ),
             'category_id.integer' => __('validation.integer', ['attribute' => __('validation.attributes.category')]),
             'category_id.exists' => __('validation.exists', ['attribute' => __('validation.attributes.category')]),
             'min_price.numeric' => __('validation.numeric', ['attribute' => __('validation.attributes.min_price')]),
-            'min_price.min' => __('validation.min.numeric', ['attribute' => __('validation.attributes.min_price'), 'min' => 0]),
+            'min_price.min' => __(
+                'validation.min.numeric',
+                ['attribute' => __('validation.attributes.min_price'), 'min' => 0]
+            ),
             'max_price.numeric' => __('validation.numeric', ['attribute' => __('validation.attributes.max_price')]),
-            'max_price.min' => __('validation.min.numeric', ['attribute' => __('validation.attributes.max_price'), 'min' => 0]),
-            'max_price.gte' => __('validation.gte.numeric', ['attribute' => __('validation.attributes.max_price'), 'value' => __('validation.attributes.min_price')]),
+            'max_price.min' => __(
+                'validation.min.numeric',
+                ['attribute' => __('validation.attributes.max_price'), 'min' => 0]
+            ),
+            'max_price.gte' => __(
+                'validation.gte.numeric',
+                ['attribute' => __('validation.attributes.max_price'), 'value' => __('validation.attributes.min_price')]
+            ),
             'sort_by.in' => __('validation.in', ['attribute' => __('validation.attributes.sort_by')]),
             'sort_order.in' => __('validation.in', ['attribute' => __('validation.attributes.sort_order')]),
             'page.integer' => __('validation.integer', ['attribute' => __('validation.attributes.page')]),
             'page.min' => __('validation.min.numeric', ['attribute' => __('validation.attributes.page'), 'min' => 1]),
             'per_page.integer' => __('validation.integer', ['attribute' => __('validation.attributes.per_page')]),
-            'per_page.min' => __('validation.min.numeric', ['attribute' => __('validation.attributes.per_page'), 'min' => 1]),
-            'per_page.max' => __('validation.max.numeric', ['attribute' => __('validation.attributes.per_page'), 'max' => 100]),
+            'per_page.min' => __(
+                'validation.min.numeric',
+                ['attribute' => __('validation.attributes.per_page'), 'min' => 1]
+            ),
+            'per_page.max' => __(
+                'validation.max.numeric',
+                ['attribute' => __('validation.attributes.per_page'), 'max' => 100]
+            ),
         ];
     }
 }

@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Http\Resources\Auth\AuthResource;
 use App\Http\Resources\Auth\RefreshTokenResource;
 use App\Http\Resources\Users\UserResource;
-use App\Mail\ResetPasswordMail;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
 use App\Repositories\Contracts\UserRepositoryInterface;
@@ -16,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthService implements AuthServiceInterface
 {
@@ -42,7 +42,9 @@ class AuthService implements AuthServiceInterface
 
         // Generate email verification token and send email
         $userWithToken = $this->userRepository->generateEmailVerificationToken($user);
-        $userWithToken->notify(new VerifyEmailNotification($userWithToken->email_verification_token, $userWithToken->email));
+        $userWithToken->notify(
+            new VerifyEmailNotification($userWithToken->email_verification_token, $userWithToken->email)
+        );
 
         return new UserResource($userWithToken);
     }
@@ -89,7 +91,7 @@ class AuthService implements AuthServiceInterface
             $responsePsr7
         );
 
-        if ($response->getStatusCode() !== 200) {
+        if ($response->getStatusCode() !== Response::HTTP_OK) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.']
             ]);
@@ -133,7 +135,7 @@ class AuthService implements AuthServiceInterface
             $requestPs7,
             $responsePsr7
         );
-        if ($response->getStatusCode() !== 200) {
+        if ($response->getStatusCode() !== Response::HTTP_OK) {
             throw ValidationException::withMessages([
                 'refresh_token' => ['The refresh token is invalid or expired.']
             ]);
@@ -193,7 +195,9 @@ class AuthService implements AuthServiceInterface
         }
 
         $userWithToken = $this->userRepository->generateEmailVerificationToken($user);
-        $userWithToken->notify(new VerifyEmailNotification($userWithToken->email_verification_token, $userWithToken->email));
+        $userWithToken->notify(
+            new VerifyEmailNotification($userWithToken->email_verification_token, $userWithToken->email)
+        );
 
         return true;
     }

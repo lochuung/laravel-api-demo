@@ -52,9 +52,13 @@ export const renderUsers = (users = []) => {
 
 const getRoleBadge = (role) => {
     switch (role?.toLowerCase()) {
-        case 'admin': return 'bg-success';
-        case 'moderator': return 'bg-warning';
-        case 'user': return 'bg-info';
-        default: return 'bg-secondary';
+        case 'admin':
+            return 'bg-success';
+        case 'moderator':
+            return 'bg-warning';
+        case 'user':
+            return 'bg-info';
+        default:
+            return 'bg-secondary';
     }
 };

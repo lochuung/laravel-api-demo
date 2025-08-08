@@ -8,7 +8,7 @@
  * @returns {Promise} Axios response promise
  */
 export async function getProducts(params = {}) {
-    return await api.get('/products', { params });
+    return await api.get('/products', {params});
 }
 
 /**

@@ -1,5 +1,5 @@
-import { createProduct, getProductFilterOptions } from '../../api/products.api.js';
-import { uploadImage } from '../../api/upload.api.js';
+import {createProduct, getProductFilterOptions} from '../../api/products.api.js';
+import {uploadImage} from '../../api/upload.api.js';
 
 let categories = {};
 let selectedImages = [];
@@ -16,7 +16,7 @@ async function setupCreateProduct() {
         // Load categories for dropdown
         try {
             const categoriesResponse = await getProductFilterOptions();
-            
+
             if (categoriesResponse.data?.data?.categories) {
                 categories = categoriesResponse.data.data.categories;
             } else if (categoriesResponse.data?.categories) {
@@ -28,7 +28,7 @@ async function setupCreateProduct() {
             // Fallback: could try a categories endpoint or use hardcoded values
             categories = {
                 1: 'Electronics',
-                2: 'Clothing', 
+                2: 'Clothing',
                 3: 'Books',
                 4: 'Home & Garden',
                 5: 'Sports'
@@ -288,14 +288,14 @@ function mapFieldName(apiFieldName) {
         'base_unit': 'base_unit',
         'min_stock': 'min_stock'
     };
-    
+
     return fieldMapping[apiFieldName] || apiFieldName;
 }
 
 function generateSKUFromName() {
     const skuField = $('#base_sku');
     const nameValue = $('#name').val().trim();
-    
+
     if (!skuField.val() && nameValue) {
         const sku = nameValue
             .replace(/[^a-zA-Z0-9\s]/g, '')
@@ -325,7 +325,7 @@ function handleImagePreview(e) {
                         <div class="card-body p-2">
                             <small class="text-muted">${file.name}</small>
                             ${index === 0 ? '<br><small class="text-primary">Main Image</small>' : ''}
-                            <button type="button" class="btn btn-sm btn-danger float-end" 
+                            <button type="button" class="btn btn-sm btn-danger float-end"
                                     onclick="removeImagePreview(this, ${index})" title="Remove">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -343,10 +343,10 @@ function handleImagePreview(e) {
 window.removeImagePreview = function (button, index) {
     if (confirm('Remove this image?')) {
         $(button).closest('.col-md-4').remove();
-        
+
         // Remove from selectedImages array
         selectedImages.splice(index, 1);
-        
+
         // Update the file input (this is tricky with file inputs, so we'll just clear it)
         // In a production app, you'd want a more sophisticated approach
         if (selectedImages.length === 0) {
@@ -366,6 +366,6 @@ window.addEventListener('beforeunload', function (e) {
 });
 
 // Set flag when form is submitted to prevent warning
-$('#createProductForm').on('submit', function() {
+$('#createProductForm').on('submit', function () {
     window.formSubmitted = true;
 });

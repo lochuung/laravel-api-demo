@@ -8,10 +8,9 @@ use App\Http\Requests\Inventory\InventoryExportRequest;
 use App\Http\Requests\Inventory\InventoryImportRequest;
 use App\Http\Resources\Inventory\InventoryOperationResource;
 use App\Http\Resources\Inventory\InventoryStatsResource;
-use App\Http\Resources\Inventory\InventorySummaryResource;
 use App\Http\Resources\Inventory\InventoryTransactionCollection;
-use App\Http\Resources\Inventory\InventoryTransactionResource;
 use App\Services\Contracts\InventoryServiceInterface;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,12 +19,13 @@ use Illuminate\Support\Facades\Gate;
 class InventoryController extends BaseController
 {
     public function __construct(
-        private InventoryServiceInterface $inventoryService
+        private readonly InventoryServiceInterface $inventoryService
     ) {
     }
 
     /**
      * Get inventory statistics
+     * @throws AuthorizationException
      */
     public function stats(): JsonResponse
     {
@@ -41,6 +41,7 @@ class InventoryController extends BaseController
 
     /**
      * Import inventory
+     * @throws AuthorizationException
      */
     public function import(InventoryImportRequest $request): JsonResponse
     {
@@ -87,6 +88,7 @@ class InventoryController extends BaseController
 
     /**
      * Adjust inventory
+     * @throws AuthorizationException
      */
     public function adjust(InventoryAdjustRequest $request): JsonResponse
     {
@@ -105,7 +107,7 @@ class InventoryController extends BaseController
                 new InventoryOperationResource($transaction),
                 __('inventory.adjust.success')
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),

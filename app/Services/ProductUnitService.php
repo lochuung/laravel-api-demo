@@ -5,21 +5,19 @@ namespace App\Services;
 use App\Exceptions\BadRequestException;
 use App\Http\Resources\ProductUnits\ProductUnitCollection;
 use App\Http\Resources\ProductUnits\ProductUnitResource;
-use App\Models\Product;
-use App\Models\ProductUnit;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\ProductUnitRepositoryInterface;
 use App\Services\Contracts\ProductUnitServiceInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 readonly class ProductUnitService implements ProductUnitServiceInterface
 {
     public function __construct(
         private ProductUnitRepositoryInterface $productUnitRepository,
-        private ProductRepositoryInterface     $productRepository
-    )
-    {
+        private ProductRepositoryInterface $productRepository
+    ) {
     }
 
     public function getProductUnits(int $productId): ProductUnitCollection
@@ -46,8 +44,8 @@ readonly class ProductUnitService implements ProductUnitServiceInterface
         return new ProductUnitResource($unit);
     }
 
-        /**
-     * @throws \Throwable
+    /**
+     * @throws Throwable
      */
     public function createProductUnit(int $productId, array $data): ProductUnitResource
     {
@@ -62,7 +60,7 @@ readonly class ProductUnitService implements ProductUnitServiceInterface
 
             // Handle base unit logic before creation
             if (!empty($data['is_base_unit'])) {
-                $data = $this->handleBaseUnitUpdate($product, $data, null);
+                $data = $this->handleBaseUnitUpdate($product, $data);
             }
 
             $unit = $this->productUnitRepository->create($data);
@@ -77,7 +75,7 @@ readonly class ProductUnitService implements ProductUnitServiceInterface
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function updateProductUnit(int $unitId, array $data): ProductUnitResource
     {

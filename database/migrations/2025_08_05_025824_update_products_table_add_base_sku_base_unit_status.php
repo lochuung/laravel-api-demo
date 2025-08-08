@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void
@@ -34,12 +34,14 @@ return new class extends Migration {
         });
 
         // Update existing data
-        DB::statement("
+        DB::statement(
+            "
         UPDATE products SET
             base_sku = CONCAT(base_sku, '-BASE'),
             base_unit = 'cái',
             status = CASE WHEN is_active = 1 THEN 'active' ELSE 'inactive' END
-    ");
+    "
+        );
     }
 
     public function down(): void

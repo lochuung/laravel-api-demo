@@ -7,9 +7,9 @@ use App\Http\Resources\Products\ProductResource;
 
 interface ProductServiceInterface
 {
-    function getAllProducts(array $filters = []): ProductCollection;
+    public function getAllProducts(array $filters = []): ProductCollection;
 
-    function getProductById(int $id): ProductResource;
+    public function getProductById(int $id): ProductResource;
 
     public function getFilterOptions(): array;
 

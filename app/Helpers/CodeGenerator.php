@@ -23,12 +23,10 @@ class CodeGenerator
 
     public static function getSuggestedPrefixes(): array
     {
-        $prefixes = DB::table('code_sequences')
+        return DB::table('code_sequences')
             ->select('prefix')
             ->distinct()
             ->pluck('prefix')
             ->toArray();
-
-        return $prefixes;
     }
 }
