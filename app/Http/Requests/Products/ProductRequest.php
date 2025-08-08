@@ -23,7 +23,7 @@ class ProductRequest extends BaseApiRequest
             'stock' => ['required', 'integer', 'min:0'],
             'min_stock' => ['nullable', 'integer', 'min:0'],
             'base_sku' => ['nullable', 'string', 'max:255',
-                Rule::unique('products')->ignore($productId)],
+                Rule::unique('products', 'base_sku')->whereNull('deleted_at')->ignore($productId)],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'expiry_date' => ['nullable', 'date', 'after:today'],
             'image' => ['nullable', 'url'],

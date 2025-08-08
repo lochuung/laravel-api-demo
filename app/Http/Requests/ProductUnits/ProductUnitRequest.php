@@ -15,7 +15,6 @@ class ProductUnitRequest extends BaseApiRequest
     public function rules(): array
     {
         $unitId = $this->route('unit');
-        $productId = $this->route('product');
 
         return [
             'unit_name' => ['required', 'string', 'max:255'],
