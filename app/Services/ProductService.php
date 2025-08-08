@@ -19,16 +19,12 @@ class ProductService implements ProductServiceInterface
 {
     private ProductRepositoryInterface $productRepository;
 
-    private ProductUnitRepositoryInterface $productUnitRepository;
-
     /**
      * @param ProductRepositoryInterface $productRepository
      */
-    public function __construct(ProductRepositoryInterface $productRepository
-        , ProductUnitRepositoryInterface                   $productUnitRepository)
+    public function __construct(ProductRepositoryInterface $productRepository)
     {
         $this->productRepository = $productRepository;
-        $this->productUnitRepository = $productUnitRepository;
     }
 
     /**
