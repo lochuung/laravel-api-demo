@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\DashboardController;
+use App\Http\Controllers\Api\V1\InventoryController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\ProductUnitController;
@@ -50,6 +51,14 @@ Route::prefix("v1")->group(function () {
         Route::delete('products/units/{unit}', [ProductUnitController::class, 'destroy'])
             ->name('products.units.destroy');
 
+        // Inventory routes
+        Route::prefix('inventory')->name('inventory.')->group(function () {
+            Route::get('stats', [InventoryController::class, 'stats'])->name('stats');
+            Route::post('import', [InventoryController::class, 'import'])->name('import');
+            Route::post('export', [InventoryController::class, 'export'])->name('export');
+            Route::post('adjust', [InventoryController::class, 'adjust'])->name('adjust');
+            Route::get('products/{product}/history', [InventoryController::class, 'productHistory'])->name('product.history');
+        });
 
         Route::apiResource('orders', OrderController::class);
     });
