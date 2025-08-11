@@ -35,7 +35,7 @@ class AuthService implements AuthServiceInterface
         // Kiểm tra email đã tồn tại bằng method mới
         if ($this->userRepository->emailExists($data['email'])) {
             throw ValidationException::withMessages([
-                'email' => ['The email has already been taken.']
+                'email' => [__('auth.email_taken')]
             ]);
         }
         $user = $this->userRepository->createWithHashedPassword($data);
@@ -58,19 +58,19 @@ class AuthService implements AuthServiceInterface
         $user = $this->userRepository->findByEmail($credentials['email']);
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.']
+                'email' => [__('auth.invalid_credentials')]
             ]);
         }
 
         if (!$user->is_active) {
             throw ValidationException::withMessages([
-                'email' => ['Your account is inactive. Please contact support.']
+                'email' => [__('auth.inactive_account')]
             ]);
         }
 
         if (!$user->email_verified) {
             throw ValidationException::withMessages([
-                'email' => ['Please verify your email address before logging in.']
+                'email' => [__('auth.email_not_verified')]
             ]);
         }
 
@@ -119,7 +119,7 @@ class AuthService implements AuthServiceInterface
         $refreshToken = $data['refresh_token'] ?? null;
         if (!$refreshToken) {
             throw ValidationException::withMessages([
-                'refresh_token' => ['The refresh token is required.']
+                'refresh_token' => [__('auth.refresh_token_required')]
             ]);
         }
         $params = [
@@ -137,7 +137,7 @@ class AuthService implements AuthServiceInterface
         );
         if ($response->getStatusCode() !== Response::HTTP_OK) {
             throw ValidationException::withMessages([
-                'refresh_token' => ['The refresh token is invalid or expired.']
+                'refresh_token' => [__('auth.refresh_token_invalid')]
             ]);
         }
         $data = json_decode((string)$response->getContent(), true);
@@ -154,19 +154,19 @@ class AuthService implements AuthServiceInterface
 
         if (!$user || $user->email !== $data['email']) {
             throw ValidationException::withMessages([
-                'token' => ['The verification token is invalid.']
+                'token' => [__('auth.verification_token_invalid')]
             ]);
         }
 
         if ($user->email_verification_token_expires_at < now()) {
             throw ValidationException::withMessages([
-                'token' => ['The verification token has expired.']
+                'token' => [__('auth.verification_token_expired')]
             ]);
         }
 
         if ($user->email_verified) {
             throw ValidationException::withMessages([
-                'email' => ['Email is already verified.']
+                'email' => [__('auth.email_already_verified')]
             ]);
         }
 
@@ -184,13 +184,13 @@ class AuthService implements AuthServiceInterface
 
         if (!$user) {
             throw ValidationException::withMessages([
-                'email' => ['User not found.']
+                'email' => [__('auth.user_not_found')]
             ]);
         }
 
         if ($user->email_verified) {
             throw ValidationException::withMessages([
-                'email' => ['Email is already verified.']
+                'email' => [__('auth.email_already_verified')]
             ]);
         }
 
@@ -212,7 +212,7 @@ class AuthService implements AuthServiceInterface
 
         if (!$user) {
             throw ValidationException::withMessages([
-                'email' => ['We can\'t find a user with that email address.']
+                'email' => [__('auth.user_not_found_by_email')]
             ]);
         }
 
