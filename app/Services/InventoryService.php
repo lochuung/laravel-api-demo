@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\LowStockDetected;
+use App\Exceptions\BadRequestException;
 use App\Models\InventoryTransaction;
 use App\Models\Product;
 use App\Repositories\Contracts\InventoryRepositoryInterface;
@@ -10,7 +11,6 @@ use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\ProductUnitRepositoryInterface;
 use App\Services\Contracts\InventoryServiceInterface;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -37,7 +37,7 @@ readonly class InventoryService implements InventoryServiceInterface
         return DB::transaction(function () use ($productId, $quantity, $price, $notes) {
             $product = $this->productRepository->find($productId);
             if (!$product) {
-                throw new Exception("Product not found");
+                throw new BadRequestException(__('exception.not_found', ['model' => 'Product']));
             }
 
             // Create inventory transaction
@@ -73,7 +73,7 @@ readonly class InventoryService implements InventoryServiceInterface
             /** @var Product|null $product */
             $product = $this->productRepository->find($productId);
             if (!$product) {
-                throw new Exception("Product not found");
+                throw new BadRequestException(__('exception.not_found', ['model' => 'Product']));
             }
             $baseQuantity = $quantity;
             $unitPrice = $product->price;
@@ -83,7 +83,7 @@ readonly class InventoryService implements InventoryServiceInterface
                 $unit = $this->productUnitRepository->findByProductAndUnit($productId, $unitId);
 
                 if (!$unit) {
-                    throw new Exception("Product unit not found");
+                    throw new BadRequestException(__('exception.unit_not_belongs_to_product'));
                 }
 
                 $baseQuantity = $quantity / $unit->conversion_rate;
@@ -92,7 +92,7 @@ readonly class InventoryService implements InventoryServiceInterface
 
             // Check if enough stock available
             if ($product->stock < $baseQuantity) {
-                throw new Exception("Insufficient stock. Available: $product->stock, Required: $baseQuantity");
+                throw new BadRequestException(__('exception.insufficient_stock', ['product' => $product->name]));
             }
 
             // Create inventory transaction (store in base units)
@@ -161,13 +161,13 @@ readonly class InventoryService implements InventoryServiceInterface
             /** @var Product|null $product */
             $product = $this->productRepository->find($productId);
             if (!$product) {
-                throw new Exception("Product not found");
+                throw new BadRequestException(__('exception.not_found', ['model' => 'Product']));
             }
             $currentStock = $product->stock;
             $difference = $newQuantity - $currentStock;
 
             if ($difference == 0) {
-                throw new Exception('No adjustment needed - stock is already at the specified quantity');
+                throw new BadRequestException(__('exception.no_change_in_stock'));
             }
 
             $type = $difference > 0 ? 'import' : 'export';

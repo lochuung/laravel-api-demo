@@ -92,9 +92,15 @@ class InventoryRepository extends BaseRepository implements InventoryRepositoryI
      */
     public function getInventoryStats(): array
     {
-        // This method is now handled in the service layer
-        // as it needs to coordinate between multiple repositories
-        return [];
+        $totalTransactions = $this->model->count();
+        $totalProducts = $this->model->distinct('product_id')->count('product_id');
+        $totalQuantity = $this->model->sum('quantity');
+
+        return [
+            'total_transactions' => $totalTransactions,
+            'total_products' => $totalProducts,
+            'total_quantity' => $totalQuantity,
+        ];
     }
 
     /**

@@ -34,6 +34,6 @@ class UploadController extends BaseController
                 ])
             );
         }
-        throw new BadRequestException('Invalid image file.');
+        throw new BadRequestException(__('exception.invalid_file_upload'));
     }
 }

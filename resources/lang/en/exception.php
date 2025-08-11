@@ -10,4 +10,8 @@ return [
     'conflict' => 'There was a conflict with the request. Please check your input and try again.',
     'cannot_delete_base_unit' => 'Cannot delete the base unit. Please change the base unit before deleting.',
     'unit_not_belongs_to_product' => 'The specified unit does not belong to the product.',
+    'invalid_file_upload' => 'The uploaded file is invalid or exceeds the allowed size. Please upload a valid file.',
+    'no_change_in_stock' => 'No change in stock detected. Please check the input values.',
+    'insufficient_stock' => 'Insufficient stock for the product :product. Available stock is :available, requested quantity is :requested.',
+    'unit_not_belongs_to_product' => 'The specified unit does not belong to the product.',
 ];
